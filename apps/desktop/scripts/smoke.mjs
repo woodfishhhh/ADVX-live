@@ -204,9 +204,11 @@ try {
   await page.getByLabel('服务地址', { exact: true }).fill('https://smoke.example/v1')
   await page.getByLabel('模型名称', { exact: true }).fill('smoke-model')
   await page.getByLabel('模型 API Key', { exact: true }).fill('smoke-model-key')
-  await page.getByLabel('StepFun ASR API Key', { exact: true }).fill('smoke-asr-key')
+  await page.getByLabel('StepFun ASR API Key（可选）', { exact: true }).fill('smoke-asr-key')
   await page.getByRole('button', { name: '保存连接', exact: true }).click()
-  await page.getByText('模型与语音识别配置已安全保存并接入后端', { exact: true }).waitFor()
+  await page
+    .getByText('模型配置已安全保存并接入后端，语音识别已启用', { exact: true })
+    .waitFor()
 
   const modelApiKeyInput = page.getByLabel(/模型 API Key/)
   const asrApiKeyInput = page.getByLabel(/StepFun ASR API Key/)
@@ -219,7 +221,9 @@ try {
   const saveChangesButton = page.getByRole('button', { name: '保存更改', exact: true })
   assert.equal(await saveChangesButton.isEnabled(), true)
   await saveChangesButton.click()
-  await page.getByText('模型与语音识别配置已安全保存并接入后端', { exact: true }).waitFor()
+  await page
+    .getByText('模型配置已安全保存并接入后端，语音识别已启用', { exact: true })
+    .waitFor()
   await page.screenshot({
     path: resolve(artifactDirectory, 'model-config-saved.png'),
     fullPage: true
@@ -905,7 +909,7 @@ try {
       }
       return (
         valueFor('图像适配器') === '已就绪' &&
-        valueFor('最近批次') !== '--:--:--' &&
+        valueFor('最近发送') !== '--:--:--' &&
         valueFor('合成压缩').includes('KB')
       )
     },
@@ -1114,7 +1118,17 @@ try {
   await page.locator('.camera-video').evaluate((video) => {
     globalThis.__advxSmokeCameraTrack = video.srcObject?.getVideoTracks()[0]
   })
-  await page.waitForFunction(() => globalThis.__advxSmokeMicrophoneTrack?.readyState === 'live')
+  const resumedMicrophoneTrackState = await page.evaluate(
+    () => globalThis.__advxSmokeMicrophoneTrack?.readyState
+  )
+  if (resumedMicrophoneTrackState !== 'ended') {
+    throw new Error(
+      `Microphone restarted without an explicit request: ${resumedMicrophoneTrackState ?? 'none'}.`
+    )
+  }
+  if (await page.locator('body').getByText('麦克风 正常', { exact: true }).count()) {
+    throw new Error('Microphone status became active automatically after resume.')
+  }
 
   await page.getByRole('button', { name: '关闭摄像头', exact: true }).click()
   await page.waitForFunction(() => globalThis.__advxSmokeCameraTrack?.readyState === 'ended')
