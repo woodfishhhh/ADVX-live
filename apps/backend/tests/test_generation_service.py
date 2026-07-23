@@ -8,6 +8,7 @@ from advx_backend.application.generation_service import GenerationService
 from advx_backend.application.ports.generation import (
     AudienceBatch,
     AudienceSnapshot,
+    GenerationFailure,
 )
 from advx_backend.contracts.audience import AudienceMember, AudienceMemory
 from advx_backend.contracts.generation import (
@@ -131,6 +132,14 @@ class RecordingProvider:
         self.cancelled_request_ids.append(request_id)
 
 
+class RecordingFailurePublisher:
+    def __init__(self) -> None:
+        self.failures: list[GenerationFailure] = []
+
+    async def publish_generation_failure(self, failure: GenerationFailure) -> None:
+        self.failures.append(failure)
+
+
 class Harness:
     def __init__(
         self,
@@ -146,6 +155,7 @@ class Harness:
         self.trigger = AlwaysTrigger()
         self.selector = StaticSelector(selected_ids)
         self.planner = StaticInvocationPlanner(batches)
+        self.failure_publisher = RecordingFailurePublisher()
         self.service = GenerationService(
             snapshots=self.snapshots,
             trigger=self.trigger,
@@ -154,6 +164,7 @@ class Harness:
             model_provider=provider,
             session_tasks=self.sessions,
             id_generator=SequenceIdGenerator(),
+            failure_publisher=self.failure_publisher,
             max_concurrency=max_concurrency,
         )
 
@@ -326,6 +337,14 @@ async def test_provider_exception_is_isolated_from_other_requests() -> None:
     assert [request.request_id for request in provider.requests] == ["request-1", "request-2"]
     assert [result.request_id for result in results] == ["request-2"]
     assert results[0].candidates[0].audience_id == "audience-2"
+    assert harness.failure_publisher.failures == [
+        GenerationFailure(
+            session_id="session-1",
+            observation_id="observation-1",
+            request_id="request-1",
+            message="模型生成失败，请检查模型地址、名称、API Key 和接口兼容性。",
+        )
+    ]
 
 
 class ConcurrencyTrackingProvider(RecordingProvider):

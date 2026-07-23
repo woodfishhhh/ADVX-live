@@ -103,7 +103,7 @@ class AudienceSelectorConfig:
 class GenerationInvocationPlannerConfig:
     """Maximum number of audience members in one provider invocation."""
 
-    batch_size: int = 2
+    batch_size: int = 4
 
     def __post_init__(self) -> None:
         _require_positive_int("batch_size", self.batch_size)

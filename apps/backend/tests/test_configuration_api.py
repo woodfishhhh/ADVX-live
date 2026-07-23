@@ -94,3 +94,52 @@ def test_provider_configuration_rejects_replacement_and_active_session(
     assert replacement.json()["detail"]["code"] == "providers_already_configured"
     assert active.status_code == 409
     assert active.json()["detail"]["code"] == "session_active"
+
+
+def test_provider_configuration_allows_model_without_asr(tmp_path: Path) -> None:
+    runtime = build_runtime(local_token=LOCAL_TOKEN, data_directory=tmp_path)
+    app = create_app(runtime=runtime)
+    payload = provider_payload()
+    payload.pop("asr_api_key")
+
+    with TestClient(app) as client:
+        configured = client.put(
+            "/configuration/providers",
+            headers=headers(),
+            json=payload,
+        )
+
+    assert configured.status_code == 200
+    assert configured.json() == {
+        "configured": True,
+        "model_base_url": "https://models.example/v1",
+        "model_name": "test-model",
+        "asr_model": None,
+    }
+    assert runtime.external_provider_config is not None
+    assert runtime.external_provider_config.asr_api_key is None
+
+
+def test_provider_configuration_does_not_treat_changed_secret_as_idempotent(
+    tmp_path: Path,
+) -> None:
+    runtime = build_runtime(local_token=LOCAL_TOKEN, data_directory=tmp_path)
+    app = create_app(runtime=runtime)
+    replacement_payload = provider_payload()
+    replacement_payload["model_api_key"] = "corrected-model-key"
+
+    with TestClient(app) as client:
+        configured = client.put(
+            "/configuration/providers",
+            headers=headers(),
+            json=provider_payload(),
+        )
+        replacement = client.put(
+            "/configuration/providers",
+            headers=headers(),
+            json=replacement_payload,
+        )
+
+    assert configured.status_code == 200
+    assert replacement.status_code == 409
+    assert replacement.json()["detail"]["code"] == "providers_already_configured"

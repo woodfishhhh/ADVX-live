@@ -1,5 +1,6 @@
 import asyncio
 import base64
+import ipaddress
 import json
 import math
 from dataclasses import dataclass, field
@@ -79,13 +80,30 @@ class OpenAICompatibleConfig:
             or parsed.fragment
         ):
             raise ValueError("OpenAI-compatible base URL must be an HTTP(S) origin or path")
+        if parsed.scheme == "http" and not _is_loopback_host(parsed.hostname):
+            raise ValueError(
+                "OpenAI-compatible base URL must use HTTPS unless it targets localhost"
+            )
 
         object.__setattr__(self, "base_url", base_url)
         object.__setattr__(self, "model", self.model.strip())
 
 
+def _is_loopback_host(hostname: str | None) -> bool:
+    if hostname is None:
+        return False
+    if hostname.lower() == "localhost":
+        return True
+    try:
+        return ipaddress.ip_address(hostname).is_loopback
+    except ValueError:
+        return False
+
+
 _SYSTEM_PROMPT: Final = (
     "Generate concise audience barrage candidates for a live room. "
+    "When images are present, they are one chronological frame window ordered oldest to newest; "
+    "use the sequence together with the synchronized room events and user context. "
     "Use only audience_id values supplied in the input. "
     "Return only the JSON object required by the response schema."
 )

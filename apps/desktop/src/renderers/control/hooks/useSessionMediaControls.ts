@@ -6,7 +6,7 @@ import {
   type Dispatch,
   type MutableRefObject
 } from 'react'
-import type { BackendSessionSnapshot } from '../../../shared/contracts'
+import type { BackendFailure, BackendSessionSnapshot } from '../../../shared/contracts'
 import type { SessionAction, SessionStatus } from '../../../shared/session'
 import { describeMediaError } from '../media'
 import { requiredVisualSources } from '../visual'
@@ -83,7 +83,6 @@ export function useSessionMediaControls({
     const requirements = requiredVisualSources(devices.visualSettingsRef.current.mode)
     let displayStream: MediaStream | null = devices.captureStreamRef.current
     let cameraStream: MediaStream | null = devices.cameraStreamRef.current
-    let microphoneStream: MediaStream | null = devices.microphoneStreamRef.current
     let backendSessionStarted = false
     sessionStatusRef.current = 'starting'
     dispatchSession({ type: 'start' })
@@ -112,18 +111,6 @@ export function useSessionMediaControls({
       }
       if (!devices.operation.isCurrent(operationId)) return
 
-      if (!microphoneStream) {
-        try {
-          microphoneStream = await devices.startMicrophone(
-            operationId,
-            devices.selectedMicrophoneId || undefined
-          )
-        } catch (error) {
-          throw new Error(describeMediaError(error, 'microphone'))
-        }
-      }
-      if (!devices.operation.isCurrent(operationId)) return
-
       const backendSession = await window.advx.startBackendSession()
       backendSessionStarted = backendSession.sessionId !== null
       if (!devices.operation.isCurrent(operationId)) {
@@ -147,9 +134,6 @@ export function useSessionMediaControls({
       if (!devices.operation.isCurrent(operationId)) return
       if (devices.captureStreamRef.current === displayStream) devices.stopCapture()
       if (devices.cameraStreamRef.current === cameraStream) devices.stopCamera()
-      if (devices.microphoneStreamRef.current === microphoneStream) {
-        await devices.stopMicrophone()
-      }
       if (backendSessionStarted) {
         await window.advx.stopBackendSession().catch(() => undefined)
       }
@@ -158,7 +142,7 @@ export function useSessionMediaControls({
       sessionStatusRef.current = 'error'
       dispatchSession({
         type: 'fail',
-        error: `${error instanceof Error ? error.message : '启动失败，请检查视觉来源和麦克风权限。'}${
+        error: `${error instanceof Error ? error.message : '启动失败，请检查视觉来源和后端配置。'}${
           overlayError ? ` ${overlayError}` : ''
         }`
       })
@@ -166,9 +150,6 @@ export function useSessionMediaControls({
       if (!devices.operation.isCurrent(operationId)) {
         if (devices.captureStreamRef.current === displayStream) devices.stopCapture()
         if (devices.cameraStreamRef.current === cameraStream) devices.stopCamera()
-        if (devices.microphoneStreamRef.current === microphoneStream) {
-          await devices.stopMicrophone()
-        }
       }
       devices.operation.finish(operationId)
     }
@@ -207,6 +188,22 @@ export function useSessionMediaControls({
     }
   }, [dispatchSession, releaseOverlay, sessionStatusRef, syncBackendSession])
 
+  const failBackendSession = useCallback((failure: BackendFailure): void => {
+    if (!['starting', 'running', 'paused'].includes(sessionStatusRef.current)) return
+    const devices = devicesRef.current
+    devices.operation.invalidate()
+    sessionStatusRef.current = 'error'
+    onSystemActivityRef.current(failure.message)
+    dispatchSession({ type: 'fail', error: failure.message })
+    devices.stopCapture()
+    devices.stopCamera()
+    void devices.stopMicrophone()
+    if (backendSessionIdRef.current !== null) {
+      void window.advx.stopBackendSession().catch(() => undefined)
+    }
+    void releaseOverlay()
+  }, [dispatchSession, releaseOverlay, sessionStatusRef])
+
   useEffect(() => window.advx.onEmergencyStop(() => void stopSession()), [stopSession])
 
   const toggleGoLive = useCallback((): void => {
@@ -221,7 +218,6 @@ export function useSessionMediaControls({
     if (operationId === null) return
     let displayStream: MediaStream | null = null
     let cameraStream: MediaStream | null = null
-    let microphoneStream: MediaStream | null = null
     let failureKind: FatalMediaKind = 'display'
     if (sessionStatus === 'running') {
       sessionStatusRef.current = 'paused'
@@ -263,12 +259,6 @@ export function useSessionMediaControls({
           )
           if (!devices.operation.isCurrent(operationId)) return
         }
-        failureKind = 'microphone'
-        microphoneStream = await devices.startMicrophone(
-          operationId,
-          devices.selectedMicrophoneId || undefined
-        )
-        if (!devices.operation.isCurrent(operationId)) return
         const backendSession = await window.advx.resumeBackendSession()
         if (!devices.operation.isCurrent(operationId)) return
         syncBackendSession(backendSession)
@@ -276,9 +266,6 @@ export function useSessionMediaControls({
         if (!devices.operation.isCurrent(operationId)) return
         if (devices.captureStreamRef.current === displayStream) devices.stopCapture()
         if (devices.cameraStreamRef.current === cameraStream) devices.stopCamera()
-        if (devices.microphoneStreamRef.current === microphoneStream) {
-          await devices.stopMicrophone()
-        }
         const overlayError = await releaseOverlay()
         if (!devices.operation.isCurrent(operationId)) return
         sessionStatusRef.current = 'error'
@@ -296,9 +283,6 @@ export function useSessionMediaControls({
         if (!devices.operation.isCurrent(operationId)) {
           if (devices.captureStreamRef.current === displayStream) devices.stopCapture()
           if (devices.cameraStreamRef.current === cameraStream) devices.stopCamera()
-          if (devices.microphoneStreamRef.current === microphoneStream) {
-            await devices.stopMicrophone()
-          }
         }
         devices.operation.finish(operationId)
       }
@@ -326,6 +310,7 @@ export function useSessionMediaControls({
     stopSession,
     toggleGoLive,
     togglePause,
+    failBackendSession,
     showOverlay,
     hideOverlay,
     toggleOverlay,

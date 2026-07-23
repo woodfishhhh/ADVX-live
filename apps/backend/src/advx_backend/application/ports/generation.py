@@ -64,6 +64,14 @@ class GenerationOutput:
         return self.work_item.request
 
 
+@dataclass(frozen=True, slots=True)
+class GenerationFailure:
+    session_id: str
+    observation_id: str
+    request_id: str
+    message: str
+
+
 class AudienceSnapshotProvider(Protocol):
     async def get_snapshot(self, *, observation: Observation) -> AudienceSnapshot: ...
 
@@ -88,6 +96,10 @@ class GenerationInvocationPlanner(Protocol):
         observation: Observation,
         candidates: Sequence[AudienceContext],
     ) -> Sequence[AudienceBatch]: ...
+
+
+class GenerationFailurePublisher(Protocol):
+    async def publish_generation_failure(self, failure: GenerationFailure) -> None: ...
 
 
 class SessionTaskScope(Protocol):

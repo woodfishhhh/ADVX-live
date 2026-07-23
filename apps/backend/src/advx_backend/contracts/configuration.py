@@ -7,7 +7,7 @@ class ProviderConfigurationRequest(BaseModel):
     model_base_url: str = Field(min_length=1, max_length=2_048)
     model_name: str = Field(min_length=1, max_length=256)
     model_api_key: str = Field(min_length=1, max_length=4_096, repr=False)
-    asr_api_key: str = Field(min_length=1, max_length=4_096, repr=False)
+    asr_api_key: str | None = Field(default=None, max_length=4_096, repr=False)
 
 
 class ProviderConfigurationStatus(BaseModel):

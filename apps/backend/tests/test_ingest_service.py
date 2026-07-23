@@ -103,6 +103,9 @@ class RecordingScheduler:
 async def create_harness(
     *,
     max_tracked_input_ids: int = 1_024,
+    frame_window_interval_ms: int = 20,
+    frame_window_min_frames: int = 1,
+    frame_window_max_frames: int = 15,
 ) -> tuple[
     IngestService,
     RoomService,
@@ -117,16 +120,16 @@ async def create_harness(
         room_service=room,
         clock=clock,
         id_generator=ids,
-        frame_capacity=4,
+        frame_capacity=15,
         frame_ttl_ms=60_000,
-        max_frames_per_observation=4,
+        max_frames_per_observation=15,
         max_events_per_observation=16,
     )
     frame_store = InMemoryFrameStore(
         limits=FrameStoreLimits(
-            max_frames=4,
+            max_frames=15,
             max_frame_bytes=1_024,
-            max_total_bytes=2_048,
+            max_total_bytes=15_360,
         ),
         id_generator=ids,
     )
@@ -141,6 +144,9 @@ async def create_harness(
         session_tasks=ActiveSessionScope(),
         clock=clock,
         max_tracked_input_ids=max_tracked_input_ids,
+        frame_window_interval_ms=frame_window_interval_ms,
+        frame_window_min_frames=frame_window_min_frames,
+        frame_window_max_frames=frame_window_max_frames,
     )
     await context.start_session("session-1")
     await service.start_session("session-1")
@@ -162,6 +168,7 @@ async def test_text_and_frame_inputs_build_observations_without_embedding_pixels
             body=b"pixels",
         )
     )
+    await asyncio.wait_for(scheduler.submitted.wait(), timeout=1)
 
     events = await room.read_events("session-1")
     observation = scheduler.observations[-1]
@@ -209,6 +216,15 @@ async def test_audio_commit_only_publishes_final_transcript() -> None:
             final=True,
         )
     )
+    await service.submit_frame(
+        FrameInput(
+            session_id="session-1",
+            input_id="frame-for-transcript",
+            captured_at_ms=330,
+            mime_type="image/jpeg",
+            body=b"pixels",
+        )
+    )
     await asyncio.wait_for(scheduler.submitted.wait(), timeout=1)
 
     events = await room.read_events("session-1")
@@ -218,6 +234,78 @@ async def test_audio_commit_only_publishes_final_transcript() -> None:
     assert asr.commits == 1
     assert [event.text for event in events] == ["final words"]
     assert events[0].source_type is RoomEventSource.USER_VOICE
+
+    await service.stop_session("session-1")
+    await room.stop_session("session-1")
+
+
+@pytest.mark.asyncio
+async def test_frame_windows_schedule_seven_to_fifteen_recent_frames() -> None:
+    service, room, frame_store, asr, scheduler = await create_harness(
+        frame_window_interval_ms=30,
+        frame_window_min_frames=7,
+        frame_window_max_frames=15,
+    )
+
+    for index in range(6):
+        await service.submit_frame(
+            FrameInput(
+                session_id="session-1",
+                input_id=f"frame-{index}",
+                captured_at_ms=200 + index,
+                mime_type="image/jpeg",
+                body=f"pixels-{index}".encode(),
+            )
+        )
+    await asyncio.sleep(0.04)
+    assert scheduler.observations == []
+
+    await service.submit_frame(
+        FrameInput(
+            session_id="session-1",
+            input_id="frame-6",
+            captured_at_ms=206,
+            mime_type="image/jpeg",
+            body=b"pixels-6",
+        )
+    )
+    await asyncio.wait_for(scheduler.submitted.wait(), timeout=1)
+    assert len(scheduler.observations) == 1
+    assert len(scheduler.observations[0].frames) == 7
+
+    scheduler.submitted.clear()
+    for index in range(7, 25):
+        await service.submit_frame(
+            FrameInput(
+                session_id="session-1",
+                input_id=f"frame-{index}",
+                captured_at_ms=200 + index,
+                mime_type="image/jpeg",
+                body=f"pixels-{index}".encode(),
+            )
+        )
+    await asyncio.wait_for(scheduler.submitted.wait(), timeout=1)
+    assert len(scheduler.observations) == 2
+    assert len(scheduler.observations[-1].frames) == 15
+
+    scheduler.submitted.clear()
+    await asyncio.sleep(0.04)
+    assert not scheduler.submitted.is_set()
+    assert len(scheduler.observations) == 2
+
+    for index in range(25, 32):
+        await service.submit_frame(
+            FrameInput(
+                session_id="session-1",
+                input_id=f"frame-{index}",
+                captured_at_ms=200 + index,
+                mime_type="image/jpeg",
+                body=f"pixels-{index}".encode(),
+            )
+        )
+    await asyncio.wait_for(scheduler.submitted.wait(), timeout=1)
+    assert len(scheduler.observations) == 3
+    assert len(scheduler.observations[-1].frames) == 7
 
     await service.stop_session("session-1")
     await room.stop_session("session-1")

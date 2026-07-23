@@ -11,8 +11,8 @@ export function resolveModelConfig(
     asrApiKey: input.asrApiKey.trim() || stored?.asrApiKey || ""
   };
 
-  if (!resolved.baseUrl || !resolved.model || !resolved.apiKey || !resolved.asrApiKey) {
-    throw new Error("模型地址、模型名称、模型密钥和语音识别密钥均为必填项。");
+  if (!resolved.baseUrl || !resolved.model || !resolved.apiKey) {
+    throw new Error("模型地址、模型名称和模型密钥均为必填项。");
   }
   return resolved;
 }

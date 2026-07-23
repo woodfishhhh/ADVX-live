@@ -23,8 +23,9 @@ pnpm --filter @advx/desktop smoke
 The smoke check runs Electron against the current desktop and microphone, so it requires an
 interactive session with the relevant operating-system permissions already available.
 
-The current control surface includes desktop-source selection, microphone metering, a
-click-through barrage overlay, audience controls and securely stored provider settings. AI
-generation and ASR status remain in demo mode until the FastAPI realtime contracts are wired in.
-Screen/window capture and microphone metering use real system media streams; pausing or stopping
-a session releases those tracks and reacquires them only when the user resumes or starts again.
+The current control surface includes desktop-source selection, optional microphone metering, a
+click-through barrage overlay, audience controls and securely stored provider settings. Each
+compressed visual frame is sent to Electron Main immediately and acknowledged by the FastAPI
+realtime connection; batching belongs exclusively to the backend. Screen/window capture uses real
+system media streams. Pausing or stopping releases active tracks; visual sources are reacquired on
+resume, while the optional microphone can be enabled again independently.

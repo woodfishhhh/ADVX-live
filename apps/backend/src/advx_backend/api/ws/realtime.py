@@ -22,6 +22,7 @@ from advx_backend.application.ingest_service import (
     UnknownAudioInputError,
     UnsupportedIngestFormatError,
 )
+from advx_backend.application.ports.generation import GenerationFailure
 from advx_backend.application.ports.ingest import (
     AudioCommit,
     AudioInput,
@@ -52,6 +53,7 @@ from advx_backend.contracts.realtime import (
     ClientMessageEnvelope,
     ClientPing,
     ClientTextSubmit,
+    GenerationFailureMessage,
     IngestAck,
     IngestAckStage,
     IngestInputKind,
@@ -98,8 +100,10 @@ def create_realtime_router(
         await websocket.accept()
         subscription = None
         barrage_subscription = None
+        generation_failure_subscription = None
         status_sender: asyncio.Task[None] | None = None
         barrage_sender: asyncio.Task[None] | None = None
+        generation_failure_sender: asyncio.Task[None] | None = None
         send_lock = asyncio.Lock()
         try:
             hello = await _receive_hello(websocket, local_token=local_token)
@@ -108,6 +112,9 @@ def create_realtime_router(
 
             subscription = await broker.subscribe()
             barrage_subscription = await broker.subscribe_barrages()
+            generation_failure_subscription = (
+                await broker.subscribe_generation_failures()
+            )
             current = await session_service.status()
             await _send_message(
                 websocket,
@@ -130,6 +137,14 @@ def create_realtime_router(
                     send_lock=send_lock,
                 ),
                 name="realtime-barrage-sender",
+            )
+            generation_failure_sender = asyncio.create_task(
+                _forward_generation_failures(
+                    websocket,
+                    subscription=generation_failure_subscription,
+                    send_lock=send_lock,
+                ),
+                name="realtime-generation-failure-sender",
             )
 
             while True:
@@ -189,16 +204,27 @@ def create_realtime_router(
         except WebSocketDisconnect:
             return
         finally:
-            if status_sender is not None:
-                status_sender.cancel()
-                await asyncio.gather(status_sender, return_exceptions=True)
-            if barrage_sender is not None:
-                barrage_sender.cancel()
-                await asyncio.gather(barrage_sender, return_exceptions=True)
+            senders = tuple(
+                sender
+                for sender in (
+                    status_sender,
+                    barrage_sender,
+                    generation_failure_sender,
+                )
+                if sender is not None
+            )
+            for sender in senders:
+                sender.cancel()
+            if senders:
+                await asyncio.gather(*senders, return_exceptions=True)
             if subscription is not None:
                 await broker.unsubscribe(subscription)
             if barrage_subscription is not None:
                 await broker.unsubscribe_barrages(barrage_subscription)
+            if generation_failure_subscription is not None:
+                await broker.unsubscribe_generation_failures(
+                    generation_failure_subscription
+                )
 
     return router
 
@@ -558,6 +584,26 @@ async def _forward_barrages(
         )
 
 
+async def _forward_generation_failures(
+    websocket: WebSocket,
+    *,
+    subscription: asyncio.Queue[GenerationFailure],
+    send_lock: asyncio.Lock,
+) -> None:
+    while True:
+        failure = await subscription.get()
+        await _send_message(
+            websocket,
+            GenerationFailureMessage(
+                session_id=failure.session_id,
+                observation_id=failure.observation_id,
+                request_id=failure.request_id,
+                message=failure.message,
+            ),
+            send_lock=send_lock,
+        )
+
+
 async def _send_message(
     websocket: WebSocket,
     message: (
@@ -565,6 +611,7 @@ async def _send_message(
         | BackendPong
         | SessionStatusEvent
         | BarrageEventMessage
+        | GenerationFailureMessage
         | RealtimeProtocolError
         | IngestAck
         | IngestRejected

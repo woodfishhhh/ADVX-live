@@ -135,6 +135,16 @@ class BarrageEventMessage(RealtimeMessage):
     barrage: BarrageSnapshot
 
 
+class GenerationFailureMessage(RealtimeMessage):
+    type: Literal["generation.error"] = "generation.error"
+    protocol_version: Literal[1] = PROTOCOL_VERSION
+    session_id: str = Field(min_length=1, max_length=MAX_INGEST_IDENTIFIER_LENGTH)
+    observation_id: str = Field(min_length=1, max_length=MAX_INGEST_IDENTIFIER_LENGTH)
+    request_id: str = Field(min_length=1, max_length=MAX_INGEST_IDENTIFIER_LENGTH)
+    code: Literal["model_generation_failed"] = "model_generation_failed"
+    message: str = Field(min_length=1, max_length=256)
+
+
 class RealtimeProtocolError(RealtimeMessage):
     type: Literal["protocol.error"] = "protocol.error"
     protocol_version: Literal[1] = PROTOCOL_VERSION
@@ -176,6 +186,7 @@ ServerMessage = Annotated[
     | BackendPong
     | SessionStatusEvent
     | BarrageEventMessage
+    | GenerationFailureMessage
     | RealtimeProtocolError
     | IngestAck
     | IngestRejected,

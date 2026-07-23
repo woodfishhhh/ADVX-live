@@ -97,8 +97,8 @@ async def test_runtime_initializes_audiences_and_uses_default_generation_policie
         assert {context.member.audience_id for context in snapshot.audiences} == {
             template.audience_id for template in BUILTIN_AUDIENCES
         }
-        assert len(outputs) == 2
-        assert [len(request.audiences) for request in model.requests] == [2, 1]
+        assert len(outputs) == 1
+        assert [len(request.audiences) for request in model.requests] == [3]
     finally:
         await runtime.shutdown()
 

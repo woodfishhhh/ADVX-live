@@ -4,33 +4,14 @@ import {
   DEFAULT_VISUAL_SETTINGS,
   VISUAL_SETTINGS_STORAGE_KEY,
   cameraPreviewTransform,
-  createWaitingVisualBatchSink,
-  deliverAndReleaseVisualBatch,
   encodeJpegWithinTarget,
   getContainRectangle,
   getPipRectangle,
   loadVisualSettings,
   parseVisualSettings,
-  releaseVisualFrames,
   resolveVisualMode,
-  saveVisualSettings,
-  selectVisualBatchFrames,
-  type VisualFrame
+  saveVisualSettings
 } from './visual'
-
-function createFrame(capturedAt: number): VisualFrame {
-  const blob = new Blob([new Uint8Array([capturedAt])], { type: 'image/jpeg' })
-  return {
-    frameId: String(capturedAt),
-    capturedAt,
-    width: 1440,
-    height: 810,
-    mode: 'pip',
-    bytes: blob.size,
-    overTarget: false,
-    blob
-  }
-}
 
 describe('visual composition helpers', () => {
   it('places medium picture-in-picture in each requested corner', () => {
@@ -110,65 +91,7 @@ describe('visual compression', () => {
   })
 })
 
-describe('visual batching and settings', () => {
-  it('selects the earliest and latest sampled frames without deduplicating', () => {
-    const frames = [createFrame(300), createFrame(100), createFrame(200)]
-    expect(selectVisualBatchFrames(frames).map((frame) => frame.capturedAt)).toEqual([100, 300])
-    const duplicates = [createFrame(100), createFrame(100)]
-    expect(selectVisualBatchFrames(duplicates)).toHaveLength(2)
-  })
-
-  it('releases selected and discarded Blob references', async () => {
-    const selected = [createFrame(100), createFrame(300)]
-    const discarded = [createFrame(200)]
-    const consume = vi.fn(async () => 'accepted' as const)
-    const controller = new AbortController()
-
-    releaseVisualFrames(discarded)
-    const result = await deliverAndReleaseVisualBatch(
-      { consume },
-      { batchId: 'batch-1', createdAt: 400, frames: selected },
-      controller.signal
-    )
-
-    expect(result).toBe('accepted')
-    expect(consume).toHaveBeenCalledOnce()
-    expect(selected.every((frame) => frame.blob === null)).toBe(true)
-    expect(discarded[0].blob).toBeNull()
-  })
-
-  it('keeps the placeholder sink waiting and cancels slow delivery while releasing Blobs', async () => {
-    const waitingFrames = [createFrame(100)]
-    const waitingResult = await deliverAndReleaseVisualBatch(
-      createWaitingVisualBatchSink(),
-      { batchId: 'batch-waiting', createdAt: 200, frames: waitingFrames },
-      new AbortController().signal
-    )
-    expect(waitingResult).toBe('waiting-backend')
-    expect(waitingFrames[0].blob).toBeNull()
-
-    const slowFrames = [createFrame(300)]
-    const controller = new AbortController()
-    const delivery = deliverAndReleaseVisualBatch(
-      {
-        consume: async (_batch, signal) =>
-          new Promise((_resolve, reject) => {
-            signal.addEventListener(
-              'abort',
-              () => reject(new DOMException('Visual batch delivery was aborted.', 'AbortError')),
-              { once: true }
-            )
-          })
-      },
-      { batchId: 'batch-slow', createdAt: 400, frames: slowFrames },
-      controller.signal
-    )
-    controller.abort()
-
-    await expect(delivery).rejects.toMatchObject({ name: 'AbortError' })
-    expect(slowFrames[0].blob).toBeNull()
-  })
-
+describe('visual settings', () => {
   it('restores only versioned valid settings and safely falls back', () => {
     const values = new Map<string, string>()
     const storage = {
@@ -189,5 +112,17 @@ describe('visual batching and settings', () => {
     expect(parseVisualSettings({ version: 1, settings: { mode: 'invalid' } })).toEqual(
       DEFAULT_VISUAL_SETTINGS
     )
+  })
+
+  it('migrates older sampling choices to the required 500ms cadence', () => {
+    expect(
+      parseVisualSettings({
+        version: 1,
+        settings: {
+          ...DEFAULT_VISUAL_SETTINGS,
+          sampleIntervalMs: 5000
+        }
+      }).sampleIntervalMs
+    ).toBe(500)
   })
 })

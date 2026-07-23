@@ -53,7 +53,6 @@ export function useMediaController({
     sessionStatus === 'idle' &&
     backendConnected &&
     providersConfigured &&
-    devices.selectedMicrophoneId !== '' &&
     (!requirements.screen || devices.selectedSource !== null) &&
     (!requirements.camera || devices.cameraEnabled)
   const goLiveBusy =
@@ -158,6 +157,7 @@ export function useMediaController({
     stopSession: session.stopSession,
     toggleGoLive: session.toggleGoLive,
     togglePause: session.togglePause,
+    failBackendSession: session.failBackendSession,
     showOverlay: session.showOverlay,
     hideOverlay: session.hideOverlay,
     toggleOverlay: session.toggleOverlay,

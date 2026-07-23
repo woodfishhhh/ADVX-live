@@ -27,10 +27,11 @@ export const pipSizeLabels: Record<PipSize, string> = {
 export const visualPipelineLabels: Record<VisualPipelineStatus, string> = {
   'waiting-backend': '等待后端接入',
   ready: '已就绪',
-  'compression-failed': '压缩失败'
+  'compression-failed': '压缩失败',
+  'backend-failed': '后端失败'
 }
 
-export function formatBatchTime(timestamp: number | null): string {
+export function formatFrameTime(timestamp: number | null): string {
   return timestamp === null
     ? '--:--:--'
     : new Date(timestamp).toLocaleTimeString('zh-CN', { hour12: false })

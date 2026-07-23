@@ -273,7 +273,7 @@ async def test_timeout_is_normalized_without_leaking_credentials() -> None:
 
 
 @pytest.mark.asyncio
-async def test_frame_resolver_adds_image_parts_without_sending_data_references() -> None:
+async def test_frame_resolver_adds_fifteen_images_to_one_model_request() -> None:
     class RecordingFrameResolver:
         def __init__(self) -> None:
             self.frame_ids: list[str] = []
@@ -303,10 +303,15 @@ async def test_frame_resolver_adds_image_parts_without_sending_data_references()
         assert isinstance(content, list)
         assert content[0]["type"] == "text"
         assert "memory://frame-1" not in content[0]["text"]
-        assert content[1] == {
-            "type": "image_url",
-            "image_url": {"url": "data:image/png;base64,AA=="},
-        }
+        assert len(content) == 16
+        assert all(
+            part
+            == {
+                "type": "image_url",
+                "image_url": {"url": "data:image/png;base64,AA=="},
+            }
+            for part in content[1:]
+        )
         return completion_response([{"audience_id": "audience-1", "text": "seen"}])
 
     client = httpx.AsyncClient(transport=httpx.MockTransport(handler))
@@ -324,16 +329,17 @@ async def test_frame_resolver_adds_image_parts_without_sending_data_references()
         make_request(
             frames=[
                 FrameRef(
-                    frame_id="frame-1",
-                    created_at_ms=1_000,
+                    frame_id=f"frame-{index}",
+                    created_at_ms=1_000 + index,
                     mime_type="image/png",
-                    data_ref="memory://frame-1",
+                    data_ref=f"memory://frame-{index}",
                 )
+                for index in range(1, 16)
             ]
         )
     )
 
-    assert resolver.frame_ids == ["frame-1"]
+    assert resolver.frame_ids == [f"frame-{index}" for index in range(1, 16)]
     assert result.candidates[0].text == "seen"
 
     await provider.aclose()
@@ -419,3 +425,30 @@ def test_config_repr_hides_api_key() -> None:
             api_key="secret",
         )
     )
+
+
+@pytest.mark.parametrize(
+    "base_url",
+    [
+        "http://localhost:11434/v1",
+        "http://127.0.0.1:11434/v1",
+        "http://[::1]:11434/v1",
+    ],
+)
+def test_config_allows_plain_http_only_for_loopback_hosts(base_url: str) -> None:
+    config = OpenAICompatibleConfig(
+        base_url=base_url,
+        model="test-model",
+        api_key="secret",
+    )
+
+    assert config.base_url == base_url
+
+
+def test_config_rejects_plain_http_for_remote_hosts() -> None:
+    with pytest.raises(ValueError, match="must use HTTPS"):
+        OpenAICompatibleConfig(
+            base_url="http://models.example.test/v1",
+            model="test-model",
+            api_key="secret",
+        )

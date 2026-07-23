@@ -1,5 +1,6 @@
 import pytest
 
+from advx_backend.application.ports.generation import GenerationFailure
 from advx_backend.application.realtime_broker import RealtimeBroker
 from advx_backend.domain.barrage import BarrageEvent
 from advx_backend.domain.session import SessionState, SessionStatus
@@ -60,3 +61,20 @@ async def test_realtime_broker_bounds_barrage_stream_independently() -> None:
 
     await broker.unsubscribe(status_subscription)
     await broker.unsubscribe_barrages(barrage_subscription)
+
+
+@pytest.mark.asyncio
+async def test_realtime_broker_publishes_generation_failures_independently() -> None:
+    broker = RealtimeBroker()
+    subscription = await broker.subscribe_generation_failures()
+    failure = GenerationFailure(
+        session_id="session-1",
+        observation_id="observation-1",
+        request_id="request-1",
+        message="model failed",
+    )
+
+    await broker.publish_generation_failure(failure)
+
+    assert await subscription.get() == failure
+    await broker.unsubscribe_generation_failures(subscription)

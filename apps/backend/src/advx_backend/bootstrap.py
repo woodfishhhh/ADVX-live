@@ -39,7 +39,11 @@ from advx_backend.infrastructure.persistence.sqlite import (
 )
 from advx_backend.infrastructure.security.local_token import create_local_token
 from advx_backend.infrastructure.system import SystemClock, UuidIdGenerator
-from advx_backend.providers.asr import StepFunAsrConfig, StepFunAsrProvider
+from advx_backend.providers.asr import (
+    DisabledAsrProvider,
+    StepFunAsrConfig,
+    StepFunAsrProvider,
+)
 from advx_backend.providers.model import OpenAICompatibleConfig, OpenAICompatibleProvider
 
 BACKEND_VERSION = "0.1.0"
@@ -56,9 +60,11 @@ DEFAULT_DATA_DIRECTORY = Path.cwd() / ".advx-data"
 class PipelineConfig:
     room_event_capacity: int = 256
     room_event_ttl_ms: int = 120_000
-    frame_capacity: int = 8
+    frame_capacity: int = 30
     frame_ttl_ms: int = 10_000
-    max_frames_per_observation: int = 3
+    max_frames_per_observation: int = 15
+    frame_window_interval_ms: int = 5_000
+    frame_window_min_frames: int = 7
     max_events_per_observation: int = 64
     frame_max_bytes: int = 4_194_304
     frame_total_bytes: int = 16_777_216
@@ -79,7 +85,7 @@ class ExternalProviderConfig:
     model_base_url: str
     model_name: str
     model_api_key: str = field(repr=False)
-    asr_api_key: str = field(repr=False)
+    asr_api_key: str | None = field(default=None, repr=False)
     asr_base_url: str = "https://api.stepfun.com/step_plan/v1"
     asr_model: str = "stepaudio-2.5-asr"
 
@@ -88,7 +94,6 @@ class ExternalProviderConfig:
             "model_base_url",
             "model_name",
             "model_api_key",
-            "asr_api_key",
             "asr_base_url",
             "asr_model",
         ):
@@ -96,6 +101,9 @@ class ExternalProviderConfig:
             if not isinstance(value, str) or not value.strip():
                 raise ValueError(f"{field_name} must not be empty")
             object.__setattr__(self, field_name, value.strip())
+        if self.asr_api_key is not None:
+            asr_api_key = self.asr_api_key.strip()
+            object.__setattr__(self, "asr_api_key", asr_api_key or None)
 
 
 class ProviderPipelineAlreadyConfiguredError(RuntimeError):
@@ -172,6 +180,7 @@ class BackendRuntime:
             model_provider=model_provider,
             session_tasks=self.session_service,
             id_generator=self.id_generator,
+            failure_publisher=self.realtime_broker,
             max_concurrency=max_concurrency,
         )
 
@@ -228,6 +237,9 @@ class BackendRuntime:
             session_tasks=self.session_service,
             clock=self.clock,
             max_tracked_input_ids=self.pipeline_config.ingest_max_tracked_input_ids,
+            frame_window_interval_ms=self.pipeline_config.frame_window_interval_ms,
+            frame_window_min_frames=self.pipeline_config.frame_window_min_frames,
+            frame_window_max_frames=self.pipeline_config.max_frames_per_observation,
         )
         self.session_resources.add_resource(ingest_service)
         self.ingest_gateway.configure(ingest_service)
@@ -259,13 +271,17 @@ class BackendRuntime:
             ),
             frame_resolver=self.frame_store,
         )
-        asr_provider = StepFunAsrProvider(
-            StepFunAsrConfig(
-                api_key=config.asr_api_key,
-                base_url=config.asr_base_url,
-                model=config.asr_model,
+        asr_provider: AsrProvider
+        if config.asr_api_key is None:
+            asr_provider = DisabledAsrProvider()
+        else:
+            asr_provider = StepFunAsrProvider(
+                StepFunAsrConfig(
+                    api_key=config.asr_api_key,
+                    base_url=config.asr_base_url,
+                    model=config.asr_model,
+                )
             )
-        )
         ingest_service = self.configure_ingest_pipeline(
             asr_provider=asr_provider,
             model_provider=model_provider,
@@ -386,14 +402,15 @@ def build_runtime_from_environment() -> BackendRuntime:
         local_token=os.environ.get(LOCAL_TOKEN_ENV),
         data_directory=os.environ.get(DATA_DIRECTORY_ENV),
     )
-    provider_values = {
+    provider_values: dict[str, str | None] = {
         "model_base_url": os.environ.get(MODEL_BASE_URL_ENV),
         "model_name": os.environ.get(MODEL_NAME_ENV),
         "model_api_key": os.environ.get(MODEL_API_KEY_ENV),
         "asr_api_key": os.environ.get(ASR_API_KEY_ENV),
     }
     if any(value is not None for value in provider_values.values()):
-        missing = [name for name, value in provider_values.items() if not value]
+        required_names = ("model_base_url", "model_name", "model_api_key")
+        missing = [name for name in required_names if not provider_values[name]]
         if missing:
             raise ValueError(f"external provider environment is incomplete: {', '.join(missing)}")
         runtime.configure_external_provider_pipeline(
@@ -401,7 +418,7 @@ def build_runtime_from_environment() -> BackendRuntime:
                 model_base_url=provider_values["model_base_url"] or "",
                 model_name=provider_values["model_name"] or "",
                 model_api_key=provider_values["model_api_key"] or "",
-                asr_api_key=provider_values["asr_api_key"] or "",
+                asr_api_key=provider_values["asr_api_key"],
             )
         )
     return runtime

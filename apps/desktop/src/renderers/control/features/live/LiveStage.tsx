@@ -18,8 +18,7 @@ import {
   cameraPreviewTransform,
   type CompressionPreset,
   type PipPosition,
-  type PipSize,
-  type VisualSettings
+  type PipSize
 } from '../../visual'
 import { pipPositionLabels, pipSizeLabels, visualModeLabels } from './liveConstants'
 import type { LiveStageProps } from './liveTypes'
@@ -129,16 +128,8 @@ export function LiveStage(props: LiveStageProps): React.JSX.Element {
           <select
             aria-label="视觉采样频率"
             value={visualSettings.sampleIntervalMs}
-            onChange={(event) =>
-              setVisualSettings((current) => ({
-                ...current,
-                sampleIntervalMs: Number(event.target.value) as VisualSettings['sampleIntervalMs']
-              }))
-            }
+            disabled
           >
-            <option value={5000}>5 秒</option>
-            <option value={2000}>2 秒</option>
-            <option value={1000}>1 秒</option>
             <option value={500}>0.5 秒</option>
           </select>
         </label>

@@ -4,6 +4,7 @@ import type {
   SetStateAction
 } from 'react'
 import type {
+  BackendFailure,
   BackendSessionSnapshot,
   DesktopSource,
   MediaAccessStatus
@@ -22,7 +23,7 @@ export type UseMediaControllerOptions = {
   onBackendSessionSnapshot?: (snapshot: BackendSessionSnapshot) => void
 }
 
-export type FatalMediaKind = 'display' | 'camera' | 'microphone'
+export type FatalMediaKind = 'display' | 'camera'
 
 export type MediaOperation = {
   begin: (replaceCurrent?: boolean) => number | null
@@ -113,6 +114,7 @@ export type MediaController = {
   stopSession: () => Promise<void>
   toggleGoLive: () => void
   togglePause: () => Promise<void>
+  failBackendSession: (failure: BackendFailure) => void
   showOverlay: () => Promise<void>
   hideOverlay: () => Promise<void>
   toggleOverlay: () => Promise<void>

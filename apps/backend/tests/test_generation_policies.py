@@ -320,6 +320,21 @@ async def test_planner_batches_unique_audiences_without_reordering() -> None:
     ]
 
 
+@pytest.mark.asyncio
+async def test_default_planner_uses_one_model_request_for_four_audiences() -> None:
+    planner = DefaultGenerationInvocationPlanner()
+    candidates = tuple(audience_context(f"audience-{index}") for index in range(4))
+
+    batches = await planner.plan_invocations(
+        observation=make_observation(),
+        candidates=candidates,
+    )
+
+    assert [batch.audience_ids for batch in batches] == [
+        ("audience-0", "audience-1", "audience-2", "audience-3")
+    ]
+
+
 @pytest.mark.parametrize(
     ("factory", "message"),
     [

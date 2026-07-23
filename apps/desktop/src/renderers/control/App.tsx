@@ -75,7 +75,8 @@ export function App(): React.JSX.Element {
     captureStreamRef: media.captureStreamRef,
     cameraStreamRef: media.cameraStreamRef,
     videoRef: media.videoRef,
-    cameraVideoRef: media.cameraVideoRef
+    cameraVideoRef: media.cameraVideoRef,
+    onBackendFailure: media.failBackendSession
   })
   const elapsedSeconds = useElapsedTime(
     session.status,
@@ -94,16 +95,17 @@ export function App(): React.JSX.Element {
 
   useEffect(() => {
     const status = backend.status
-    if (status?.connection !== 'connected') return
+    if (status?.connection !== 'connected' || session.status === 'error') return
     dispatchSession({
       type: 'sync',
       status: status.session.state,
       error: status.session.state === 'error' ? '后端 Session 进入错误状态。' : null
     })
-  }, [backend.status, dispatchSession])
+  }, [backend.status, dispatchSession, session.status])
 
   const backendReady =
     backend.connection === 'connected' && (backend.status?.providersConfigured ?? false)
+  const asrEnabled = modelConfig.status?.asrApiKeyStored === true
   const statusItems: AppShellStatusItem[] = [
     {
       id: 'backend',
@@ -141,11 +143,14 @@ export function App(): React.JSX.Element {
           ? '图像 · 已就绪'
           : visualPipeline.status === 'compression-failed'
             ? '图像 · 压缩失败'
-            : '图像 · 等待后端接入',
+            : visualPipeline.status === 'backend-failed'
+              ? '图像 · 后端失败'
+              : '图像 · 等待后端接入',
       tone:
         visualPipeline.status === 'ready'
           ? 'online'
-          : visualPipeline.status === 'compression-failed'
+          : visualPipeline.status === 'compression-failed' ||
+              visualPipeline.status === 'backend-failed'
             ? 'warning'
             : 'offline'
     }
@@ -225,16 +230,18 @@ export function App(): React.JSX.Element {
               captureStatus: media.captureStatus,
               cameraStatus: media.cameraStatus,
               microphoneLevel: media.microphoneLevel,
-              asrReady: backendReady,
-              asrStatus: backendReady
-                ? '已就绪'
-                : backend.connection === 'connected'
-                  ? '等待配置'
-                  : '等待后端',
+              asrReady: backendReady && asrEnabled,
+              asrStatus: !asrEnabled
+                ? '未启用'
+                : backendReady
+                  ? '已就绪'
+                  : backend.connection === 'connected'
+                    ? '等待配置'
+                    : '等待后端',
               visualSettings: media.visualSettings,
               lastFrameBytes: visualPipeline.lastFrameBytes,
               lastFrameOverTarget: visualPipeline.lastFrameOverTarget,
-              lastVisualBatchAt: visualPipeline.lastBatchAt,
+              lastVisualSentAt: visualPipeline.lastSentAt,
               visualPipelineStatus: visualPipeline.status
             }}
             devices={{

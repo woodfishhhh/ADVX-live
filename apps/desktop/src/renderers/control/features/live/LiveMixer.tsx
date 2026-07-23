@@ -1,6 +1,6 @@
 import { AudioLines, Camera, Clock, Gauge, Image as ImageIcon, Mic, Radio, Sparkles } from 'lucide-react'
 import { COMPRESSION_PROFILES, formatFrameKilobytes } from '../../visual'
-import { formatBatchTime, visualPipelineLabels } from './liveConstants'
+import { formatFrameTime, visualPipelineLabels } from './liveConstants'
 import type { LiveMixerProps } from './liveTypes'
 
 export function LiveMixer(props: LiveMixerProps): React.JSX.Element {
@@ -15,7 +15,7 @@ export function LiveMixer(props: LiveMixerProps): React.JSX.Element {
     visualSettings,
     lastFrameBytes,
     lastFrameOverTarget,
-    lastVisualBatchAt,
+    lastVisualSentAt,
     visualPipelineStatus
   } = props
 
@@ -69,9 +69,9 @@ export function LiveMixer(props: LiveMixerProps): React.JSX.Element {
       <div className="mixer-row">
         <span>
           <Clock size={14} />
-          最近批次
+          最近发送
         </span>
-        <strong>{formatBatchTime(lastVisualBatchAt)}</strong>
+        <strong>{formatFrameTime(lastVisualSentAt)}</strong>
       </div>
       <div className="mixer-row">
         <span>
@@ -82,7 +82,8 @@ export function LiveMixer(props: LiveMixerProps): React.JSX.Element {
           className={
             visualPipelineStatus === 'ready'
               ? 'ok'
-              : visualPipelineStatus === 'compression-failed'
+              : visualPipelineStatus === 'compression-failed' ||
+                  visualPipelineStatus === 'backend-failed'
                 ? 'warning'
                 : ''
           }

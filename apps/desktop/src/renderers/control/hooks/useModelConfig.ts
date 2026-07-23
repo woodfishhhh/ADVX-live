@@ -11,12 +11,17 @@ type UseModelConfigOptions = {
   onBackendStatus?: (status: BackendRuntimeStatus) => void
 }
 
-export function getModelConfigNotice(result: SaveModelConfigResult): string {
+export function getModelConfigNotice(
+  result: SaveModelConfigResult,
+  asrConfigured = false
+): string {
   if (result.restartRequired) {
     return '配置已保存；后端已使用另一组配置，请重启桌面应用后生效'
   }
   return result.securelyStored
-    ? '模型与语音识别配置已安全保存并接入后端'
+    ? asrConfigured
+      ? '模型配置已安全保存并接入后端，语音识别已启用'
+      : '模型配置已安全保存并接入后端'
     : '配置已接入本次运行；当前系统无法加密密钥，因此密钥不会落盘'
 }
 
@@ -39,8 +44,7 @@ export function canSaveModelConfig(input: {
     input.backendConnection !== 'failed' &&
     input.baseUrl.trim().length > 0 &&
     input.model.trim().length > 0 &&
-    (input.apiKey.trim().length > 0 || input.status?.modelApiKeyStored === true) &&
-    (input.asrApiKey.trim().length > 0 || input.status?.asrApiKeyStored === true)
+    (input.apiKey.trim().length > 0 || input.status?.modelApiKeyStored === true)
   )
 }
 
@@ -112,6 +116,7 @@ export function useModelConfig(options: UseModelConfigOptions = {}) {
     setSaving(true)
     setNotice(null)
     try {
+      const submittedAsrKey = asrApiKey.trim()
       const result = await window.advx.saveModelConfig({ baseUrl, model, apiKey, asrApiKey })
       setApiKey('')
       setAsrApiKey('')
@@ -119,18 +124,25 @@ export function useModelConfig(options: UseModelConfigOptions = {}) {
         baseUrl: baseUrl.trim(),
         model: model.trim(),
         modelApiKeyStored: result.securelyStored,
-        asrApiKeyStored: result.securelyStored
+        asrApiKeyStored:
+          result.securelyStored &&
+          Boolean(submittedAsrKey || status?.asrApiKeyStored)
       })
       const backendStatus = await window.advx.getBackendStatus()
       onBackendStatus?.(backendStatus)
-      setNotice(getModelConfigNotice(result))
+      setNotice(
+        getModelConfigNotice(
+          result,
+          Boolean(submittedAsrKey || status?.asrApiKeyStored)
+        )
+      )
     } catch (error) {
       setNotice(`保存失败：${describeError(error)}`)
     } finally {
       savingRef.current = false
       setSaving(false)
     }
-  }, [apiKey, asrApiKey, baseUrl, canSave, model, onBackendStatus])
+  }, [apiKey, asrApiKey, baseUrl, canSave, model, onBackendStatus, status?.asrApiKeyStored])
 
   return {
     baseUrl,

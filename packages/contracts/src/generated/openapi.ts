@@ -157,7 +157,7 @@ export interface components {
             /** Model Api Key */
             model_api_key: string;
             /** Asr Api Key */
-            asr_api_key: string;
+            asr_api_key?: string | null;
         };
         /** ProviderConfigurationStatus */
         ProviderConfigurationStatus: {
@@ -325,6 +325,34 @@ export interface components {
             /** Expires At Ms */
             expires_at_ms: number;
         };
+        /** GenerationFailureMessage */
+        GenerationFailureMessage: {
+            /**
+             * Protocol Version
+             * @default 1
+             * @constant
+             */
+            protocol_version: 1;
+            /**
+             * @description discriminator enum property added by openapi-typescript
+             * @enum {string}
+             */
+            type: "generation.error";
+            /** Session Id */
+            session_id: string;
+            /** Observation Id */
+            observation_id: string;
+            /** Request Id */
+            request_id: string;
+            /**
+             * Code
+             * @default model_generation_failed
+             * @constant
+             */
+            code: "model_generation_failed";
+            /** Message */
+            message: string;
+        };
         /** IngestAck */
         IngestAck: {
             /**
@@ -434,7 +462,7 @@ export interface components {
             session: components["schemas"]["SessionSnapshot"];
         };
         /** ServerMessageEnvelope */
-        ServerMessageEnvelope: components["schemas"]["BackendReady"] | components["schemas"]["BackendPong"] | components["schemas"]["SessionStatusEvent"] | components["schemas"]["BarrageEventMessage"] | components["schemas"]["RealtimeProtocolError"] | components["schemas"]["IngestAck"] | components["schemas"]["IngestRejected"];
+        ServerMessageEnvelope: components["schemas"]["BackendReady"] | components["schemas"]["BackendPong"] | components["schemas"]["SessionStatusEvent"] | components["schemas"]["BarrageEventMessage"] | components["schemas"]["GenerationFailureMessage"] | components["schemas"]["RealtimeProtocolError"] | components["schemas"]["IngestAck"] | components["schemas"]["IngestRejected"];
         /**
          * BinaryMediaType
          * @enum {string}

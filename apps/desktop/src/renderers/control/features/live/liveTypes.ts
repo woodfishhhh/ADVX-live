@@ -64,7 +64,7 @@ export type LiveMixerProps = {
   visualSettings: VisualSettings
   lastFrameBytes: number | null
   lastFrameOverTarget: boolean
-  lastVisualBatchAt: number | null
+  lastVisualSentAt: number | null
   visualPipelineStatus: VisualPipelineStatus
 }
 

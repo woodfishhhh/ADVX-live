@@ -1,7 +1,7 @@
 import asyncio
 import logging
 from collections import OrderedDict
-from dataclasses import dataclass
+from dataclasses import dataclass, replace
 from typing import Protocol
 
 from advx_backend.application.context_builder import ContextBuilder
@@ -87,9 +87,18 @@ class IngestService:
         session_tasks: SessionTaskScope,
         clock: Clock,
         max_tracked_input_ids: int = 1_024,
+        frame_window_interval_ms: int = 5_000,
+        frame_window_min_frames: int = 7,
+        frame_window_max_frames: int = 15,
     ) -> None:
         if max_tracked_input_ids < 1:
             raise ValueError("max_tracked_input_ids must be at least one")
+        if frame_window_interval_ms < 1:
+            raise ValueError("frame_window_interval_ms must be at least one")
+        if frame_window_min_frames < 1:
+            raise ValueError("frame_window_min_frames must be at least one")
+        if frame_window_max_frames < frame_window_min_frames:
+            raise ValueError("frame_window_max_frames must not be less than the minimum")
         self._room_service = room_service
         self._context_builder = context_builder
         self._frame_store = frame_store
@@ -98,11 +107,17 @@ class IngestService:
         self._session_tasks = session_tasks
         self._clock = clock
         self._max_tracked_input_ids = max_tracked_input_ids
+        self._frame_window_interval_ms = frame_window_interval_ms
+        self._frame_window_interval_seconds = frame_window_interval_ms / 1_000
+        self._frame_window_min_frames = frame_window_min_frames
+        self._frame_window_max_frames = frame_window_max_frames
         self._active_session_id: str | None = None
         self._seen_inputs: OrderedDict[str, _TrackedInput] = OrderedDict()
         self._timestamp_floors: dict[IngestInputKind, int] = {}
         self._pending_audio_id: str | None = None
         self._result_task: asyncio.Task[None] | None = None
+        self._frame_window_task: asyncio.Task[None] | None = None
+        self._last_window_frame_id: str | None = None
         self._lock = asyncio.Lock()
 
     async def start_session(self, session_id: str) -> None:
@@ -115,6 +130,7 @@ class IngestService:
                 raise IngestSessionNotActiveError(session_id, self._active_session_id)
             self._active_session_id = session_id
             self._reset_tracking()
+            self._last_window_frame_id = None
 
         try:
             await self._frame_store.start_session(session_id)
@@ -134,6 +150,10 @@ class IngestService:
             self._consume_asr_results(session_id),
             name=f"ingest-asr-results:{session_id}",
         )
+        self._frame_window_task = asyncio.create_task(
+            self._run_frame_windows(session_id),
+            name=f"ingest-frame-windows:{session_id}",
+        )
 
     async def stop_session(self, session_id: str) -> None:
         async with self._lock:
@@ -143,10 +163,17 @@ class IngestService:
             self._reset_tracking()
             result_task = self._result_task
             self._result_task = None
+            frame_window_task = self._frame_window_task
+            self._frame_window_task = None
+            self._last_window_frame_id = None
 
-        if result_task is not None:
-            result_task.cancel()
-            await asyncio.gather(result_task, return_exceptions=True)
+        tasks = tuple(
+            task for task in (result_task, frame_window_task) if task is not None
+        )
+        for task in tasks:
+            task.cancel()
+        if tasks:
+            await asyncio.gather(*tasks, return_exceptions=True)
         try:
             await self._scheduler.cancel_session(session_id)
         finally:
@@ -175,7 +202,6 @@ class IngestService:
                 payload={"input_id": input.input_id},
             )
             appended = True
-            await self._schedule_observation(input.session_id)
         except BaseException:
             await self._settle(input.input_id, accepted=appended)
             raise
@@ -197,7 +223,6 @@ class IngestService:
             frame = await self._frame_store.store(input)
             stored = True
             await self._context_builder.append_frame_ref(input.session_id, frame)
-            await self._schedule_observation(input.session_id)
         except BaseException:
             await self._settle(input.input_id, accepted=stored)
             raise
@@ -283,13 +308,62 @@ class IngestService:
                 "ended_at_ms": segment.ended_at_ms,
             },
         )
-        await self._schedule_observation(session_id)
 
-    async def _schedule_observation(self, session_id: str) -> None:
-        if not await self._session_tasks.accepts_results(session_id):
-            return
+    async def _run_frame_windows(self, session_id: str) -> None:
+        loop = asyncio.get_running_loop()
+        next_tick = loop.time() + self._frame_window_interval_seconds
+        while True:
+            await asyncio.sleep(max(0, next_tick - loop.time()))
+            next_tick += self._frame_window_interval_seconds
+            if not await self._is_active(session_id):
+                return
+            if not await self._session_tasks.accepts_results(session_id):
+                continue
+            try:
+                await self._schedule_frame_window(session_id)
+            except asyncio.CancelledError:
+                raise
+            except Exception as error:
+                logger.warning(
+                    "failed to schedule frame window",
+                    extra={
+                        "session_id": session_id,
+                        "error_type": type(error).__name__,
+                    },
+                )
+
+    async def _schedule_frame_window(self, session_id: str) -> None:
         observation = await self._context_builder.build(session_id)
+        frames = observation.frames
+        if self._last_window_frame_id is not None:
+            previous_index = next(
+                (
+                    index
+                    for index, frame in enumerate(frames)
+                    if frame.frame_id == self._last_window_frame_id
+                ),
+                None,
+            )
+            if previous_index is not None:
+                frames = frames[previous_index + 1 :]
+        frames = frames[-self._frame_window_max_frames :]
+        if len(frames) < self._frame_window_min_frames:
+            return
+
+        user_context = dict(observation.user_context)
+        user_context.update(
+            {
+                "frame_window_ms": str(self._frame_window_interval_ms),
+                "frame_count": str(len(frames)),
+            }
+        )
+        observation = replace(
+            observation,
+            frames=frames,
+            user_context=user_context,
+        )
         await self._scheduler.submit(observation)
+        self._last_window_frame_id = frames[-1].frame_id
 
     async def _reserve(
         self,

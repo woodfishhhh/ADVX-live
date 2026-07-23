@@ -411,8 +411,7 @@ export function useMediaDevices({
         setMicrophoneLevel(0)
         setMicrophoneReady(false)
         if (sessionStatusRef.current === 'running' || sessionStatusRef.current === 'starting') {
-          stopCapture()
-          fatalMediaRef.current('microphone', '麦克风连接已中断，请检查设备。')
+          onSystemActivityRef.current('麦克风连接已中断；画面分析和弹幕继续运行。')
         }
       }, { once: true })
       const samples = new Uint8Array(analyser.fftSize)
@@ -429,7 +428,7 @@ export function useMediaDevices({
       if (context && context.state !== 'closed') await context.close().catch(() => undefined)
       throw error
     }
-  }, [assertCurrent, fatalMediaRef, flushAudioSegment, invalidate, refreshMicrophones, sessionStatusRef, stopCapture, stopMicrophone])
+  }, [assertCurrent, flushAudioSegment, invalidate, refreshMicrophones, sessionStatusRef, stopMicrophone])
 
   const chooseSource = useCallback(async (source: DesktopSource) => {
     const id = begin()

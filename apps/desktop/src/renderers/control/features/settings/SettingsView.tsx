@@ -150,8 +150,7 @@ export function SettingsView({
   onOverlaySettingsChange,
   onPreviewBarrage
 }: SettingsViewProps): React.JSX.Element {
-  const credentialsStored =
-    modelConfigStatus?.modelApiKeyStored === true && modelConfigStatus.asrApiKeyStored === true
+  const credentialsStored = modelConfigStatus?.modelApiKeyStored === true
 
   return (
     <div className="grid min-w-0 gap-4 xl:grid-cols-2">
@@ -203,7 +202,7 @@ export function SettingsView({
           </label>
           <label className={labelClassName}>
             <span className="flex items-center justify-between gap-3">
-              StepFun ASR API Key
+              StepFun ASR API Key（可选）
               {modelConfigStatus?.asrApiKeyStored && (
                 <small className="font-normal text-[var(--accent)]">已安全保存</small>
               )}

@@ -70,6 +70,11 @@ export type BackendBarrageEvent = {
   createdAt: number
 }
 
+export type BackendFailure = {
+  code: 'backend_disconnected' | 'model_generation_failed'
+  message: string
+}
+
 export type RealtimeMediaInput = {
   inputId: string
   capturedAtMs: number
@@ -169,6 +174,7 @@ export type ControlApi = {
   onOverlaySettingsChanged: (listener: (settings: OverlaySettings) => void) => () => void
   onBackendStatus: (listener: (status: BackendRuntimeStatus) => void) => () => void
   onBackendBarrage: (listener: (event: BackendBarrageEvent) => void) => () => void
+  onBackendFailure: (listener: (failure: BackendFailure) => void) => () => void
 }
 
 export type OverlayApi = {

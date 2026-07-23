@@ -108,9 +108,11 @@ async function saveModelConfig(
     storedConfig.encryptedModelApiKey = safeStorage
       .encryptString(normalized.apiKey)
       .toString("base64");
-    storedConfig.encryptedAsrApiKey = safeStorage
-      .encryptString(normalized.asrApiKey)
-      .toString("base64");
+    if (normalized.asrApiKey) {
+      storedConfig.encryptedAsrApiKey = safeStorage
+        .encryptString(normalized.asrApiKey)
+        .toString("base64");
+    }
     securelyStored = true;
   }
 
@@ -142,8 +144,7 @@ async function loadStoredModelConfig(): Promise<ModelConfig | null> {
   if (
     typeof parsed.baseUrl !== "string" ||
     typeof parsed.model !== "string" ||
-    encryptedModelApiKey === null ||
-    typeof parsed.encryptedAsrApiKey !== "string"
+    encryptedModelApiKey === null
   ) {
     return null;
   }
@@ -152,7 +153,10 @@ async function loadStoredModelConfig(): Promise<ModelConfig | null> {
       baseUrl: parsed.baseUrl,
       model: parsed.model,
       apiKey: safeStorage.decryptString(Buffer.from(encryptedModelApiKey, "base64")),
-      asrApiKey: safeStorage.decryptString(Buffer.from(parsed.encryptedAsrApiKey, "base64"))
+      asrApiKey:
+        typeof parsed.encryptedAsrApiKey === "string"
+          ? safeStorage.decryptString(Buffer.from(parsed.encryptedAsrApiKey, "base64"))
+          : ""
     };
   } catch {
     return null;
@@ -173,7 +177,7 @@ async function getStoredModelConfigStatus(): Promise<ModelConfigStatus> {
     baseUrl: config.baseUrl,
     model: config.model,
     modelApiKeyStored: true,
-    asrApiKeyStored: true
+    asrApiKeyStored: config.asrApiKey.length > 0
   };
 }
 
@@ -564,6 +568,12 @@ export function registerDesktopIpc(
     const controlWindow = getControlWindow();
     if (controlWindow && !controlWindow.isDestroyed()) {
       controlWindow.webContents.send("backend:barrage", event);
+    }
+  });
+  backendClient.onFailure((failure) => {
+    const controlWindow = getControlWindow();
+    if (controlWindow && !controlWindow.isDestroyed()) {
+      controlWindow.webContents.send("backend:failure", failure);
     }
   });
 

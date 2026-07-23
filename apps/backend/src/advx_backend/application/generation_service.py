@@ -8,6 +8,8 @@ from advx_backend.application.ports.generation import (
     AudienceSelector,
     AudienceSnapshot,
     AudienceSnapshotProvider,
+    GenerationFailure,
+    GenerationFailurePublisher,
     GenerationInvocationPlanner,
     GenerationOutput,
     GenerationTrigger,
@@ -39,6 +41,7 @@ class GenerationService:
         model_provider: ModelProvider,
         session_tasks: SessionTaskScope,
         id_generator: IdGenerator,
+        failure_publisher: GenerationFailurePublisher | None = None,
         max_concurrency: int = 4,
     ) -> None:
         if max_concurrency < 1:
@@ -51,6 +54,7 @@ class GenerationService:
         self._model_provider = model_provider
         self._session_tasks = session_tasks
         self._id_generator = id_generator
+        self._failure_publisher = failure_publisher
         self._max_concurrency = max_concurrency
         self._model_slots = asyncio.BoundedSemaphore(max_concurrency)
 
@@ -218,6 +222,7 @@ class GenerationService:
                     "error_type": type(error).__name__,
                 },
             )
+            await self._publish_failure(item)
             return None
 
         if result.request_id != item.request_id:
@@ -235,6 +240,33 @@ class GenerationService:
             return None
 
         return keep_known_audiences(item.request, result)
+
+    async def _publish_failure(self, item: GenerationWorkItem) -> None:
+        if self._failure_publisher is None:
+            return
+        try:
+            await self._failure_publisher.publish_generation_failure(
+                GenerationFailure(
+                    session_id=item.session_id,
+                    observation_id=item.observation_id,
+                    request_id=item.request_id,
+                    message=(
+                        "模型生成失败，请检查模型地址、名称、API Key 和接口兼容性。"
+                    ),
+                )
+            )
+        except asyncio.CancelledError:
+            raise
+        except Exception as error:
+            logger.warning(
+                "generation failure notification failed",
+                extra={
+                    "session_id": item.session_id,
+                    "observation_id": item.observation_id,
+                    "request_id": item.request_id,
+                    "error_type": type(error).__name__,
+                },
+            )
 
     async def _cancel_model_request(self, item: GenerationWorkItem) -> None:
         try:

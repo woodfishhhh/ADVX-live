@@ -79,5 +79,5 @@ def _status(runtime: BackendRuntime) -> ProviderConfigurationStatus:
         configured=True,
         model_base_url=config.model_base_url,
         model_name=config.model_name,
-        asr_model=config.asr_model,
+        asr_model=config.asr_model if config.asr_api_key is not None else None,
     )

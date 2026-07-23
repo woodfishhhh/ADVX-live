@@ -1,6 +1,7 @@
 import asyncio
 from typing import TypeVar
 
+from advx_backend.application.ports.generation import GenerationFailure
 from advx_backend.domain.barrage import BarrageEvent
 from advx_backend.domain.session import SessionStatus
 
@@ -16,6 +17,7 @@ class RealtimeBroker:
         self._subscriber_capacity = subscriber_capacity
         self._subscribers: set[asyncio.Queue[SessionStatus]] = set()
         self._barrage_subscribers: set[asyncio.Queue[BarrageEvent]] = set()
+        self._generation_failure_subscribers: set[asyncio.Queue[GenerationFailure]] = set()
         self._lock = asyncio.Lock()
 
     async def subscribe(self) -> asyncio.Queue[SessionStatus]:
@@ -38,6 +40,21 @@ class RealtimeBroker:
         async with self._lock:
             self._barrage_subscribers.discard(queue)
 
+    async def subscribe_generation_failures(self) -> asyncio.Queue[GenerationFailure]:
+        queue: asyncio.Queue[GenerationFailure] = asyncio.Queue(
+            maxsize=self._subscriber_capacity
+        )
+        async with self._lock:
+            self._generation_failure_subscribers.add(queue)
+        return queue
+
+    async def unsubscribe_generation_failures(
+        self,
+        queue: asyncio.Queue[GenerationFailure],
+    ) -> None:
+        async with self._lock:
+            self._generation_failure_subscribers.discard(queue)
+
     async def publish_session_status(self, status: SessionStatus) -> None:
         async with self._lock:
             subscribers = tuple(self._subscribers)
@@ -51,6 +68,13 @@ class RealtimeBroker:
 
         for queue in subscribers:
             self._put_latest(queue, event)
+
+    async def publish_generation_failure(self, failure: GenerationFailure) -> None:
+        async with self._lock:
+            subscribers = tuple(self._generation_failure_subscribers)
+
+        for queue in subscribers:
+            self._put_latest(queue, failure)
 
     @staticmethod
     def _put_latest(queue: asyncio.Queue[T], item: T) -> None:

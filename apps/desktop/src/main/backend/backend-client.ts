@@ -7,6 +7,7 @@ import type {
 import type {
   BackendBarrageEvent,
   BackendConnectionState,
+  BackendFailure,
   BackendRuntimeStatus,
   BackendSessionSnapshot,
   ModelConfig
@@ -26,6 +27,7 @@ type PendingIngest = {
 
 type StatusListener = (status: BackendRuntimeStatus) => void;
 type BarrageListener = (event: BackendBarrageEvent) => void;
+type FailureListener = (failure: BackendFailure) => void;
 
 export class BackendClientError extends Error {
   readonly code: string;
@@ -52,6 +54,7 @@ export class BackendClient {
   private readonly pendingIngest = new Map<string, PendingIngest>();
   private readonly statusListeners = new Set<StatusListener>();
   private readonly barrageListeners = new Set<BarrageListener>();
+  private readonly failureListeners = new Set<FailureListener>();
   private audioQueue: Promise<void> = Promise.resolve();
 
   constructor(options: { baseUrl?: string; localToken: string }) {
@@ -71,6 +74,11 @@ export class BackendClient {
     return () => this.barrageListeners.delete(listener);
   }
 
+  onFailure(listener: FailureListener): () => void {
+    this.failureListeners.add(listener);
+    return () => this.failureListeners.delete(listener);
+  }
+
   async start(): Promise<void> {
     this.stopped = false;
     this.startupError = null;
@@ -88,6 +96,8 @@ export class BackendClient {
 
   failStartup(error: unknown): void {
     this.stopped = true;
+    if (this.reconnectTimer) clearTimeout(this.reconnectTimer);
+    this.reconnectTimer = null;
     this.startupError =
       error instanceof Error && error.message ? error.message : "本地后端启动失败。";
     if (this.connection === "failed") this.emitStatus();
@@ -121,7 +131,7 @@ export class BackendClient {
       model_base_url: config.baseUrl,
       model_name: config.model,
       model_api_key: config.apiKey,
-      asr_api_key: config.asrApiKey
+      asr_api_key: config.asrApiKey || null
     });
     this.providersConfigured = true;
     this.emitStatus();
@@ -133,7 +143,7 @@ export class BackendClient {
     if (!this.providersConfigured) {
       throw new BackendClientError(
         "providers_not_configured",
-        "请先在设置中保存模型和语音识别配置。"
+        "请先在设置中保存模型配置。"
       );
     }
     return this.applySession(await this.request<SessionSnapshot>("/sessions", "POST"));
@@ -325,6 +335,12 @@ export class BackendClient {
         if (this.socket === socket) this.socket = null;
         this.setConnection("disconnected");
         this.rejectPending(new BackendClientError("connection_closed", "后端连接已断开。"));
+        if (ready && !this.stopped) {
+          this.emitFailure({
+            code: "backend_disconnected",
+            message: "本地后端连接已断开，直播已停止。"
+          });
+        }
         if (!ready) reject(new BackendClientError("connection_closed", "后端连接已断开。"));
         this.scheduleReconnect();
       });
@@ -354,6 +370,12 @@ export class BackendClient {
         for (const listener of this.barrageListeners) listener(event);
         break;
       }
+      case "generation.error":
+        this.emitFailure({
+          code: message.code,
+          message: message.message
+        });
+        break;
       case "ingest.ack":
         this.resolveIngest(message);
         break;
@@ -362,6 +384,10 @@ export class BackendClient {
         break;
       case "protocol.error":
         this.rejectPending(new BackendClientError(message.code, message.message));
+        this.emitFailure({
+          code: "backend_disconnected",
+          message: message.message
+        });
         break;
     }
   }
@@ -460,6 +486,10 @@ export class BackendClient {
     for (const listener of this.statusListeners) listener(status);
   }
 
+  private emitFailure(failure: BackendFailure): void {
+    for (const listener of this.failureListeners) listener(failure);
+  }
+
   private rejectPending(error: Error): void {
     for (const pending of this.pendingIngest.values()) {
       clearTimeout(pending.timeout);
@@ -472,6 +502,7 @@ export class BackendClient {
     if (this.stopped || this.reconnectTimer) return;
     this.reconnectTimer = setTimeout(() => {
       this.reconnectTimer = null;
+      if (this.stopped) return;
       void this.ensureConnected().catch(() => this.scheduleReconnect());
     }, 1_000);
   }

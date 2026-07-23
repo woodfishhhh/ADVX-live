@@ -13,7 +13,21 @@ describe('model configuration notices', () => {
     ).toContain('重启桌面应用后生效')
   })
 
-  it('reports secure storage for both model and speech credentials', () => {
+  it('reports secure storage for model and optional speech credentials', () => {
+    expect(
+      getModelConfigNotice(
+        {
+          ok: true,
+          securelyStored: true,
+          backendConfigured: true,
+          restartRequired: false
+        },
+        true
+      )
+    ).toBe('模型配置已安全保存并接入后端，语音识别已启用')
+  })
+
+  it('reports model-only configuration when ASR is omitted', () => {
     expect(
       getModelConfigNotice({
         ok: true,
@@ -21,7 +35,7 @@ describe('model configuration notices', () => {
         backendConfigured: true,
         restartRequired: false
       })
-    ).toBe('模型与语音识别配置已安全保存并接入后端')
+    ).toBe('模型配置已安全保存并接入后端')
   })
 
   it('warns when credentials cannot be persisted securely', () => {
@@ -35,7 +49,7 @@ describe('model configuration notices', () => {
     ).toContain('密钥不会落盘')
   })
 
-  it('allows saved credentials to satisfy both secret fields', () => {
+  it('allows the model credential to be saved without ASR', () => {
     expect(
       canSaveModelConfig({
         baseUrl: 'https://api.openai.com/v1',
@@ -46,7 +60,7 @@ describe('model configuration notices', () => {
           baseUrl: 'https://api.openai.com/v1',
           model: 'gpt-4.1',
           modelApiKeyStored: true,
-          asrApiKeyStored: true
+          asrApiKeyStored: false
         },
         backendConnection: 'connected',
         loading: false,

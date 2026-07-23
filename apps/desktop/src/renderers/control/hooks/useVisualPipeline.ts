@@ -1,15 +1,18 @@
-import { useEffect, useRef, useState, type MutableRefObject, type RefObject } from 'react'
+import {
+  useCallback,
+  useEffect,
+  useRef,
+  useState,
+  type MutableRefObject,
+  type RefObject
+} from 'react'
+import type { BackendFailure } from '../../../shared/contracts'
 import type { SessionStatus } from '../../../shared/session'
 import {
   COMPRESSION_PROFILES,
   compressCompositeCanvas,
-  deliverAndReleaseVisualBatch,
   drawCompositeFrame,
-  releaseVisualFrames,
   requiredVisualSources,
-  selectVisualBatchFrames,
-  type VisualBatchSink,
-  type VisualFrame,
   type VisualPipelineStatus,
   type VisualSettings
 } from '../visual'
@@ -23,7 +26,7 @@ type UseVisualPipelineOptions = {
   cameraStreamRef: MutableRefObject<MediaStream | null>
   videoRef: RefObject<HTMLVideoElement | null>
   cameraVideoRef: RefObject<HTMLVideoElement | null>
-  batchSink?: VisualBatchSink
+  onBackendFailure?: (failure: BackendFailure) => void
 }
 
 type VisualPipeline = {
@@ -31,7 +34,11 @@ type VisualPipeline = {
   status: VisualPipelineStatus
   lastFrameBytes: number | null
   lastFrameOverTarget: boolean
-  lastBatchAt: number | null
+  lastSentAt: number | null
+}
+
+function describeBackendError(error: unknown): string {
+  return error instanceof Error && error.message ? error.message : '实时连接异常。'
 }
 
 export function useVisualPipeline({
@@ -43,62 +50,48 @@ export function useVisualPipeline({
   cameraStreamRef,
   videoRef,
   cameraVideoRef,
-  batchSink
+  onBackendFailure
 }: UseVisualPipelineOptions): VisualPipeline {
   const compositeCanvasRef = useRef<HTMLCanvasElement>(null)
   const [status, setStatus] = useState<VisualPipelineStatus>('waiting-backend')
   const [lastFrameBytes, setLastFrameBytes] = useState<number | null>(null)
   const [lastFrameOverTarget, setLastFrameOverTarget] = useState(false)
-  const [lastBatchAt, setLastBatchAt] = useState<number | null>(null)
+  const [lastSentAt, setLastSentAt] = useState<number | null>(null)
 
   const sessionStatusRef = useRef(sessionStatus)
-  const pendingFramesRef = useRef<VisualFrame[]>([])
+  const onBackendFailureRef = useRef(onBackendFailure)
   const runRef = useRef(0)
   const sampleBusyRef = useRef<number | null>(null)
-  const batchBusyRef = useRef<number | null>(null)
   const frameSequenceRef = useRef(0)
-  const defaultBatchSinkRef = useRef<VisualBatchSink>({
-    consume: async (batch, signal) => {
-      for (const frame of batch.frames) {
-        if (signal.aborted) {
-          throw new DOMException('Visual delivery aborted.', 'AbortError')
-        }
-        if (!frame.blob) continue
-        const body = new Uint8Array(await frame.blob.arrayBuffer())
-        if (signal.aborted) {
-          throw new DOMException('Visual delivery aborted.', 'AbortError')
-        }
-        await window.advx.submitVisualFrame({
-          inputId: frame.frameId,
-          capturedAtMs: frame.capturedAt,
-          mimeType: frame.blob.type || 'image/jpeg',
-          body
-        })
-      }
-      return 'accepted'
-    }
-  })
-  const batchSinkRef = useRef<VisualBatchSink>(batchSink ?? defaultBatchSinkRef.current)
-  batchSinkRef.current = batchSink ?? defaultBatchSinkRef.current
+  sessionStatusRef.current = sessionStatus
+  onBackendFailureRef.current = onBackendFailure
 
-  useEffect(() => {
-    sessionStatusRef.current = sessionStatus
-  }, [sessionStatus])
+  const reportBackendFailure = useCallback((failure: BackendFailure): void => {
+    if (!['starting', 'running', 'paused'].includes(sessionStatusRef.current)) return
+    setStatus('backend-failed')
+    onBackendFailureRef.current?.(failure)
+  }, [])
+
+  useEffect(
+    () => window.advx.onBackendFailure((failure) => reportBackendFailure(failure)),
+    [reportBackendFailure]
+  )
 
   useEffect(() => {
     const runId = runRef.current + 1
     runRef.current = runId
-    releaseVisualFrames(pendingFramesRef.current)
-    pendingFramesRef.current = []
 
     if (sessionStatus !== 'running') {
-      setStatus('waiting-backend')
+      setStatus((current) =>
+        sessionStatus === 'error' && current === 'backend-failed'
+          ? current
+          : 'waiting-backend'
+      )
       return
     }
 
     setStatus('waiting-backend')
     const profile = COMPRESSION_PROFILES[visualSettings.compressionPreset]
-    const batchAbortController = new AbortController()
 
     const sampleFrame = async (): Promise<void> => {
       if (sampleBusyRef.current !== null) return
@@ -139,60 +132,32 @@ export function useVisualPipeline({
         if (runRef.current !== runId || sessionStatusRef.current !== 'running') return
         const sequence = frameSequenceRef.current + 1
         frameSequenceRef.current = sequence
-        const frame: VisualFrame = {
-          frameId: `visual-${Date.now()}-${sequence}`,
-          capturedAt: Date.now(),
-          width: encoded.width,
-          height: encoded.height,
-          mode: visualSettings.mode,
-          bytes: encoded.blob.size,
-          overTarget: encoded.overTarget,
-          blob: encoded.blob
+        const capturedAt = Date.now()
+        setLastFrameBytes(encoded.blob.size)
+        setLastFrameOverTarget(encoded.overTarget)
+        const body = new Uint8Array(await encoded.blob.arrayBuffer())
+        try {
+          await window.advx.submitVisualFrame({
+            inputId: `visual-${capturedAt}-${sequence}`,
+            capturedAtMs: capturedAt,
+            mimeType: encoded.blob.type || 'image/jpeg',
+            body
+          })
+        } catch (error) {
+          if (runRef.current !== runId || sessionStatusRef.current !== 'running') return
+          reportBackendFailure({
+            code: 'backend_disconnected',
+            message: `画面未送达后端：${describeBackendError(error)}`
+          })
+          return
         }
-        pendingFramesRef.current.push(frame)
-        setLastFrameBytes(frame.bytes)
-        setLastFrameOverTarget(frame.overTarget)
+        if (runRef.current !== runId || sessionStatusRef.current !== 'running') return
+        setLastSentAt(Date.now())
+        setStatus('ready')
       } catch {
         if (runRef.current === runId) setStatus('compression-failed')
       } finally {
         if (sampleBusyRef.current === runId) sampleBusyRef.current = null
-      }
-    }
-
-    const flushBatch = async (): Promise<void> => {
-      if (batchBusyRef.current !== null || pendingFramesRef.current.length === 0) return
-      batchBusyRef.current = runId
-      const pending = pendingFramesRef.current
-      pendingFramesRef.current = []
-      const selected = selectVisualBatchFrames(pending)
-      const selectedIds = new Set(selected.map((frame) => frame.frameId))
-      releaseVisualFrames(pending.filter((frame) => !selectedIds.has(frame.frameId)))
-      if (runRef.current !== runId) {
-        releaseVisualFrames(selected)
-        batchBusyRef.current = null
-        return
-      }
-
-      const createdAt = Date.now()
-      try {
-        const result = await deliverAndReleaseVisualBatch(
-          batchSinkRef.current,
-          {
-            batchId: `visual-batch-${createdAt}`,
-            createdAt,
-            frames: selected
-          },
-          batchAbortController.signal
-        )
-        if (runRef.current === runId) {
-          setLastBatchAt(createdAt)
-          setStatus(result === 'accepted' ? 'ready' : 'waiting-backend')
-        }
-      } catch (error) {
-        if (error instanceof DOMException && error.name === 'AbortError') return
-        if (runRef.current === runId) setStatus('waiting-backend')
-      } finally {
-        if (batchBusyRef.current === runId) batchBusyRef.current = null
       }
     }
 
@@ -201,16 +166,10 @@ export function useVisualPipeline({
       () => void sampleFrame(),
       visualSettings.sampleIntervalMs
     )
-    const batchTimer = window.setInterval(() => void flushBatch(), 3000)
     return () => {
       window.clearInterval(sampleTimer)
-      window.clearInterval(batchTimer)
-      batchAbortController.abort()
       if (runRef.current === runId) runRef.current += 1
       if (sampleBusyRef.current === runId) sampleBusyRef.current = null
-      if (batchBusyRef.current === runId) batchBusyRef.current = null
-      releaseVisualFrames(pendingFramesRef.current)
-      pendingFramesRef.current = []
     }
   }, [
     cameraStream,
@@ -218,6 +177,7 @@ export function useVisualPipeline({
     cameraVideoRef,
     captureStream,
     captureStreamRef,
+    reportBackendFailure,
     sessionStatus,
     videoRef,
     visualSettings.compressionPreset,
@@ -228,19 +188,11 @@ export function useVisualPipeline({
     visualSettings.sampleIntervalMs
   ])
 
-  useEffect(
-    () => () => {
-      releaseVisualFrames(pendingFramesRef.current)
-      pendingFramesRef.current = []
-    },
-    []
-  )
-
   return {
     compositeCanvasRef,
     status,
     lastFrameBytes,
     lastFrameOverTarget,
-    lastBatchAt
+    lastSentAt
   }
 }

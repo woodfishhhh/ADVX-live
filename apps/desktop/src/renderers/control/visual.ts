@@ -2,7 +2,11 @@ export type VisualMode = 'screen' | 'camera' | 'pip'
 export type PipPosition = 'top-left' | 'top-right' | 'bottom-left' | 'bottom-right'
 export type PipSize = 'small' | 'medium' | 'large'
 export type CompressionPreset = 'economy' | 'balanced' | 'clear'
-export type VisualPipelineStatus = 'waiting-backend' | 'ready' | 'compression-failed'
+export type VisualPipelineStatus =
+  | 'waiting-backend'
+  | 'ready'
+  | 'compression-failed'
+  | 'backend-failed'
 
 export type VisualSettings = {
   mode: VisualMode
@@ -10,7 +14,7 @@ export type VisualSettings = {
   mirrorCamera: boolean
   pipPosition: PipPosition
   pipSize: PipSize
-  sampleIntervalMs: 500 | 1000 | 2000 | 5000
+  sampleIntervalMs: 500
   compressionPreset: CompressionPreset
 }
 
@@ -33,29 +37,6 @@ export type EncodedJpeg = {
   height: number
   quality: number
   overTarget: boolean
-}
-
-export type VisualFrame = {
-  frameId: string
-  capturedAt: number
-  width: number
-  height: number
-  mode: VisualMode
-  bytes: number
-  overTarget: boolean
-  blob: Blob | null
-}
-
-export type VisualBatch = {
-  batchId: string
-  createdAt: number
-  frames: VisualFrame[]
-}
-
-export type VisualBatchSinkResult = 'accepted' | 'waiting-backend'
-
-export interface VisualBatchSink {
-  consume(batch: VisualBatch, signal: AbortSignal): Promise<VisualBatchSinkResult>
 }
 
 type StorageReader = Pick<Storage, 'getItem'>
@@ -81,7 +62,7 @@ export const DEFAULT_VISUAL_SETTINGS: VisualSettings = {
   mirrorCamera: false,
   pipPosition: 'bottom-right',
   pipSize: 'medium',
-  sampleIntervalMs: 1000,
+  sampleIntervalMs: 500,
   compressionPreset: 'balanced'
 }
 
@@ -138,11 +119,7 @@ export function parseVisualSettings(value: unknown): VisualSettings {
     pipSize: isOneOf(settings.pipSize, ['small', 'medium', 'large'])
       ? settings.pipSize
       : DEFAULT_VISUAL_SETTINGS.pipSize,
-    sampleIntervalMs:
-      typeof settings.sampleIntervalMs === 'number' &&
-      [500, 1000, 2000, 5000].includes(settings.sampleIntervalMs)
-        ? (settings.sampleIntervalMs as VisualSettings['sampleIntervalMs'])
-        : DEFAULT_VISUAL_SETTINGS.sampleIntervalMs,
+    sampleIntervalMs: DEFAULT_VISUAL_SETTINGS.sampleIntervalMs,
     compressionPreset: isOneOf(settings.compressionPreset, [
       'economy',
       'balanced',
@@ -465,39 +442,6 @@ export async function compressCompositeCanvas(
       })
     }
   )
-}
-
-export function selectVisualBatchFrames(frames: readonly VisualFrame[]): VisualFrame[] {
-  if (frames.length === 0) return []
-  const sorted = [...frames].sort((first, second) => first.capturedAt - second.capturedAt)
-  return sorted.length <= 2 ? sorted : [sorted[0], sorted[sorted.length - 1]]
-}
-
-export function releaseVisualFrames(frames: readonly VisualFrame[]): void {
-  for (const frame of frames) frame.blob = null
-}
-
-export async function deliverAndReleaseVisualBatch(
-  sink: VisualBatchSink,
-  batch: VisualBatch,
-  signal: AbortSignal
-): Promise<VisualBatchSinkResult> {
-  try {
-    return await sink.consume(batch, signal)
-  } finally {
-    releaseVisualFrames(batch.frames)
-  }
-}
-
-export function createWaitingVisualBatchSink(): VisualBatchSink {
-  return {
-    consume: async (_batch, signal) => {
-      if (signal.aborted) {
-        throw new DOMException('Visual batch delivery was aborted.', 'AbortError')
-      }
-      return 'waiting-backend'
-    }
-  }
 }
 
 export function formatFrameKilobytes(bytes: number): string {

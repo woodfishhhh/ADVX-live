@@ -13,7 +13,7 @@
 
 - `client.hello` / `backend.ready`
 - `client.ping` / `backend.pong`
-- `session.status`、`barrage.event`、`protocol.error`
+- `session.status`、`barrage.event`、`generation.error`、`protocol.error`
 
 Handler 会先校验会话、重复 `input_id`、消息大小和顺序，再调用 Application 的
 `IngestPort`。拒绝一个输入不会关闭已完成握手的连接，除非它同时违反现有 WebSocket
@@ -27,6 +27,7 @@ Handler 会先校验会话、重复 `input_id`、消息大小和顺序，再调�
 | client -> backend | `client.audio.commit` | `session_id`, `input_id`, `committed_at_ms` | 提交同一 `input_id` 的单个音频 binary envelope，形成一个 ASR 段。 |
 | backend -> client | `ingest.ack` | `session_id`, `input_id`, `input_kind`, `stage`, `accepted_at_ms` | `stage` 为 `received` 或 `committed`。 |
 | backend -> client | `ingest.rejected` | `code`, `message`，以及可选的 `session_id`、`input_id`、`input_kind` | 输入被拒绝，身份无法可靠解析时关联字段省略。 |
+| backend -> client | `generation.error` | `session_id`, `observation_id`, `request_id`, `code`, `message` | 当前窗口的模型生成失败；`code` 为 `model_generation_failed`，消息不包含供应商原始响应或密钥。 |
 
 `input_kind` 的值为 `text`、`audio` 或 `frame`。`ingest.rejected.code` 为
 `invalid_input`、`session_not_active`、`duplicate_input`、`unknown_input`、
@@ -39,6 +40,11 @@ Handler 会先校验会话、重复 `input_id`、消息大小和顺序，再调�
 `client.audio.commit`，再收到 `committed` ACK。一个 binary envelope 对应一个
 `input_id` 和一个有界 ASR 段。图片没有 commit 消息，接收成功后返回 `frame` 的
 `received` ACK。
+
+图片 ACK 只表示后端已接收并保存该帧，不表示已经调用模型。前端应在每张 JPEG
+压缩完成后立即发送。后端以固定 5 秒节拍读取尚未消费的帧：少于 7 张时不调度，
+达到门槛后按时间顺序取最新 7-15 张，并与同一 Observation 中的近期文字及最终
+语音转写一起发送给多模态模型。成功调度的帧不会进入后续窗口。
 
 ## 3. 二进制 Envelope
 

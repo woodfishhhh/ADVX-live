@@ -1,5 +1,6 @@
 import { contextBridge, ipcRenderer } from "electron";
 import type {
+  BackendFailure,
   BackendBarrageEvent,
   BackendRuntimeStatus,
   ControlApi,
@@ -65,6 +66,12 @@ const api: ControlApi = {
       listener(event);
     ipcRenderer.on("backend:barrage", handler);
     return () => ipcRenderer.removeListener("backend:barrage", handler);
+  },
+  onBackendFailure: (listener) => {
+    const handler = (_event: Electron.IpcRendererEvent, failure: BackendFailure): void =>
+      listener(failure);
+    ipcRenderer.on("backend:failure", handler);
+    return () => ipcRenderer.removeListener("backend:failure", handler);
   }
 };
 

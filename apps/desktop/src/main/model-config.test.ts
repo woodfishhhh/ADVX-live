@@ -46,7 +46,26 @@ describe("model configuration", () => {
     });
   });
 
-  it("requires credentials when none are stored", () => {
+  it("allows model-only configuration when ASR is not used", () => {
+    expect(
+      resolveModelConfig(
+        {
+          baseUrl: "https://new.example/v1",
+          model: "new-model",
+          apiKey: "new-model-key",
+          asrApiKey: ""
+        },
+        null
+      )
+    ).toEqual({
+      baseUrl: "https://new.example/v1",
+      model: "new-model",
+      apiKey: "new-model-key",
+      asrApiKey: ""
+    });
+  });
+
+  it("requires the model credential when none is stored", () => {
     expect(() =>
       resolveModelConfig(
         {
@@ -57,6 +76,6 @@ describe("model configuration", () => {
         },
         null
       )
-    ).toThrow("模型地址、模型名称、模型密钥和语音识别密钥均为必填项。");
+    ).toThrow("模型地址、模型名称和模型密钥均为必填项。");
   });
 });
