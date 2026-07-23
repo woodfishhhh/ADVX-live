@@ -6,6 +6,10 @@ from pathlib import Path
 import pytest
 from fastapi.testclient import TestClient
 
+from advx_backend.application.generation_policies import (
+    DefaultGenerationTrigger,
+    GenerationTriggerConfig,
+)
 from advx_backend.application.ingest_service import IngestSessionNotActiveError
 from advx_backend.application.ports.asr import AudioChunk, TranscriptSegment
 from advx_backend.application.ports.ingest import (
@@ -155,6 +159,32 @@ class RecordingModelProvider:
 
     async def cancel(self, request_id: str) -> None:
         del request_id
+
+
+class GatedRecordingModelProvider(RecordingModelProvider):
+    def __init__(self) -> None:
+        super().__init__()
+        self.first_started = asyncio.Event()
+        self.release_first = asyncio.Event()
+        self.second_started = asyncio.Event()
+
+    async def generate(self, request: GenerationRequest) -> GenerationResult:
+        request_index = len(self.requests)
+        self.requests.append(request)
+        if request_index == 0:
+            self.first_started.set()
+            await self.release_first.wait()
+        elif request_index == 1:
+            self.second_started.set()
+        return GenerationResult(
+            request_id=request.request_id,
+            candidates=[
+                BarrageCandidate(
+                    audience_id=request.audiences[0].member.audience_id,
+                    text="window reaction",
+                )
+            ],
+        )
 
 
 def receive_until(
@@ -343,6 +373,89 @@ def test_realtime_frames_are_combined_into_one_periodic_model_window(
         request.observation.room_events[-1].text == "synchronized prompt"
         for request in model.requests
     )
+
+
+@pytest.mark.asyncio
+async def test_replaced_pending_window_keeps_frames_not_yet_sent_to_model(
+    tmp_path: Path,
+) -> None:
+    runtime = build_runtime(
+        local_token=LOCAL_TOKEN,
+        data_directory=tmp_path,
+        pipeline_config=PipelineConfig(
+            frame_window_interval_ms=50,
+            frame_window_min_frames=7,
+            max_frames_per_observation=15,
+        ),
+    )
+    model = GatedRecordingModelProvider()
+    runtime.generation_trigger = DefaultGenerationTrigger(
+        clock=runtime.clock,
+        config=GenerationTriggerConfig(screen_cooldown_ms=0),
+    )
+    runtime.configure_ingest_pipeline(
+        asr_provider=SilentAsrProvider(),
+        model_provider=model,
+    )
+    await runtime.startup()
+    session = await runtime.session_service.start()
+    session_id = session.session_id
+    assert session_id is not None
+    assert runtime.ingest_service is not None
+    captured_at_ms = int(time.time() * 1_000)
+
+    async def submit_frames(start: int, stop: int) -> None:
+        for index in range(start, stop):
+            await runtime.ingest_service.submit_frame(
+                FrameInput(
+                    session_id=session_id,
+                    input_id=f"slow-frame-{index}",
+                    captured_at_ms=captured_at_ms + index,
+                    mime_type="image/jpeg",
+                    body=f"slow-frame-body-{index}".encode(),
+                )
+            )
+
+    async def wait_for_pending(*, after_observation_id: str | None = None) -> str:
+        async def find_pending() -> str:
+            while True:
+                assert runtime.reaction_scheduler is not None
+                schedule = runtime.reaction_scheduler._sessions.get(session_id)
+                if schedule is not None and schedule.pending is not None:
+                    observation_id = schedule.pending.observation.observation_id
+                    if observation_id != after_observation_id:
+                        return observation_id
+                await asyncio.sleep(0.01)
+
+        return await asyncio.wait_for(find_pending(), timeout=1)
+
+    try:
+        await submit_frames(0, 7)
+        await asyncio.wait_for(model.first_started.wait(), timeout=1)
+
+        await submit_frames(7, 14)
+        first_pending_id = await wait_for_pending()
+        await submit_frames(14, 21)
+        await wait_for_pending(after_observation_id=first_pending_id)
+        assert runtime.reaction_scheduler is not None
+        schedule = runtime.reaction_scheduler._sessions.get(session_id)
+        assert schedule is not None and schedule.pending is not None
+        assert schedule.running is not None
+        running_completion = schedule.running.completion
+
+        model.release_first.set()
+        await asyncio.wait_for(asyncio.shield(running_completion), timeout=1)
+        await asyncio.wait_for(model.second_started.wait(), timeout=1)
+        await runtime.reaction_scheduler.wait_for_idle(session_id)
+    finally:
+        model.release_first.set()
+        await runtime.shutdown()
+
+    assert len(model.requests) == 2
+    second_frame_times = {
+        frame.created_at_ms for frame in model.requests[1].observation.frames
+    }
+    assert set(range(captured_at_ms + 7, captured_at_ms + 21)).issubset(second_frame_times)
 
 
 def test_realtime_rejects_unavailable_and_inactive_ingest(tmp_path: Path) -> None:

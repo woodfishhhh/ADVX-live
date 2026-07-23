@@ -1,6 +1,7 @@
 import asyncio
 import logging
 from collections import OrderedDict
+from collections.abc import Callable
 from dataclasses import dataclass, replace
 from typing import Protocol
 
@@ -26,7 +27,12 @@ logger = logging.getLogger(__name__)
 
 
 class ObservationScheduler(Protocol):
-    async def submit(self, observation: Observation) -> asyncio.Future[object | None]: ...
+    async def submit(
+        self,
+        observation: Observation,
+        *,
+        on_started: Callable[[], None] | None = None,
+    ) -> asyncio.Future[object | None]: ...
 
     async def cancel_session(self, session_id: str) -> None: ...
 
@@ -362,8 +368,15 @@ class IngestService:
             frames=frames,
             user_context=user_context,
         )
-        await self._scheduler.submit(observation)
-        self._last_window_frame_id = frames[-1].frame_id
+        last_frame_id = frames[-1].frame_id
+        await self._scheduler.submit(
+            observation,
+            on_started=lambda: self._mark_frame_window_started(session_id, last_frame_id),
+        )
+
+    def _mark_frame_window_started(self, session_id: str, frame_id: str) -> None:
+        if self._active_session_id == session_id:
+            self._last_window_frame_id = frame_id
 
     async def _reserve(
         self,

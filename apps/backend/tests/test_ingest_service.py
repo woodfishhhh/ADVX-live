@@ -1,5 +1,5 @@
 import asyncio
-from collections.abc import AsyncIterator
+from collections.abc import AsyncIterator, Callable
 
 import pytest
 
@@ -89,8 +89,15 @@ class RecordingScheduler:
         self.cancelled: list[str] = []
         self.submitted = asyncio.Event()
 
-    async def submit(self, observation: Observation) -> asyncio.Future[object | None]:
+    async def submit(
+        self,
+        observation: Observation,
+        *,
+        on_started: Callable[[], None] | None = None,
+    ) -> asyncio.Future[object | None]:
         self.observations.append(observation)
+        if on_started is not None:
+            on_started()
         self.submitted.set()
         future: asyncio.Future[object | None] = asyncio.get_running_loop().create_future()
         future.set_result(None)

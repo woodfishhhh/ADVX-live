@@ -5,6 +5,7 @@ from __future__ import annotations
 import asyncio
 import logging
 from collections import OrderedDict
+from collections.abc import Callable
 from dataclasses import dataclass
 from typing import Protocol
 
@@ -52,6 +53,7 @@ class ReactionSchedulerConfig:
 class _ScheduledObservation:
     observation: Observation
     completion: asyncio.Future[ReactionResult | None]
+    on_started: Callable[[], None] | None = None
 
 
 @dataclass(slots=True)
@@ -89,13 +91,16 @@ class LatestWinsReactionScheduler:
     async def submit(
         self,
         observation: Observation,
+        *,
+        on_started: Callable[[], None] | None = None,
     ) -> asyncio.Future[ReactionResult | None]:
         """Queue an observation and return its completion future.
 
         A completion resolves to ``None`` when the observation is superseded,
         expired, cancelled with its session, rejected by the session scope, or
         its reaction fails.  Errors are contained so a later observation can
-        still run on the same scheduler.
+        still run on the same scheduler. ``on_started`` runs only after the
+        observation becomes the running item and passes initial liveness checks.
         """
 
         completion: asyncio.Future[ReactionResult | None] = (
@@ -121,6 +126,7 @@ class LatestWinsReactionScheduler:
             scheduled = _ScheduledObservation(
                 observation=observation,
                 completion=completion,
+                on_started=on_started,
             )
             schedule.pending = scheduled
 
@@ -156,18 +162,22 @@ class LatestWinsReactionScheduler:
     async def schedule(
         self,
         observation: Observation,
+        *,
+        on_started: Callable[[], None] | None = None,
     ) -> asyncio.Future[ReactionResult | None]:
         """Alias for :meth:`submit` for callers that name the operation schedule."""
 
-        return await self.submit(observation)
+        return await self.submit(observation, on_started=on_started)
 
     async def enqueue(
         self,
         observation: Observation,
+        *,
+        on_started: Callable[[], None] | None = None,
     ) -> asyncio.Future[ReactionResult | None]:
         """Alias for :meth:`submit` for queue-oriented callers."""
 
-        return await self.submit(observation)
+        return await self.submit(observation, on_started=on_started)
 
     async def pause_session(self, session_id: str) -> None:
         """Explicitly cancel scheduled work when a lifecycle adapter pauses a session."""
@@ -263,6 +273,7 @@ class LatestWinsReactionScheduler:
         if not await self._session_tasks.accepts_results(observation.session_id):
             return None
 
+        self._notify_started(scheduled)
         try:
             result = await self._executor.react(observation)
         except asyncio.CancelledError:
@@ -283,6 +294,22 @@ class LatestWinsReactionScheduler:
         if not await self._session_tasks.accepts_results(observation.session_id):
             return None
         return result
+
+    @staticmethod
+    def _notify_started(scheduled: _ScheduledObservation) -> None:
+        if scheduled.on_started is None:
+            return
+        try:
+            scheduled.on_started()
+        except Exception as error:
+            logger.warning(
+                "reaction start callback failed",
+                extra={
+                    "session_id": scheduled.observation.session_id,
+                    "observation_id": scheduled.observation.observation_id,
+                    "error_type": type(error).__name__,
+                },
+            )
 
     def _is_expired(self, observation: Observation) -> bool:
         return self._clock.now_ms() >= observation.created_at_ms + self._config.observation_ttl_ms
