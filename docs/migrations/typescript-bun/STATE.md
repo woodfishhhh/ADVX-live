@@ -10,20 +10,20 @@ wall_clock_budget_minutes: null
 token_budget: null
 cost_budget_usd: null
 current_phase: "09"
-current_task: "GATE-09"
+current_task: null
 next_task: null
 baseline_commit: "41665a96cf67eb82cbe02f83abbbe2b79b100e48"
-last_verified_commit: "60c6e768d59362d21ea206741a0afa6f58c48f5d"
-current_head: "1b6265cd6120950796668fc000d81773c4864e04"
+last_verified_commit: "d897d112e1a8fe06fba420ba5de0bb072eaa26b5"
+current_head: "d897d112e1a8fe06fba420ba5de0bb072eaa26b5"
 current_branch: "TS_backend_refactor"
 worktree_root: "D:/Coding/ADVX-live"
 worktree_dirty: true
-last_run_id: "gate-09-recovery-maker-root-20260809-165"
-last_context_id: "gate-09-recovery-maker-root-context-20260809-165"
+last_run_id: "gate-09-recovery-commit-checker-root-20260809-166"
+last_context_id: "gate-09-recovery-commit-checker-root-context-20260809-166"
 maker_run_id: "gate-09-recovery-maker-root-20260809-165"
 maker_context_id: "gate-09-recovery-maker-root-context-20260809-165"
-checker_run_id: "gate-09-commit-checker-root-20260809-164"
-checker_context_id: "gate-09-commit-checker-root-context-20260809-164"
+checker_run_id: "gate-09-recovery-commit-checker-root-20260809-166"
+checker_context_id: "gate-09-recovery-commit-checker-root-context-20260809-166"
 same_blocker_attempts: 0
 ---
 
@@ -34,14 +34,14 @@ same_blocker_attempts: 0
 | Field | Value |
 | --- | --- |
 | Mode | Assisted implementation |
-| Current phase | Phase 09: `VERIFY` |
-| Current task | `GATE-09` (`VERIFY`) |
+| Current phase | Phase 09: `DONE` |
+| Current task | None |
 | Next task | None |
-| Implementation authorization | Active |
-| Independent verifier | Distinct exact-commit Checker required for `GATE-09` |
+| Implementation authorization | Completed |
+| Independent verifier | `GATE-09` recovery exact-commit Checker accepted |
 | Active blocker | None |
 
-## Current GATE-09 Recovery Maker Record
+## Accepted GATE-09 Record
 
 Maker `gate-09-maker-root-20260809-163` used distinct context
 `gate-09-maker-root-context-20260809-163` on branch `TS_backend_refactor` at
@@ -60,8 +60,8 @@ activation and passed without changing source.
 All six credentialed-live Provider source hashes remain current; CUT-003,
 CUT-004, CUT-012, CUT-013, and CUT-014 accepted artifact hashes match; zero
 tracked Python/toolchain inputs or pnpm/uv lock/workspace files remain; CI is
-still `workflow_dispatch`-only. Ten final requirements pass and exact-commit
-evidence binding is pending the independent Checker.
+still `workflow_dispatch`-only. At the Maker stage, ten final requirements
+passed and exact-commit evidence binding remained Checker-owned.
 
 The decision record is
 `docs/migrations/typescript-bun/GATE-09-FINAL-DECISION.md`. Current installed
@@ -73,21 +73,39 @@ Maker evidence is at
 `.omx/artifacts/typescript-bun/GATE-09/gate-09-maker-root-20260809-163/result.json`
 with SHA-256
 `83618b4ae8e9656d08ec0141bd6572a0432e620cd7268fe712d64bce9f14d605`.
-`GATE-09` and Phase 09 are `VERIFY`; `current_task=GATE-09`, `next_task=null`,
-and `same_blocker_attempts=0`. CI was not triggered.
+The original Maker advanced `GATE-09` and Phase 09 to `VERIFY` with
+`current_task=GATE-09`, `next_task=null`, and `same_blocker_attempts=0`. CI was
+not triggered.
 
 The initial exact candidate audit passed, but the provisional terminal cursor
 made two negative plan-check fixtures fail because they depended on the live
 Phase 09/gate status. No accepted `GATE-09` evidence was added. Recovery Maker
 `gate-09-recovery-maker-root-20260809-165` changed only the two synthetic
 fixtures; the production checker and product runtime are unchanged. All 50
-tests, 197 expectations, live plan-check, and whitespace pass. A new exact
-candidate Checker is required; the initial verdict is not reused.
+tests, 197 expectations, live plan-check, and whitespace passed. The recovery
+therefore required a new exact candidate Checker; the initial verdict was not
+reused.
 
 Recovery Maker evidence is at
 `.omx/artifacts/typescript-bun/GATE-09/gate-09-recovery-maker-root-20260809-165/result.json`
 with SHA-256
 `d819cb32c5fde4ce0b8fb7f128e8bf048808a7767db4988835df7bd88e6f88ba`.
+
+New independent Checker `gate-09-recovery-commit-checker-root-20260809-166`,
+in distinct context
+`gate-09-recovery-commit-checker-root-context-20260809-166`, accepted exact
+commit `d897d112e1a8fe06fba420ba5de0bb072eaa26b5`, tree
+`1e769cfcb9475f46ed53f7ca5289394b1697eb77`, and identical
+`origin/TS_backend_refactor`. The five-path recovery candidate has a clean
+tracked worktree and no prohibited path. Product runtime is unchanged, all 11
+requirements pass, and no initial rejected/provisional verdict is reused.
+
+Checker evidence is at
+`.omx/artifacts/typescript-bun/GATE-09/gate-09-recovery-commit-checker-root-20260809-166/result.json`
+with SHA-256
+`83eb49f4aefd9824b6fef40c4ce5a8c60739d3ba3cd2e9dd7d6120469ac5d327`.
+`GATE-09` and Phase 09 are `DONE`; `current_task=null`, `next_task=null`, and
+`same_blocker_attempts=0`. CI was not triggered.
 
 ## Closure Snapshot
 
@@ -103,7 +121,7 @@ with SHA-256
 | Retention duration | No pre-release expiry; minimum 30 days after first authorized signed release reaches full promotion |
 | Documentation archive | `docs/migrations/typescript-bun/`, Git history, `RUN-LOG.md`, and `EVIDENCE.md` |
 | Raw evidence archive | Local untracked `.omx/artifacts/typescript-bun/`; hash-bound and excluded from release packages |
-| Final gate | `GATE-09` is `VERIFY`; exact-commit Checker pending |
+| Final gate | `GATE-09` is `DONE` at accepted commit `d897d112e1a8fe06fba420ba5de0bb072eaa26b5` |
 
 ## Phase State
 
@@ -118,7 +136,7 @@ with SHA-256
 | 06 Observability and replay | `DONE` | `GATE-06` | [07](./07-OBSERVABILITY-REPLAY.md) |
 | 07 Test and tooling convergence | `DONE` | `GATE-07` | [08](./08-TEST-TOOLING.md) |
 | 08 Packaging and security | `DONE` | `GATE-08` | [09](./09-PACKAGING-SECURITY.md) |
-| 09 Cutover and Python removal | `VERIFY` | `GATE-09` | [10](./10-CUTOVER-CLEANUP.md) |
+| 09 Cutover and Python removal | `DONE` | `GATE-09` | [10](./10-CUTOVER-CLEANUP.md) |
 
 ## Active Blockers
 
@@ -131,8 +149,6 @@ None.
   disabled and unauthorized.
 - Real user rollback requires a fresh verified pre-update backup; CUT-003 raw
   database artifacts are synthetic evidence only.
-- `GATE-09` exact-commit Checker evidence remains required before the migration
-  can complete.
 
 ## Worktree Ownership
 

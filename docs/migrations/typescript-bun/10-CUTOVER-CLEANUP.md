@@ -292,27 +292,29 @@ Maker closure record:
 [CUT-014-ROLLBACK-WINDOW-CLOSURE.md](./CUT-014-ROLLBACK-WINDOW-CLOSURE.md).
 Independent Checker `cut-014-commit-checker-root-20260808-162` accepted the
 record against exact commit `60c6e768d59362d21ea206741a0afa6f58c48f5d`.
-`GATE-09` is the only promoted task and remains separately unexecuted.
+Final Checker `gate-09-recovery-commit-checker-root-20260809-166`
+subsequently accepted `GATE-09` against exact commit
+`d897d112e1a8fe06fba420ba5de0bb072eaa26b5`.
 
 ## Final Definition Of Done
 
-- [ ] Bun is the only active package manager, script runner, and backend runtime
+- [x] Bun is the only active package manager, script runner, and backend runtime
       in the product repository.
-- [ ] Electron's required Node runtime boundary is documented honestly.
-- [ ] No Python interpreter, environment, package, source backend, test runner,
+- [x] Electron's required Node runtime boundary is documented honestly.
+- [x] No Python interpreter, environment, package, source backend, test runner,
       contract generator, migration runner, CI step, or packaged artifact is
       required.
-- [ ] Current HTTP, WebSocket, binary ingest, session, product, data, secret,
+- [x] Current HTTP, WebSocket, binary ingest, session, product, data, secret,
       lifecycle, and diagnostics behavior is preserved.
-- [ ] Bun source, compiled, packaged, and installed paths have accepted proof.
-- [ ] Credentialed Provider and supported platform evidence is current.
-- [ ] Representative legacy data migrates, backs up, restores, and has an honest
+- [x] Bun source, compiled, packaged, and installed paths have accepted proof.
+- [x] Credentialed Provider and supported platform evidence is current.
+- [x] Representative legacy data migrates, backs up, restores, and has an honest
       rollback story.
-- [ ] Root commands, CI, docs, onboarding, troubleshooting, and release paths
+- [x] Root commands, CI, docs, onboarding, troubleshooting, and release paths
       describe the same TypeScript/Bun system.
-- [ ] No critical/high unresolved finding is hidden or relabeled as success.
-- [ ] Independent reviewers accept architecture, data, security, and tests.
-- [ ] `EVIDENCE.md` binds the final claim to the exact accepted commit/artifacts.
+- [x] No critical/high unresolved finding is hidden or relabeled as success.
+- [x] Independent reviewers accept architecture, data, security, and tests.
+- [x] `EVIDENCE.md` binds the final claim to the exact accepted commit/artifacts.
 
 ## `GATE-09` Proof-Or-Stop
 
@@ -347,7 +349,7 @@ cutover may not proceed.
 ## Observations
 
 Final-gate Maker record:
-[GATE-09-FINAL-DECISION.md](./GATE-09-FINAL-DECISION.md). The Maker audit passes
-ten final requirements; exact-commit evidence binding remains pending a
-distinct Checker. No completion promise is authorized while `GATE-09` is
-`VERIFY`.
+[GATE-09-FINAL-DECISION.md](./GATE-09-FINAL-DECISION.md). The new distinct
+Checker accepted all 11 requirements against exact recovery commit
+`d897d112e1a8fe06fba420ba5de0bb072eaa26b5`. `GATE-09` and Phase 09 are
+`DONE`; CI/CD remains disabled pending separate post-migration authorization.

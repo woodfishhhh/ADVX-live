@@ -1,6 +1,6 @@
 # ADVX Live TypeScript + Bun Migration
 
-> Status: implementation complete; `GATE-09` final verification active
+> Status: migration complete; `GATE-09` independently accepted
 >
 > Created: 2026-07-29
 >
@@ -22,9 +22,9 @@ package manager, backend runtime, script runner, test helper, and backend
 compiler. Electron and Electron-specific build tools retain their required Node
 runtime boundary.
 
-The implementation and authorized Python/toolchain removal are complete. The
-remaining `GATE-09` task must independently bind the final definition of done
-to an exact commit and accepted evidence before completion may be claimed.
+The implementation, authorized Python/toolchain removal, and independent final
+gate are complete. `GATE-09` binds the final definition of done to exact commit
+`d897d112e1a8fe06fba420ba5de0bb072eaa26b5` and the accepted evidence index.
 
 ## Locked Direction
 
@@ -167,10 +167,10 @@ interpretation.
 
 ## Starting And Stopping
 
-Execution is active at the final verification gate. A fresh run must read
-`STATE.md`, continue only its current or next task, and follow
-[PROMPT.md](./PROMPT.md). Automatic CI/CD, signing, publishing, and deployment
-remain disabled unless separately authorized after migration completion.
+Execution is complete and `STATE.md` has no current or next task. The control
+plane remains archived for audit and rollback. Automatic CI/CD, signing,
+publishing, and deployment remain disabled unless separately authorized after
+migration completion.
 
 The migration is complete only when the independent final gate in
 [10-CUTOVER-CLEANUP.md](./10-CUTOVER-CLEANUP.md) passes and its evidence is

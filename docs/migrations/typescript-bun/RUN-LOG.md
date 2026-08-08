@@ -12226,3 +12226,41 @@ Rules:
 - CI remains `workflow_dispatch`-only and was not triggered
 - Next action: create and push a new candidate, then require a new exact-commit
   Checker
+
+## `gate-09-recovery-commit-checker-root-20260809-166` - 2026-08-09 - `GATE-09`
+
+- Role: `checker`
+- Context ID: `gate-09-recovery-commit-checker-root-context-20260809-166`
+- Parent run ID: `gate-09-recovery-maker-root-20260809-165`
+- Checker participated in implementation or staging: `false`
+- Exact commit/tree: `d897d112e1a8fe06fba420ba5de0bb072eaa26b5` /
+  `1e769cfcb9475f46ed53f7ca5289394b1697eb77`
+- Upstream identity: `origin/TS_backend_refactor` resolved to the exact commit
+- Ownership: tracked worktree clean; exact five-path recovery candidate; zero
+  missing, unexpected, or prohibited paths
+- Final audit: all 11 requirements pass; product runtime is unchanged after
+  the accepted `CUT-013` review; six Provider source hashes and eight
+  accepted/current artifact hashes match
+- Recovery boundary: only the migration plan-check test changed; the
+  production checker did not change
+- Static audit: zero tracked Python/toolchain inputs, zero pnpm/uv alternate
+  lock/workspace inputs, and no automatic CI trigger
+- Current installed evidence: authenticated `bun-compiled` recorded pipeline,
+  uninstall, and installed-result zero-orphan assertions pass; current port
+  8765 listener and ADVX Electron/Bun backend process counts are zero
+- Focused plan-check tests: exit `0`; 50 passed, 197 expectations
+- Live plan-check before acceptance: exit `0`; 133 tasks, 83 links, 132
+  accepted records, zero errors
+- Commit whitespace: pass
+- Checker evidence:
+  `.omx/artifacts/typescript-bun/GATE-09/gate-09-recovery-commit-checker-root-20260809-166/result.json`
+  (`sha256:83eb49f4aefd9824b6fef40c4ce5a8c60739d3ba3cd2e9dd7d6120469ac5d327`,
+  2860 bytes)
+- Decision: `GATE-09` `VERIFY` -> `DONE`; Phase 09 `DONE`;
+  `current_task=null`, `next_task=null`, `same_blocker_attempts=0`
+- Blocker: none
+- Limitations: Windows x64 only; unsigned, unpublished, undeployed; macOS and
+  Windows arm64 unproven; restore-from-backup data-loss window retained
+- Decisions/plan drift: none; automatic CI/CD remains disabled,
+  `workflow_dispatch`-only, and was not triggered
+- Next task: none; migration task plan is terminal

@@ -111,7 +111,7 @@ This record does not prove the missing capability. It prevents a permanent
 | `GATE-06` | `DONE` | `41665a96cf67eb82cbe02f83abbbe2b79b100e48` | `gate-06-checker-root-20260806-052` | review, observability, replay, lifecycle | Node 22 engine warning; no credentialed-live claim |
 | `GATE-07` | `DONE` | `41665a96cf67eb82cbe02f83abbbe2b79b100e48` | `gate-07-checker-root-20260807-087` | phase-gate, review, static, ledger | Node 22 engine warning; no credentialed-live claim |
 | `GATE-08` | `DONE` | `41665a96cf67eb82cbe02f83abbbe2b79b100e48` | `gate-08-checker-root-20260808-120` | package, security, installed, review | Windows x64 only; unsigned; unpublished; macOS unproven |
-| `GATE-09` | `TODO` | - | - | - | - |
+| `GATE-09` | `DONE` | `d897d112e1a8fe06fba420ba5de0bb072eaa26b5` | `gate-09-recovery-commit-checker-root-20260809-166` | review, static, installed-platform, credentialed-live | Windows x64 only; unsigned; unpublished; undeployed; macOS and Windows arm64 unproven |
 
 ## Accepted Records
 
@@ -8015,3 +8015,79 @@ accepted task/gate record and does not satisfy PKG-011 or any dependency.
 - Related run log: `cut-014-commit-checker-root-20260808-162`
 - Decision: `CUT-014` `VERIFY` -> `DONE`; only `GATE-09` is promoted to
   `READY` and remains unexecuted.
+
+### GATE-09 / gate-09-recovery-commit-checker-root-20260809-166
+
+- Claim: the complete TypeScript/Bun migration satisfies all 11 final
+  requirements and is bound to the exact recovery candidate and hash-bound
+  artifacts.
+- Status: `DONE`
+- Accepted commit: `d897d112e1a8fe06fba420ba5de0bb072eaa26b5`
+- Accepted tree: `1e769cfcb9475f46ed53f7ca5289394b1697eb77`
+- Dirty diff identity: `clean`
+- Date: 2026-08-09
+- Environment: Windows x64; Bun `1.3.14`; Node tooling `24.18.0`; branch
+  `TS_backend_refactor`
+- Evidence class: `review`, `static`, `installed-platform`,
+  `credentialed-live`, `closure`
+- Maker: root
+- Maker run/context ID: `gate-09-recovery-maker-root-20260809-165` /
+  `gate-09-recovery-maker-root-context-20260809-165`
+- Checker: root independent run/context
+- Checker run/context ID:
+  `gate-09-recovery-commit-checker-root-20260809-166` /
+  `gate-09-recovery-commit-checker-root-context-20260809-166`
+- Checker parent run ID: `gate-09-recovery-maker-root-20260809-165`
+- Checker participated in implementation: `false`
+- Checker participated in staging: `false`
+- Reviewed source-state hash: `d897d112e1a8fe06fba420ba5de0bb072eaa26b5`
+- Upstream identity: `origin/TS_backend_refactor` resolved to the accepted
+  commit before verification.
+- Commands/procedure:
+  - exact commit/tree/upstream, tracked-clean ownership, five-path recovery
+    scope, prohibited-path, product-runtime boundary, Python/toolchain,
+    lock/workspace, Provider source, artifact, CI-trigger, and whitespace
+    audits -> exit `0`
+  - `bun test scripts/migration-plan-check.test.ts` -> exit `0`; 50 passed,
+    197 expectations
+  - `bun run migration:plan-check` -> exit `0`; 133 tasks, 83 links, 132
+    pre-acceptance evidence records, zero errors
+  - current port/process audit -> exit `0`; zero listener on 8765 and zero
+    ADVX Electron/Bun backend process
+- Accepted assertions:
+  - Bun is the only active package manager, script runner, and backend runtime;
+    Electron's required Node tooling boundary remains explicit;
+  - no tracked Python source/toolchain or alternate pnpm/uv lock/workspace input
+    remains;
+  - product runtime is unchanged after the accepted `CUT-013` review; the only
+    source repair makes two plan-check negative fixtures terminal-state
+    independent without changing the production checker;
+  - accepted architecture, protocol, data, secret, lifecycle, diagnostics,
+    Provider, rollback, and review evidence remains source-current;
+  - current Windows x64 compile/package/NSIS/install/recorded-pipeline/restart/
+    uninstall evidence is authenticated, terminal, and orphan-free;
+  - all 11 final requirements pass without enabling or triggering automatic
+    CI/CD, signing, publishing, or deployment.
+- Original Maker artifact:
+  `.omx/artifacts/typescript-bun/GATE-09/gate-09-maker-root-20260809-163/result.json`
+  (`sha256:83618b4ae8e9656d08ec0141bd6572a0432e620cd7268fe712d64bce9f14d605`,
+  3181 bytes)
+- Recovery Maker artifact:
+  `.omx/artifacts/typescript-bun/GATE-09/gate-09-recovery-maker-root-20260809-165/result.json`
+  (`sha256:d819cb32c5fde4ce0b8fb7f128e8bf048808a7767db4988835df7bd88e6f88ba`,
+  1698 bytes)
+- Current installed artifact:
+  `.omx/artifacts/typescript-bun/GATE-09/gate-09-maker-root-20260809-163/windows-installed/result.json`
+  (`sha256:9cf6ade19ab54e9c71f9df1bd4922b67addaf396caa89940d9d32253c3f2984b`,
+  3262 bytes)
+- Checker artifact:
+  `.omx/artifacts/typescript-bun/GATE-09/gate-09-recovery-commit-checker-root-20260809-166/result.json`
+  (`sha256:83eb49f4aefd9824b6fef40c4ce5a8c60739d3ba3cd2e9dd7d6120469ac5d327`,
+  2860 bytes)
+- Limitations: Windows x64 only; unsigned, unpublished, undeployed; macOS and
+  Windows arm64 unproven; rollback does not retain Bun-only writes made after
+  the selected backup; raw `.omx` evidence is local and untracked.
+- Related run log: `gate-09-recovery-commit-checker-root-20260809-166`
+- Decision: `GATE-09` `VERIFY` -> `DONE`; Phase 09 is `DONE`; no current or
+  next task remains. Automatic CI/CD stays disabled pending separate
+  post-migration authorization.

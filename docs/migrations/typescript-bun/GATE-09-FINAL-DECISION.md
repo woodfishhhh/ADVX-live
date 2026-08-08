@@ -1,9 +1,10 @@
 # GATE-09 Final Proof-Or-Stop Decision
 
-> Candidate status: `VERIFY`
+> Accepted status: `DONE`
 >
-> Branch/base HEAD: `TS_backend_refactor` /
-> `1614fafc700ed4d53bda811c9758b391e7aaccf4`
+> Branch/accepted commit/tree: `TS_backend_refactor` /
+> `d897d112e1a8fe06fba420ba5de0bb072eaa26b5` /
+> `1e769cfcb9475f46ed53f7ca5289394b1697eb77`
 >
 > Recorded: 2026-08-09
 
@@ -13,11 +14,12 @@ This final gate binds the completed TypeScript/Bun migration to the current
 tracked product and accepted evidence. It does not publish, sign, deploy,
 enable an updater, or enable automatic CI/CD.
 
-The current product implementation is unchanged from the independently
+The current product runtime implementation is unchanged from the independently
 accepted `CUT-013` commit
 `6a433e7970f48f5ddd2fec631f9986746af39ecb`. Later tracked changes through the
-base HEAD are migration control and closure documents only. This gate changes
-only the stale migration entry status plus final control/evidence documents.
+accepted commit are migration control and closure documents plus the bounded
+terminal-state negative-fixture repair in `migration-plan-check.test.ts`. The
+production plan checker is unchanged.
 
 ## Final Evidence Boundary
 
@@ -37,7 +39,7 @@ the only source-boundary gap in the earlier `CUT-012` installed proof.
 
 ## Final Definition Of Done Audit
 
-| Requirement | Maker result | Decisive evidence |
+| Requirement | Final result | Decisive evidence |
 | --- | --- | --- |
 | Bun is the only active package manager, script runner, and backend runtime | `PASS` | `packageManager=bun@1.3.14`, `bun.lock`, Bun-owned root scripts, zero active pnpm/uv/Python manifest paths |
 | Electron's Node boundary is documented honestly | `PASS` | Root README, `AGENTS.md`, `docs/README.md`, and `docs/ARCHITECTURE.md` limit Node `24.18.0` to Electron and its tooling |
@@ -49,7 +51,7 @@ the only source-boundary gap in the earlier `CUT-012` installed proof.
 | Root commands, CI, docs, onboarding, troubleshooting, and release paths agree | `PASS` | Current Bun root scripts and docs; migration README stale planning status corrected; CI remains `workflow_dispatch`-only |
 | No critical/high unresolved finding is hidden | `PASS` | Accepted `CUT-013` review, no current blocker, zero live plan-check errors, and no broadened support/release claim |
 | Independent architecture, data, security, and test reviews accept | `PASS` | Accepted `CUT-013` exact-commit Checker and its four bounded review lanes |
-| Final evidence binds completion to an exact commit/artifacts | `PENDING CHECKER` | This Maker candidate must be committed and independently checked; only that Checker may add the final accepted record |
+| Final evidence binds completion to an exact commit/artifacts | `PASS` | New independent Checker accepted exact recovery commit `d897d112e1a8fe06fba420ba5de0bb072eaa26b5`, tree `1e769cfcb9475f46ed53f7ca5289394b1697eb77`, and hash-bound artifacts |
 
 ## Current Installed Proof
 
@@ -117,9 +119,25 @@ failed because they depended on Phase 09 not yet being terminal. No accepted
 Recovery Maker `gate-09-recovery-maker-root-20260809-165` changed only those
 two synthetic fixtures. The production checker and product runtime are
 unchanged. All 50 tests, 197 expectations, live plan-check, and whitespace now
-pass. `GATE-09` remains `VERIFY` pending a new exact-commit Checker.
+passed. At that point, `GATE-09` remained `VERIFY` pending a new exact-commit
+Checker.
 
 Recovery Maker evidence is at
 `.omx/artifacts/typescript-bun/GATE-09/gate-09-recovery-maker-root-20260809-165/result.json`
 with SHA-256
 `d819cb32c5fde4ce0b8fb7f128e8bf048808a7767db4988835df7bd88e6f88ba`.
+
+## Checker Verdict
+
+New independent Checker `gate-09-recovery-commit-checker-root-20260809-166`,
+in distinct context
+`gate-09-recovery-commit-checker-root-context-20260809-166`, accepted exact
+commit `d897d112e1a8fe06fba420ba5de0bb072eaa26b5`, tree
+`1e769cfcb9475f46ed53f7ca5289394b1697eb77`, and identical
+`origin/TS_backend_refactor`. All 11 final requirements pass. `GATE-09` is
+`DONE`.
+
+Checker evidence is at
+`.omx/artifacts/typescript-bun/GATE-09/gate-09-recovery-commit-checker-root-20260809-166/result.json`
+with SHA-256
+`83eb49f4aefd9824b6fef40c4ce5a8c60739d3ba3cd2e9dd7d6120469ac5d327`.

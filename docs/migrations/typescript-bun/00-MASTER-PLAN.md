@@ -1247,7 +1247,7 @@ Checker. Candidate evidence:
 | `CUT-012` | `DONE` | Run clean-clone install, lint, typecheck, tests, build, and installed E2E | `CUT-011` | Clean-clone evidence |
 | `CUT-013` | `DONE` | Independent architecture, security, data, and test review | `CUT-012` | Review verdict |
 | `CUT-014` | `DONE` | Close or explicitly retain rollback window and archive migration state | `CUT-013` | Closure record |
-| `GATE-09` | `VERIFY` | Final proof-or-stop verification | `CUT-001..014` | Final accepted evidence |
+| `GATE-09` | `DONE` | Final proof-or-stop verification | `CUT-001..014` | Final accepted evidence |
 
 Maker `cut-002-maker-root-20260808-125` completed only the bounded Windows x64
 Bun-default soak. Four Electron cycles cover the required media combinations,
@@ -1786,6 +1786,24 @@ Maker evidence is at
 `.omx/artifacts/typescript-bun/GATE-09/gate-09-recovery-maker-root-20260809-165/result.json`
 with SHA-256
 `d819cb32c5fde4ce0b8fb7f128e8bf048808a7767db4988835df7bd88e6f88ba`.
+
+New exact-commit Checker `gate-09-recovery-commit-checker-root-20260809-166`,
+in distinct context
+`gate-09-recovery-commit-checker-root-context-20260809-166`, accepted commit
+`d897d112e1a8fe06fba420ba5de0bb072eaa26b5`, tree
+`1e769cfcb9475f46ed53f7ca5289394b1697eb77`, and identical
+`origin/TS_backend_refactor`. The five-path recovery candidate has a clean
+tracked worktree and no prohibited path. All 11 final requirements pass:
+product runtime is unchanged after the accepted final review, the bounded
+migration-control test repair and all 50 tests pass, Provider and retained
+artifact identities match, the current Windows x64 installed result is
+terminal and orphan-free, no Python or alternate lock/workspace input remains,
+live plan-check passes, and automatic CI remains disabled and untriggered.
+`GATE-09` and Phase 09 are `DONE`; both task cursors are empty. Checker evidence
+is at
+`.omx/artifacts/typescript-bun/GATE-09/gate-09-recovery-commit-checker-root-20260809-166/result.json`
+with SHA-256
+`83eb49f4aefd9824b6fef40c4ce5a8c60739d3ba3cd2e9dd7d6120469ac5d327`.
 
 ## Gate External Conditions
 
