@@ -14,14 +14,14 @@ current_task: "CUT-013"
 next_task: null
 baseline_commit: "41665a96cf67eb82cbe02f83abbbe2b79b100e48"
 last_verified_commit: "78d74e94be61b5a358daee158cf79977dce6b500"
-current_head: "b90f5914592ca8fec9c18285068964358b575a04"
+current_head: "69a16f3a147275d36540d98fe831db4188e4118a"
 current_branch: "TS_backend_refactor"
 worktree_root: "D:/Coding/ADVX-live"
 worktree_dirty: true
-last_run_id: "cut-013-maker-root-20260808-157"
-last_context_id: "cut-013-maker-root-context-20260808-157"
-maker_run_id: "cut-013-maker-root-20260808-157"
-maker_context_id: "cut-013-maker-root-context-20260808-157"
+last_run_id: "cut-013-recovery-maker-root-20260808-159"
+last_context_id: "cut-013-recovery-maker-root-context-20260808-159"
+maker_run_id: "cut-013-recovery-maker-root-20260808-159"
+maker_context_id: "cut-013-recovery-maker-root-context-20260808-159"
 checker_run_id: "cut-012-commit-checker-root-20260808-152"
 checker_context_id: "cut-012-commit-checker-root-context-20260808-152"
 same_blocker_attempts: 0
@@ -40,6 +40,28 @@ same_blocker_attempts: 0
 | Implementation authorization | Active |
 | Independent verifier | Distinct Checker required after Maker reaches `VERIFY` |
 | Active blocker | None |
+
+## Current CUT-013 Recovery Maker Record
+
+Checker `cut-013-commit-checker-root-20260808-158` rejected candidate
+`69a16f3a147275d36540d98fe831db4188e4118a` after the provisional acceptance
+cursor caused one negative plan-check fixture to emit an additional expected
+dependency diagnostic. Its earlier exact-commit evidence is not accepted.
+
+Recovery Maker `cut-013-recovery-maker-root-20260808-159` used distinct context
+`cut-013-recovery-maker-root-context-20260808-159` and changed only that
+fixture's exhaustive error comparison into a required-error subset check. The
+production checker and product runtime are unchanged. All 50 plan-check tests,
+197 expectations, live plan-check, and diff whitespace now pass with
+`CUT-013` still at `VERIFY`.
+
+Recovery evidence is at
+`.omx/artifacts/typescript-bun/CUT-013/cut-013-recovery-maker-root-20260808-159/result.json`
+with SHA-256
+`76a9c7a62d919235b9f917145e0773741f0eee74ccb6d17c0119549720ade765`.
+A new exact-commit Checker must rerun the decisive review against the next
+candidate commit. `CUT-014` remains `TODO`; CI remains manual-only and was not
+triggered.
 
 ## Current CUT-013 Maker Record
 

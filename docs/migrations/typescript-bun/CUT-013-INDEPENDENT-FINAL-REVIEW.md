@@ -88,3 +88,12 @@ Maker evidence is at
 `.omx/artifacts/typescript-bun/CUT-013/cut-013-maker-root-20260808-157/result.json`
 with SHA-256
 `1f4baae88a4d9e739c9c3519f8ab132fb4a23dec42bbb89430e77f9cc00f4e7d`.
+
+## Recovery Note
+
+The first exact-commit Checker rejected the provisional acceptance transition
+because one negative plan-check fixture required an exhaustive error set and
+therefore rejected an additional valid downstream dependency diagnostic. The
+recovery changes only that assertion to require the blocker error as a subset.
+It does not change product code or weaken the production checker. A new exact
+commit must be checked; evidence for the rejected candidate is not reused.

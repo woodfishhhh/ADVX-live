@@ -11991,3 +11991,47 @@ Rules:
   triggered
 - Next single action: create and push the CUT-013 candidate, then run a distinct
   exact-commit Checker
+
+## `cut-013-commit-checker-root-20260808-158` - 2026-08-08 - `CUT-013`
+
+- Role: `checker`
+- Context ID: `cut-013-commit-checker-root-context-20260808-158`
+- Parent run ID: `cut-013-maker-root-20260808-157`
+- Exact commit/tree: `69a16f3a147275d36540d98fe831db4188e4118a` /
+  `9632d3ca201e8a4dcc299f36e41ca99440044648`
+- Exact upstream, ownership, tracked-Python, whitespace, architecture `59/59`,
+  data `14/14`, security `17/17`, repository TypeScript, package inertness,
+  IPC/token boundary, and pre-acceptance live plan-check passed
+- Rejection: after applying the provisional acceptance cursor, one plan-check
+  negative fixture passed 49 tests and failed 1 because it emitted both the
+  required `BLOCKED_TASK_WITHOUT_ACTIVE_BLOCKER` and the valid downstream
+  `DEPENDENCY_STATUS_UNSATISFIED` diagnostic
+- Decision: FAIL; `CUT-013` remains `VERIFY`; no accepted evidence was added;
+  `CUT-014` remains `TODO`
+- Rejected evidence:
+  `.omx/artifacts/typescript-bun/CUT-013/cut-013-commit-checker-root-20260808-158/result.json`
+  (`sha256:57f06d9a0c61a5ef3ef19517f07f081c63cb72189362f06fa099c48061adf7e8`,
+  3215 bytes)
+- CI remained `workflow_dispatch`-only and was not triggered
+
+## `cut-013-recovery-maker-root-20260808-159` - 2026-08-08 - `CUT-013`
+
+- Role: `maker`
+- Context ID: `cut-013-recovery-maker-root-context-20260808-159`
+- Parent run ID: `cut-013-commit-checker-root-20260808-158`
+- Base commit: `69a16f3a147275d36540d98fe831db4188e4118a`
+- Repair: changed only the affected negative fixture from an exhaustive error
+  comparison to a required-error subset check; production checker and product
+  runtime code are unchanged
+- Verification: plan-check tests -> exit `0`; 50 passed, 197 expectations;
+  live plan-check -> exit `0`; 133 tasks, 73 links, 130 accepted evidence
+  records, zero errors; diff whitespace -> exit `0`
+- Recovery evidence:
+  `.omx/artifacts/typescript-bun/CUT-013/cut-013-recovery-maker-root-20260808-159/result.json`
+  (`sha256:76a9c7a62d919235b9f917145e0773741f0eee74ccb6d17c0119549720ade765`,
+  1155 bytes)
+- State: `CUT-013` remains `VERIFY`; `current_task=CUT-013`, `next_task=null`,
+  `same_blocker_attempts=0`
+- CI remained `workflow_dispatch`-only and was not triggered
+- Next single action: commit and push the recovery candidate, then run a new
+  exact-commit Checker without reusing the rejected commit evidence

@@ -1688,6 +1688,17 @@ Maker evidence is at
 with SHA-256
 `1f4baae88a4d9e739c9c3519f8ab132fb4a23dec42bbb89430e77f9cc00f4e7d`.
 
+Checker `cut-013-commit-checker-root-20260808-158` rejected the first exact
+candidate when the provisional `DONE` cursor caused one negative plan-check
+fixture to emit an additional downstream dependency diagnostic. Recovery Maker
+`cut-013-recovery-maker-root-20260808-159` changed only that fixture to assert
+the required blocker error as a subset; it did not weaken the production
+checker or change product runtime code. All 50 plan-check tests, 197
+expectations, live plan-check, and whitespace now pass. `CUT-013` remains
+`VERIFY`, `CUT-014` remains `TODO`, and the rejected commit evidence is not
+reused. Recovery evidence SHA-256 is
+`76a9c7a62d919235b9f917145e0773741f0eee74ccb6d17c0119549720ade765`.
+
 ## Gate External Conditions
 
 These rows are machine-checkable required terminal conditions, not optional

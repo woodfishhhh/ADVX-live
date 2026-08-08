@@ -543,7 +543,7 @@ describe('migration plan drift checker', () => {
       (await readFile(join(root, 'BLOCKERS.md'), 'utf8'))
         .replace(/^> Current blockers:.*$/m, '> Current blockers: none')
     )
-    await expectCodes(root, ['BLOCKED_TASK_WITHOUT_ACTIVE_BLOCKER'])
+    await expectHasCodes(root, ['BLOCKED_TASK_WITHOUT_ACTIVE_BLOCKER'])
   })
 
   test('rejects an active blocker owned by an unknown task', async () => {
