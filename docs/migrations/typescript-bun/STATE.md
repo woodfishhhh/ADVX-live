@@ -10,20 +10,20 @@ wall_clock_budget_minutes: null
 token_budget: null
 cost_budget_usd: null
 current_phase: "09"
-current_task: "CUT-013"
-next_task: null
+current_task: null
+next_task: "CUT-014"
 baseline_commit: "41665a96cf67eb82cbe02f83abbbe2b79b100e48"
-last_verified_commit: "78d74e94be61b5a358daee158cf79977dce6b500"
-current_head: "69a16f3a147275d36540d98fe831db4188e4118a"
+last_verified_commit: "6a433e7970f48f5ddd2fec631f9986746af39ecb"
+current_head: "6a433e7970f48f5ddd2fec631f9986746af39ecb"
 current_branch: "TS_backend_refactor"
 worktree_root: "D:/Coding/ADVX-live"
 worktree_dirty: true
-last_run_id: "cut-013-recovery-maker-root-20260808-159"
-last_context_id: "cut-013-recovery-maker-root-context-20260808-159"
+last_run_id: "cut-013-commit-checker-root-20260808-160"
+last_context_id: "cut-013-commit-checker-root-context-20260808-160"
 maker_run_id: "cut-013-recovery-maker-root-20260808-159"
 maker_context_id: "cut-013-recovery-maker-root-context-20260808-159"
-checker_run_id: "cut-012-commit-checker-root-20260808-152"
-checker_context_id: "cut-012-commit-checker-root-context-20260808-152"
+checker_run_id: "cut-013-commit-checker-root-20260808-160"
+checker_context_id: "cut-013-commit-checker-root-context-20260808-160"
 same_blocker_attempts: 0
 ---
 
@@ -34,12 +34,43 @@ same_blocker_attempts: 0
 | Field | Value |
 | --- | --- |
 | Mode | Assisted implementation |
-| Current phase | Phase 09: `VERIFY` |
-| Current task | `CUT-013` (`VERIFY`) |
-| Next task | None |
+| Current phase | Phase 09: `READY` |
+| Current task | None |
+| Next task | `CUT-014` (`READY`) |
 | Implementation authorization | Active |
 | Independent verifier | Distinct Checker required after Maker reaches `VERIFY` |
 | Active blocker | None |
+
+## Current CUT-013 Exact-Commit Checker Record
+
+Independent Checker `cut-013-commit-checker-root-20260808-160` used distinct
+context `cut-013-commit-checker-root-context-20260808-160`, did not participate
+in Maker implementation or staging, and reviewed recovery Maker
+`cut-013-recovery-maker-root-20260808-159`.
+
+The Checker verified exact commit
+`6a433e7970f48f5ddd2fec631f9986746af39ecb`, tree
+`b3f4d12a4b9d55325dc7cd2e9974b438137e30d6`, and the identical
+`origin/TS_backend_refactor` ref. Tracked status remained clean. The 12
+task-range paths contain zero prohibited, cache, secret, Codex configuration,
+or unrelated paths; no tracked Python runtime/toolchain input remains; commit
+whitespace passes. Rejected commit `69a16f3a` evidence was not reused.
+
+Fresh architecture/cancellation tests pass `59/59`; data/rollback tests pass
+`14/14`; security/diagnostic tests pass `17/17`; plan-check tests pass `50/50`.
+Repository TypeScript, the Windows package/release-inertness check, the three
+IPC sender guards, supervisor token boundary, and live plan-check all pass.
+The accepted CUT-003 rollback and CUT-012 clean-clone artifact hashes match.
+
+Accepted evidence is at
+`.omx/artifacts/typescript-bun/CUT-013/cut-013-commit-checker-root-20260808-160/result.json`
+with SHA-256
+`44822baed182a9b02302ac5ba0527f98b46b609997ccafb8eff8c38dc72136f7`.
+`CUT-013` is `DONE`; Phase 09 returns to `READY`; `current_task=null`,
+`next_task=CUT-014`, and `same_blocker_attempts=0`. Only CUT-014 is promoted.
+CI remains automatic-trigger-free and `workflow_dispatch`-only; it was not
+run. No merge, rebase, tag, PR, release, signing, publishing, or deployment
+occurred.
 
 ## Current CUT-013 Recovery Maker Record
 
@@ -1305,7 +1336,7 @@ worktree again; this snapshot is not a substitute for fresh `git status`.
 | 06 Observability and replay | `DONE` | `GATE-06` | [07](./07-OBSERVABILITY-REPLAY.md) |
 | 07 Test and tooling convergence | `DONE` | `GATE-07` | [08](./08-TEST-TOOLING.md) |
 | 08 Packaging and security | `DONE` | `GATE-08` | [09](./09-PACKAGING-SECURITY.md) |
-| 09 Cutover and Python removal | `VERIFY` | `GATE-09` | [10](./10-CUTOVER-CLEANUP.md) |
+| 09 Cutover and Python removal | `READY` | `GATE-09` | [10](./10-CUTOVER-CLEANUP.md) |
 
 ## Open Decisions
 

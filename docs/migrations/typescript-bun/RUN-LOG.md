@@ -12035,3 +12035,44 @@ Rules:
 - CI remained `workflow_dispatch`-only and was not triggered
 - Next single action: commit and push the recovery candidate, then run a new
   exact-commit Checker without reusing the rejected commit evidence
+
+## `cut-013-commit-checker-root-20260808-160` - 2026-08-08 - `CUT-013`
+
+- Role: `checker`
+- Context ID: `cut-013-commit-checker-root-context-20260808-160`
+- Parent run ID: `cut-013-recovery-maker-root-20260808-159`
+- Checker participated in implementation or staging: `false`
+- Exact commit/tree: `6a433e7970f48f5ddd2fec631f9986746af39ecb` /
+  `b3f4d12a4b9d55325dc7cd2e9974b438137e30d6`
+- Upstream identity: `origin/TS_backend_refactor` resolved to the exact commit
+- Rejected commit evidence reused: `false`
+- Source audit: tracked status clean; 12 task-range changed paths; zero
+  prohibited paths; zero tracked Python runtime/toolchain inputs; commit
+  whitespace passed
+- Commands:
+  - fresh architecture/product/lifecycle/cancellation tests -> exit `0`;
+    59 passed, 391 expectations
+  - fresh SQLite migration/database/fault tests -> exit `0`; 14 passed,
+    88 expectations
+  - fresh security/diagnostic tests -> exit `0`; 17 passed, 114 expectations
+  - fresh repository TypeScript -> exit `0`
+  - fresh migration plan-check tests -> exit `0`; 50 passed, 197 expectations
+  - Windows package/release inertness and IPC/token boundary checks -> exit `0`
+  - live plan-check -> exit `0`; 133 tasks, 73 links, 130 pre-acceptance
+    evidence records, zero errors
+- Reused unchanged boundary artifacts only: CUT-003 rollback SHA-256
+  `c0ce607700d689ae10b47f4991f6b7c1e83395d2bb6e4ad955c6f2b71432eb9a`;
+  CUT-012 clean-clone SHA-256
+  `c9531a34c6237c7f68c28e5bb840e172cdb3a8320c82c6ee2998bda8cb9f1cb9`
+- Accepted evidence:
+  `.omx/artifacts/typescript-bun/CUT-013/cut-013-commit-checker-root-20260808-160/result.json`
+  (`sha256:44822baed182a9b02302ac5ba0527f98b46b609997ccafb8eff8c38dc72136f7`,
+  2998 bytes)
+- Decision: `CUT-013` `VERIFY` -> `DONE`; Phase 09 `READY`;
+  `current_task=null`, `next_task=CUT-014`, `same_blocker_attempts=0`
+- Blocker: none
+- Limitations: Windows x64 only; unsigned, unpublished, undeployed; macOS and
+  Windows arm64 unproven; rollback restores the retained backup
+- Decisions/plan drift: none; CI remains `workflow_dispatch`-only and was not
+  triggered
+- Next single task: `CUT-014`

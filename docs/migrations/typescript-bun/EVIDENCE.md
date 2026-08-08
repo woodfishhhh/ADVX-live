@@ -7892,3 +7892,63 @@ accepted task/gate record and does not satisfy PKG-011 or any dependency.
 - Limitations: Windows x64 only; unsigned, unpublished, undeployed; macOS
   unproven.
 - Next task: `CUT-013`.
+
+### CUT-013 / cut-013-commit-checker-root-20260808-160
+
+- Claim: the final architecture/product, data/rollback, security/packaging,
+  and test/evidence review passes against the exact recovery candidate after
+  the bounded review findings and rejected transition fixture are repaired.
+- Status: `DONE`
+- Commit: `6a433e7970f48f5ddd2fec631f9986746af39ecb`
+- Dirty diff identity: `clean`
+- Date: 2026-08-08
+- Environment: Windows x64; Bun `1.3.14`; branch `TS_backend_refactor`
+- Evidence class: `review`, `unit`, `integration`, `security`, `static`
+- Maker: root
+- Maker run/context ID: `cut-013-recovery-maker-root-20260808-159` /
+  `cut-013-recovery-maker-root-context-20260808-159`
+- Checker: root independent run/context
+- Checker run/context ID: `cut-013-commit-checker-root-20260808-160` /
+  `cut-013-commit-checker-root-context-20260808-160`
+- Checker parent run ID: `cut-013-recovery-maker-root-20260808-159`
+- Checker participated in implementation: `false`
+- Checker participated in staging: `false`
+- Reviewed source-state hash: `6a433e7970f48f5ddd2fec631f9986746af39ecb`
+- Upstream identity: `origin/TS_backend_refactor` resolved to the reviewed
+  commit before verification.
+- Commands/procedure:
+  - exact commit/tree/upstream, ownership, tracked-Python, and whitespace
+    audits -> exit `0`
+  - fresh architecture/product/lifecycle/cancellation tests -> exit `0`;
+    59 passed
+  - fresh SQLite migration/database/fault tests -> exit `0`; 14 passed
+  - fresh security/diagnostic tests -> exit `0`; 17 passed
+  - fresh repository TypeScript and 50 plan-check regressions -> exit `0`
+  - Windows package/release inertness and IPC/token boundary checks -> exit `0`
+  - live plan-check -> exit `0`; 133 tasks, 73 links, 130 pre-acceptance
+    evidence records, zero errors
+- Accepted assertions:
+  - Electron's required Node supervision boundary is explicit and the product
+    backend runtime remains Bun;
+  - no tracked Python runtime/toolchain input or hidden release requirement
+    remains;
+  - rollback remains the accepted restore-from-backup procedure;
+  - the startup token is absent from public supervisor identity and the three
+    reviewed sensitive IPC handlers enforce the control sender;
+  - reviewed cancellation/lifecycle fences remain intact;
+  - only Windows x64, unsigned, unpublished, undeployed support is claimed;
+  - automatic CI remains disabled and was not triggered;
+  - rejected commit evidence was not reused.
+- Recovery Maker artifact:
+  `.omx/artifacts/typescript-bun/CUT-013/cut-013-recovery-maker-root-20260808-159/result.json`
+  (`sha256:76a9c7a62d919235b9f917145e0773741f0eee74ccb6d17c0119549720ade765`,
+  1155 bytes)
+- Checker artifact:
+  `.omx/artifacts/typescript-bun/CUT-013/cut-013-commit-checker-root-20260808-160/result.json`
+  (`sha256:44822baed182a9b02302ac5ba0527f98b46b609997ccafb8eff8c38dc72136f7`,
+  2998 bytes)
+- Limitations: Windows x64 only; unsigned, unpublished, undeployed; macOS and
+  Windows arm64 unproven; no repeat of the unchanged CUT-012 clean-clone full
+  matrix; rollback does not preserve Bun-only writes made after the backup.
+- Related run log: `cut-013-commit-checker-root-20260808-160`
+- Decision: `CUT-013` `VERIFY` -> `DONE`; only `CUT-014` is promoted.

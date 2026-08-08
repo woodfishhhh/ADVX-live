@@ -1245,8 +1245,8 @@ Checker. Candidate evidence:
 | `CUT-010` | `DONE` | Remove temporary dual-runtime adapters and migration-only shims | `CUT-008`, `CUT-009` | Dead-code audit |
 | `CUT-011` | `DONE` | Run repository-wide no-Python/no-pnpm/no-uv scan with allowlisted history only | `CUT-009`, `CUT-010` | Scan artifact |
 | `CUT-012` | `DONE` | Run clean-clone install, lint, typecheck, tests, build, and installed E2E | `CUT-011` | Clean-clone evidence |
-| `CUT-013` | `VERIFY` | Independent architecture, security, data, and test review | `CUT-012` | Review verdict |
-| `CUT-014` | `TODO` | Close or explicitly retain rollback window and archive migration state | `CUT-013` | Closure record |
+| `CUT-013` | `DONE` | Independent architecture, security, data, and test review | `CUT-012` | Review verdict |
+| `CUT-014` | `READY` | Close or explicitly retain rollback window and archive migration state | `CUT-013` | Closure record |
 | `GATE-09` | `TODO` | Final proof-or-stop verification | `CUT-001..014` | Final accepted evidence |
 
 Maker `cut-002-maker-root-20260808-125` completed only the bounded Windows x64
@@ -1698,6 +1698,23 @@ expectations, live plan-check, and whitespace now pass. `CUT-013` remains
 `VERIFY`, `CUT-014` remains `TODO`, and the rejected commit evidence is not
 reused. Recovery evidence SHA-256 is
 `76a9c7a62d919235b9f917145e0773741f0eee74ccb6d17c0119549720ade765`.
+
+New independent exact-commit Checker
+`cut-013-commit-checker-root-20260808-160`, in distinct context
+`cut-013-commit-checker-root-context-20260808-160`, verified commit
+`6a433e7970f48f5ddd2fec631f9986746af39ecb`, tree
+`b3f4d12a4b9d55325dc7cd2e9974b438137e30d6`, and the identical
+`origin/TS_backend_refactor` ref without reusing rejected commit evidence.
+The task-range 12-path ownership/prohibited-path audit, tracked-Python audit,
+and whitespace pass. Fresh architecture/cancellation `59/59`, data/rollback
+`14/14`, security/diagnostics `17/17`, plan-check `50/50`, repository
+TypeScript, package inertness, IPC/token boundary, and live plan-check all pass.
+Accepted unchanged CUT-003 rollback and CUT-012 clean-clone artifact hashes
+match. `CUT-013` is `DONE`; Phase 09 returns to `READY`;
+`current_task=null`, `next_task=CUT-014`, and `same_blocker_attempts=0`. Only
+CUT-014 is promoted. CI remains `workflow_dispatch`-only and was not run.
+Checker evidence SHA-256 is
+`44822baed182a9b02302ac5ba0527f98b46b609997ccafb8eff8c38dc72136f7`.
 
 ## Gate External Conditions
 
