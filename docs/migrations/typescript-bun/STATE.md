@@ -10,20 +10,20 @@ wall_clock_budget_minutes: null
 token_budget: null
 cost_budget_usd: null
 current_phase: "09"
-current_task: "CUT-010"
-next_task: null
+current_task: null
+next_task: "CUT-011"
 baseline_commit: "41665a96cf67eb82cbe02f83abbbe2b79b100e48"
-last_verified_commit: "3ff566d6fe8eb3eb6d025da3e08fd8d08e7cdec0"
-current_head: "10d12f04844e9e4d1dd80ce7f8ee8020a4e6f44e"
+last_verified_commit: "48896ea63719857b699021d4b8b543ae311ec19a"
+current_head: "48896ea63719857b699021d4b8b543ae311ec19a"
 current_branch: "TS_backend_refactor"
 worktree_root: "D:/Coding/ADVX-live"
 worktree_dirty: true
-last_run_id: "cut-010-maker-root-20260808-146"
-last_context_id: "cut-010-maker-root-context-20260808-146"
+last_run_id: "cut-010-commit-checker-root-20260808-147"
+last_context_id: "cut-010-commit-checker-root-context-20260808-147"
 maker_run_id: "cut-010-maker-root-20260808-146"
 maker_context_id: "cut-010-maker-root-context-20260808-146"
-checker_run_id: "cut-009-commit-checker-root-20260808-145"
-checker_context_id: "cut-009-commit-checker-root-context-20260808-145"
+checker_run_id: "cut-010-commit-checker-root-20260808-147"
+checker_context_id: "cut-010-commit-checker-root-context-20260808-147"
 same_blocker_attempts: 0
 ---
 
@@ -34,12 +34,46 @@ same_blocker_attempts: 0
 | Field | Value |
 | --- | --- |
 | Mode | Assisted implementation |
-| Current phase | Phase 09: `VERIFY` |
-| Current task | `CUT-010` (`VERIFY`) |
-| Next task | None |
+| Current phase | Phase 09: `READY` |
+| Current task | None |
+| Next task | `CUT-011` (`READY`) |
 | Implementation authorization | Active |
 | Independent verifier | Distinct Checker required after Maker reaches `VERIFY` |
 | Active blocker | None |
+
+## Current CUT-010 Exact-Commit Checker Record
+
+Independent Checker `cut-010-commit-checker-root-20260808-147` used distinct
+context `cut-010-commit-checker-root-context-20260808-147`, did not participate
+in implementation or staging, and reviewed Maker
+`cut-010-maker-root-20260808-146`.
+
+The Checker verified exact commit
+`48896ea63719857b699021d4b8b543ae311ec19a` and tree
+`0fa9d1c20646e95afa0d8354257cc22bcb414df5`. The upstream ref
+`origin/TS_backend_refactor` resolved to the same commit, the tracked worktree
+had zero diff, and its 73 changed paths included zero `.omx`, `output`, `promo`,
+Codex configuration, cache, or secret paths. Commit whitespace validation
+passed.
+
+Repository TypeScript, the focused CUT-010 checker, 14 contract test blocks
+covering 25 named assertions, 10 desktop backend tests, eight trace/migration
+tests, Bun OpenAPI byte equality, PKG-012, and live plan-check all passed. The
+exact source aggregate matches Maker at
+`34626421746e88ffa986de45ff2cab1d466ae71a8a5c6a3cd7a843362aa66235`.
+The Checker confirmed Bun is the only supported runtime, no active tracked
+Python file remains, durable compatibility/rollback/diagnostic boundaries stay
+intact, and CI is still `workflow_dispatch`-only.
+
+Accepted evidence is at
+`.omx/artifacts/typescript-bun/CUT-010/cut-010-commit-checker-root-20260808-147/result.json`
+with SHA-256
+`db7a916920d12781e763aa46c02de9900a3a2b3c7c993e6932d378873574a247`.
+`CUT-010` is `DONE`; Phase 09 returns to `READY`; `current_task=null`,
+`next_task=CUT-011`, and `same_blocker_attempts=0`. Only CUT-011 is promoted.
+Automatic CI remains disabled until migration completion. No CUT-011
+implementation, merge, rebase, tag, PR, release, signing, or deployment
+occurred.
 
 ## Current CUT-010 Maker Record
 

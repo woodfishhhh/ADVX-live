@@ -1242,8 +1242,8 @@ Checker. Candidate evidence:
 | `CUT-007` | `DONE` | Update architecture, backend, protocol, setup, and product-status docs | `CUT-005`, `CUT-006` | Documentation audit |
 | `CUT-008` | `DONE` | Remove Python backend source and Python-only tests after human gate | `CUT-004..007` | Tracked-file audit |
 | `CUT-009` | `DONE` | Remove `pyproject.toml`, `uv.lock`, Alembic runtime, and Python ignores | `CUT-008` | Toolchain audit |
-| `CUT-010` | `VERIFY` | Remove temporary dual-runtime adapters and migration-only shims | `CUT-008`, `CUT-009` | Dead-code audit |
-| `CUT-011` | `TODO` | Run repository-wide no-Python/no-pnpm/no-uv scan with allowlisted history only | `CUT-009`, `CUT-010` | Scan artifact |
+| `CUT-010` | `DONE` | Remove temporary dual-runtime adapters and migration-only shims | `CUT-008`, `CUT-009` | Dead-code audit |
+| `CUT-011` | `READY` | Run repository-wide no-Python/no-pnpm/no-uv scan with allowlisted history only | `CUT-009`, `CUT-010` | Scan artifact |
 | `CUT-012` | `TODO` | Run clean-clone install, lint, typecheck, tests, build, and installed E2E | `CUT-011` | Clean-clone evidence |
 | `CUT-013` | `TODO` | Independent architecture, security, data, and test review | `CUT-012` | Review verdict |
 | `CUT-014` | `TODO` | Close or explicitly retain rollback window and archive migration state | `CUT-013` | Closure record |
@@ -1559,6 +1559,26 @@ Automatic CI remains `workflow_dispatch`-only until migration completion.
 `CUT-010` and Phase 09 are `VERIFY`; `current_task=CUT-010`, `next_task=null`,
 and `same_blocker_attempts=0`. CUT-011 remains `TODO` pending a distinct
 exact-commit Checker. No later task was started.
+
+Independent exact-commit Checker
+`cut-010-commit-checker-root-20260808-147`, in distinct context
+`cut-010-commit-checker-root-context-20260808-147`, verified commit
+`48896ea63719857b699021d4b8b543ae311ec19a`, tree
+`0fa9d1c20646e95afa0d8354257cc22bcb414df5`, and the identical
+`origin/TS_backend_refactor` ref. The tracked worktree had zero diff and the 73
+changed paths contained zero prohibited, cache, Codex configuration, or secret
+paths.
+
+Repository TypeScript, focused CUT-010, 14 contract test blocks, 10 desktop
+backend tests, eight trace/migration tests, Bun OpenAPI byte equality, PKG-012,
+commit whitespace validation, and live plan-check pass. The Checker matched
+Maker source aggregate
+`34626421746e88ffa986de45ff2cab1d466ae71a8a5c6a3cd7a843362aa66235`.
+
+`CUT-010` is `DONE`; Phase 09 returns to `READY`; `current_task=null`,
+`next_task=CUT-011`, and `same_blocker_attempts=0`. Only CUT-011 is promoted.
+Automatic CI remains `workflow_dispatch`-only until migration completion. No
+later task was started.
 
 ## Gate External Conditions
 

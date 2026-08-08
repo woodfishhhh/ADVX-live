@@ -7712,23 +7712,31 @@ accepted task/gate record and does not satisfy PKG-011 or any dependency.
   unproven; CUT-012 clean-clone verification pending.
 - Next task: `CUT-010`
 
-#### CUT-010 candidate / cut-010-maker-root-20260808-146
+### CUT-010 / cut-010-commit-checker-root-20260808-147
 
 - Claim: remove temporary dual-runtime and Python compatibility adapters,
   parity-only clients/tests, copied Python contracts, closed rollback branches,
   and migration telemetry while retaining durable protocol compatibility,
   migration history, rollback evidence, redaction, and diagnostics.
-- Status: `VERIFY`
-- Candidate parent HEAD: `10d12f04844e9e4d1dd80ce7f8ee8020a4e6f44e`
+- Status: `DONE`
+- Accepted commit: `48896ea63719857b699021d4b8b543ae311ec19a`
+- Accepted tree: `0fa9d1c20646e95afa0d8354257cc22bcb414df5`
 - Date: 2026-08-08
 - Environment: Windows x64; Bun `1.3.14`; branch `TS_backend_refactor`
 - Evidence class: `static`, `unit`, `review`
 - Maker: root
 - Maker run/context ID: `cut-010-maker-root-20260808-146` /
   `cut-010-maker-root-context-20260808-146`
-- Checker: pending distinct exact-commit Checker
-- Checker run/context ID: pending
-- Reviewed source-state hash: pending candidate commit
+- Checker: root independent run/context
+- Checker run/context ID:
+  `cut-010-commit-checker-root-20260808-147` /
+  `cut-010-commit-checker-root-context-20260808-147`
+- Checker parent run ID: `cut-010-maker-root-20260808-146`
+- Checker participated in implementation: `false`
+- Checker participated in staging: `false`
+- Reviewed source-state hash: `48896ea63719857b699021d4b8b543ae311ec19a`
+- Upstream identity: `origin/TS_backend_refactor` resolved to the accepted
+  commit before verification.
 - Source identity:
   `34626421746e88ffa986de45ff2cab1d466ae71a8a5c6a3cd7a843362aa66235`
 - Commands/procedure:
@@ -7740,7 +7748,11 @@ accepted task/gate record and does not satisfy PKG-011 or any dependency.
   - targeted trace/migration Bun tests -> exit `0`; eight tests passed
   - `bun run contracts:bun-openapi:check` -> exit `0`; byte-equal
   - `bun run check:pkg-012` -> exit `0`; release authority remains inert
-- Candidate assertions:
+  - exact commit ownership and whitespace checks -> exit `0`; 73 changed paths,
+    zero prohibited paths, zero tracked worktree diff
+  - `bun run migration:plan-check` -> exit `0`; 133 tasks, 72 links,
+    127 pre-acceptance evidence records, zero errors
+- Accepted assertions:
   - Bun is the only supported product runtime;
   - copied Python OpenAPI, parity-oracle machinery, SQLite Python migration
     adapters, and closed selector/rollback branches are absent;
@@ -7748,11 +7760,15 @@ accepted task/gate record and does not satisfy PKG-011 or any dependency.
     evidence, trace redaction, and useful diagnostics remain;
   - `.github/workflows/bun-ci.yml` has only `workflow_dispatch` and remains off
     until migration completion under explicit human direction.
-- Artifact:
-  `.omx/artifacts/typescript-bun/CUT-010/cut-010-maker-root-20260808-146/result.json`
-  (`sha256:7d2669fec82ef1e801701b627e1bbd6698ddd40f9756ee3af3beac27f4cee931`,
-  1612 bytes)
+- Artifacts:
+  - Maker:
+    `.omx/artifacts/typescript-bun/CUT-010/cut-010-maker-root-20260808-146/result.json`
+    (`sha256:7d2669fec82ef1e801701b627e1bbd6698ddd40f9756ee3af3beac27f4cee931`,
+    1612 bytes)
+  - Checker:
+    `.omx/artifacts/typescript-bun/CUT-010/cut-010-commit-checker-root-20260808-147/result.json`
+    (`sha256:db7a916920d12781e763aa46c02de9900a3a2b3c7c993e6932d378873574a247`,
+    1458 bytes)
 - Limitations: Windows x64 only; unsigned, unpublished, undeployed; macOS
   unproven; CUT-012 clean-clone verification pending.
-- Next action: create and push the candidate commit, then run the distinct
-  exact-commit Checker before accepting `DONE`.
+- Next task: `CUT-011`.
