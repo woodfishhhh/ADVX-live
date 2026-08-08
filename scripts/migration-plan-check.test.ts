@@ -149,6 +149,23 @@ describe('migration plan drift checker', () => {
     await expectCodes(root, ['BROKEN_RELATIVE_LINK'])
   })
 
+  test('permits absent well-formed local evidence pointers in a clean checkout', async () => {
+    const root = await mutate('README.md', (contents) => contents)
+    await rm(join(root, '..', '..', '..', '.omx'), { recursive: true, force: true })
+    const report = await checkMigrationPlan(root)
+    expect(report.status).toBe('passed')
+    expect(report.documentsUnchanged).toBe(true)
+  })
+
+  test('rejects an escaping local evidence pointer', async () => {
+    const root = await mutate(
+      'README.md',
+      (contents) =>
+        `${contents}\n[invalid artifact](../../../.omx/artifacts/typescript-bun/FND-003/../../secrets.json)\n`
+    )
+    await expectCodes(root, ['BROKEN_RELATIVE_LINK'])
+  })
+
   test('rejects a missing required link fragment', async () => {
     const root = await mutate(
       'README.md',

@@ -1249,6 +1249,12 @@ function slugifyHeading(heading: string): string {
     .replace(/\s+/g, '-')
 }
 
+function isLocalEvidencePointer(relativePath: string): boolean {
+  return /^\.\.\/\.\.\/\.\.\/\.omx\/artifacts\/typescript-bun\/(?:[A-Z]{3}-\d{3}|GATE-\d{2})\/[a-z0-9][a-z0-9-]*\/[A-Za-z0-9][A-Za-z0-9._-]*$/.test(
+    relativePath.replaceAll('\\', '/')
+  )
+}
+
 async function validateLinks(
   root: string,
   files: Map<string, string>,
@@ -1270,6 +1276,9 @@ async function validateLinks(
       try {
         targetStat = await stat(targetPath)
       } catch {
+        if (relativePath && isLocalEvidencePointer(relativePath)) {
+          continue
+        }
         error(
           errors,
           'BROKEN_RELATIVE_LINK',
