@@ -67,7 +67,6 @@ function defaultIdentity(baseUrl: string): BackendProcessIdentitySpec {
   return {
     version: "unknown",
     port,
-    token: "",
     dataDirectory: "",
     logLocation: ""
   };

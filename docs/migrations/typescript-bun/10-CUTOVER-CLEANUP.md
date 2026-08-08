@@ -266,6 +266,11 @@ look for hidden Node/Bun boundary assumptions, untracked Python requirements,
 stale evidence, suppressed scans, secret exposure, lost cancellation fences,
 and unsupported platform claims.
 
+Maker review record:
+[CUT-013-INDEPENDENT-FINAL-REVIEW.md](./CUT-013-INDEPENDENT-FINAL-REVIEW.md).
+The record is a candidate review only; a distinct exact-commit Checker owns
+acceptance.
+
 ### `CUT-014` Close Or Retain Rollback Window
 
 Record:

@@ -1245,7 +1245,7 @@ Checker. Candidate evidence:
 | `CUT-010` | `DONE` | Remove temporary dual-runtime adapters and migration-only shims | `CUT-008`, `CUT-009` | Dead-code audit |
 | `CUT-011` | `DONE` | Run repository-wide no-Python/no-pnpm/no-uv scan with allowlisted history only | `CUT-009`, `CUT-010` | Scan artifact |
 | `CUT-012` | `DONE` | Run clean-clone install, lint, typecheck, tests, build, and installed E2E | `CUT-011` | Clean-clone evidence |
-| `CUT-013` | `READY` | Independent architecture, security, data, and test review | `CUT-012` | Review verdict |
+| `CUT-013` | `VERIFY` | Independent architecture, security, data, and test review | `CUT-012` | Review verdict |
 | `CUT-014` | `TODO` | Close or explicitly retain rollback window and archive migration state | `CUT-013` | Closure record |
 | `GATE-09` | `TODO` | Final proof-or-stop verification | `CUT-001..014` | Final accepted evidence |
 
@@ -1669,6 +1669,24 @@ plan-check reports 133 tasks, 72 links, 130 evidence records, and zero errors.
 `next_task=CUT-013`, and `same_blocker_attempts=0`. Only CUT-013 is promoted.
 Automatic CI remains `workflow_dispatch`-only. No later task, release action,
 or deployment was started.
+
+Maker `cut-013-maker-root-20260808-157`, in distinct context
+`cut-013-maker-root-context-20260808-157`, completed only the bounded final
+review. Four sequential review lanes covered architecture/product semantics,
+data/rollback, security/packaging, and test/evidence completeness. The review
+removed the startup token from the public supervisor identity, added the
+existing sender guard to three sensitive IPC handlers, repaired stale
+plan-check fixtures, and reconciled the accepted gate/phase index. Targeted
+architecture, persistence, security, desktop, plan-check, TypeScript, package
+inertness, and live control-plane checks pass. The review makes only a Windows
+x64, unsigned, unpublished, undeployed claim; CI remains manual-only and was
+not run. `CUT-013` and Phase 09 are `VERIFY`; `current_task=CUT-013`,
+`next_task=null`, and `same_blocker_attempts=0`. A distinct exact-commit
+Checker must decide acceptance; `CUT-014` remains `TODO`.
+Maker evidence is at
+`.omx/artifacts/typescript-bun/CUT-013/cut-013-maker-root-20260808-157/result.json`
+with SHA-256
+`1f4baae88a4d9e739c9c3519f8ab132fb4a23dec42bbb89430e77f9cc00f4e7d`.
 
 ## Gate External Conditions
 

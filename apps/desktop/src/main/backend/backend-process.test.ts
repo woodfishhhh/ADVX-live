@@ -24,7 +24,6 @@ import type { BackendProcessExit } from "./backend-supervisor";
 const TEST_IDENTITY = {
   version: "test-backend",
   port: 8765,
-  token: "test-token",
   dataDirectory: "D:/test-data",
   logLocation: "D:/test-logs/advx.log"
 } as const;
@@ -186,7 +185,7 @@ describe("backend process readiness", () => {
     await controller.prepare();
     expect(controller.status()).toMatchObject({
       state: "prepared",
-      identity: { version: "test-backend", port: 8765, token: "test-token" }
+      identity: { version: "test-backend", port: 8765 }
     });
     await controller.start();
     expect(controller.status()).toMatchObject({ state: "ready", ready: true });
@@ -318,7 +317,7 @@ describe("backend process readiness", () => {
         dataDirectory,
         startupToken: token,
         bunExecutable,
-        identity: { ...TEST_IDENTITY, port, token, dataDirectory },
+        identity: { ...TEST_IDENTITY, port, dataDirectory },
         logger
       })
     );

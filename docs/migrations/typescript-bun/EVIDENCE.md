@@ -102,15 +102,15 @@ This record does not prove the missing capability. It prevents a permanent
 
 | Gate | Status | Accepted Commit | Run ID | Evidence Classes | Limitations |
 | --- | --- | --- | --- | --- | --- |
-| `GATE-00` | `TODO` | - | - | - | - |
-| `GATE-01` | `TODO` | - | - | - | - |
-| `GATE-02` | `TODO` | - | - | - | - |
-| `GATE-03` | `TODO` | - | - | - | - |
-| `GATE-04` | `TODO` | - | - | - | - |
+| `GATE-00` | `DONE` | `41665a96cf67eb82cbe02f83abbbe2b79b100e48` | `gate-00-checker-20260730-001` | static, review | Windows x64 foundation evidence |
+| `GATE-01` | `DONE` | `41665a96cf67eb82cbe02f83abbbe2b79b100e48` | `gate-01-checker-20260802-003` | static, unit, review | Accepted dirty source identity is recorded below |
+| `GATE-02` | `DONE` | `41665a96cf67eb82cbe02f83abbbe2b79b100e48` | `gate-02-checker-root-20260803-001` | static, integration, security, review | Accepted dirty source aggregate is recorded below |
+| `GATE-03` | `DONE` | `41665a96cf67eb82cbe02f83abbbe2b79b100e48` | `gate-03-checker-root-20260804-001` | static, integration, data-safety, performance, review | Restore uses an untouched backup, not in-place rollback |
+| `GATE-04` | `DONE` | `41665a96cf67eb82cbe02f83abbbe2b79b100e48` | `gate-04-checker-root-20260804-002` | static, review | Desktop supervision remained Phase 05 scope |
 | `GATE-05` | `DONE` | `41665a96cf67eb82cbe02f83abbbe2b79b100e48` | `gate-05-checker-root-20260806-024` | review, unit, integration, recorded, unpacked | Node 22 engine warning; no signed packaged-release claim |
 | `GATE-06` | `DONE` | `41665a96cf67eb82cbe02f83abbbe2b79b100e48` | `gate-06-checker-root-20260806-052` | review, observability, replay, lifecycle | Node 22 engine warning; no credentialed-live claim |
 | `GATE-07` | `DONE` | `41665a96cf67eb82cbe02f83abbbe2b79b100e48` | `gate-07-checker-root-20260807-087` | phase-gate, review, static, ledger | Node 22 engine warning; no credentialed-live claim |
-| `GATE-08` | `TODO` | - | - | - | - |
+| `GATE-08` | `DONE` | `41665a96cf67eb82cbe02f83abbbe2b79b100e48` | `gate-08-checker-root-20260808-120` | package, security, installed, review | Windows x64 only; unsigned; unpublished; macOS unproven |
 | `GATE-09` | `TODO` | - | - | - | - |
 
 ## Accepted Records

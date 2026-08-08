@@ -11954,3 +11954,40 @@ Rules:
 - Decisions/plan drift: CI remains `workflow_dispatch`-only until migration
   completion; task order unchanged
 - Next single task: `CUT-013`
+
+## `cut-013-maker-root-20260808-157` - 2026-08-08 - `CUT-013`
+
+- Role: `maker`
+- Context ID: `cut-013-maker-root-context-20260808-157`
+- Parent run ID: `cut-012-commit-checker-root-20260808-152`
+- Branch/base HEAD: `TS_backend_refactor` /
+  `b90f5914592ca8fec9c18285068964358b575a04`
+- State transition: `CUT-013` `READY` -> `IN_PROGRESS` -> `VERIFY`; Phase 09
+  `VERIFY`; `current_task=CUT-013`, `next_task=null`,
+  `same_blocker_attempts=0`
+- Review lanes: architecture/product semantics, data migration/rollback,
+  security/packaging, and test/evidence completeness
+- Changes:
+  - removed the one-time startup token from the public supervisor identity;
+  - guarded three sensitive desktop/media IPC handlers with the existing
+    trusted-sender check;
+  - repaired stale synthetic plan-check fixtures without weakening the live
+    checker;
+  - reconciled the accepted phase-gate index and Phase 04 status.
+- Decisive checks: architecture/lifecycle/cancellation `59/59`; data/persistence
+  `14/14`; security/diagnostics `22/22`; desktop `40/40`; plan-check tests
+  `50/50`; repository TypeScript, Windows package inertness, diff hygiene, and
+  live plan-check all pass
+- Review record:
+  `docs/migrations/typescript-bun/CUT-013-INDEPENDENT-FINAL-REVIEW.md`
+- Maker evidence:
+  `.omx/artifacts/typescript-bun/CUT-013/cut-013-maker-root-20260808-157/result.json`
+  (`sha256:1f4baae88a4d9e739c9c3519f8ab132fb4a23dec42bbb89430e77f9cc00f4e7d`,
+  1537 bytes)
+- Blocker: none
+- Limitations: Windows x64 only; unsigned, unpublished, undeployed; macOS and
+  Windows arm64 unproven; rollback restores the retained backup
+- Decisions/plan drift: none; CI remains `workflow_dispatch`-only and was not
+  triggered
+- Next single action: create and push the CUT-013 candidate, then run a distinct
+  exact-commit Checker

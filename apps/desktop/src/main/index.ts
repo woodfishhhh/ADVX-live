@@ -143,7 +143,6 @@ function createBackendProcessController(): BackendProcessController {
   const processIdentity = {
     version: `${backendRuntime}@${app.getVersion()}`,
     port: Number(backendPort),
-    token: localToken,
     dataDirectory,
     logLocation: join(app.getPath("userData"), "logs", "advx.log")
   } as const;

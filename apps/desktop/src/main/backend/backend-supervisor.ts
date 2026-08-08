@@ -7,7 +7,6 @@ import type { ChildProcessWithoutNullStreams } from "node:child_process";
 export type BackendProcessIdentitySpec = Readonly<{
   version: string;
   port: number;
-  token: string;
   dataDirectory: string;
   logLocation: string;
 }>;

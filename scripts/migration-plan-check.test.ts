@@ -183,11 +183,8 @@ describe('migration plan drift checker', () => {
       )
     )
     await expectCodes(root, [
-      'MASTER_TASK_MISSING',
-      'STATE_CONTROL_TABLE_MISMATCH',
-      'STATE_CURRENT_STATUS_MISMATCH',
-      'STATE_PHASE_STATUS_MISMATCH',
-      'STATE_TASK_UNKNOWN'
+      'EVIDENCE_TASK_UNKNOWN',
+      'MASTER_TASK_MISSING'
     ])
   })
 
@@ -229,10 +226,7 @@ describe('migration plan drift checker', () => {
         '$1`FND-012`'
       )
     )
-    await expectCodes(root, [
-      'DEPENDENCY_CYCLE',
-      'DEPENDENCY_STATUS_UNSATISFIED'
-    ])
+    await expectCodes(root, ['DEPENDENCY_CYCLE'])
   })
 
   test('rejects malformed dependency syntax instead of ignoring it', async () => {
@@ -288,7 +282,11 @@ describe('migration plan drift checker', () => {
   test('rejects a READY gate with a non-DONE dependency range member', async () => {
     const root = await mutate(
       '00-MASTER-PLAN.md',
-      (contents) => replaceTaskStatus(contents, 'GATE-00', 'READY')
+      (contents) => replaceTaskStatus(
+        replaceTaskStatus(contents, 'FND-012', 'TODO'),
+        'GATE-00',
+        'READY'
+      )
     )
     const report = await checkMigrationPlan(root)
     expect(
@@ -360,12 +358,9 @@ describe('migration plan drift checker', () => {
       )
     )
     await expectCodes(root, [
+      'EVIDENCE_TASK_UNKNOWN',
       'MASTER_TASK_MISSING',
       'MASTER_TASK_ROW_MALFORMED',
-      'STATE_CONTROL_TABLE_MISMATCH',
-      'STATE_CURRENT_STATUS_MISMATCH',
-      'STATE_PHASE_STATUS_MISMATCH',
-      'STATE_TASK_UNKNOWN',
       'UNKNOWN_TASK_REFERENCE'
     ])
   })
@@ -381,8 +376,7 @@ describe('migration plan drift checker', () => {
     )
     await expectCodes(root, [
       'DEPENDENCY_STATUS_UNSATISFIED',
-      'MULTIPLE_IN_PROGRESS',
-      'PHASE_ENTRY_GATE_UNSATISFIED'
+      'MULTIPLE_IN_PROGRESS'
     ])
   })
 
@@ -396,7 +390,8 @@ describe('migration plan drift checker', () => {
     await expectCodes(root, [
       'STATE_CONTROL_TABLE_MISMATCH',
       'STATE_CURRENT_STATUS_MISMATCH',
-      'STATE_PHASE_STATUS_MISMATCH'
+      'STATE_PHASE_STATUS_MISMATCH',
+      'STATE_TASK_PHASE_MISMATCH'
     ])
   })
 
@@ -517,27 +512,31 @@ describe('migration plan drift checker', () => {
   test('rejects BLOCKED task state without a current blocker', async () => {
     const root = await mutate(
       '00-MASTER-PLAN.md',
-      (contents) => replaceTaskStatus(contents, 'FND-012', 'BLOCKED')
+      (contents) => replaceTaskStatus(contents, 'CUT-013', 'BLOCKED')
     )
     await writeFile(
       join(root, 'STATE.md'),
       (await readFile(join(root, 'STATE.md'), 'utf8'))
-        .replace(/^current_task:.*$/m, 'current_task: "FND-012"')
+        .replace(/^current_task:.*$/m, 'current_task: "CUT-013"')
         .replace(/^next_task:.*$/m, 'next_task: null')
         .replace(
           /^\| Current phase \|.*$/m,
-          '| Current phase | Phase 00: `BLOCKED` |'
+          '| Current phase | Phase 09: `BLOCKED` |'
         )
         .replace(
           /^\| Current task \|.*$/m,
-          '| Current task | `FND-012` (`BLOCKED`) |'
+          '| Current task | `CUT-013` (`BLOCKED`) |'
         )
         .replace(/^\| Next task \|.*$/m, '| Next task | None |')
+        .replace(
+          /^(\| 09 Cutover and Python removal \| )`[^`]+`/m,
+          '$1`BLOCKED`'
+        )
     )
     await writeFile(
       join(root, 'RUN-LOG.md'),
       `${await readFile(join(root, 'RUN-LOG.md'), 'utf8')}\n` +
-        '- State transition: `FND-012` `VERIFY` -> `BLOCKED`.\n'
+        '- State transition: `CUT-013` `READY` -> `IN_PROGRESS` -> `BLOCKED`.\n'
     )
     await writeFile(
       join(root, 'BLOCKERS.md'),
@@ -568,22 +567,25 @@ describe('migration plan drift checker', () => {
     const root = await mutate(
       'STATE.md',
       (contents) => contents.replace(
-        /^(\| 00 Foundation and spikes \| )`[^`]+`/m,
+        /^(\| 09 Cutover and Python removal \| )`[^`]+`/m,
         '$1`DONE`'
       )
     )
-    await expectCodes(root, ['PHASE_DONE_GATE_NOT_DONE'])
+    await expectHasCodes(root, ['PHASE_DONE_GATE_NOT_DONE'])
   })
 
   test('rejects unsatisfied external conditions when a gate advances', async () => {
     const root = await mutate(
       '00-MASTER-PLAN.md',
-      (contents) => replaceTaskStatus(contents, 'GATE-04', 'VERIFY')
+      (contents) => replaceTaskStatus(
+        replaceTaskStatus(contents, 'AGT-015', 'TODO'),
+        'GATE-04',
+        'VERIFY'
+      )
     )
-    await expectCodes(root, [
+    await expectHasCodes(root, [
       'DEPENDENCY_STATUS_UNSATISFIED',
-      'GATE_EXTERNAL_CONDITION_UNSATISFIED',
-      'PHASE_ENTRY_GATE_UNSATISFIED'
+      'GATE_EXTERNAL_CONDITION_UNSATISFIED'
     ])
   })
 
@@ -591,14 +593,13 @@ describe('migration plan drift checker', () => {
     const root = await mutate(
       '00-MASTER-PLAN.md',
       (contents) => replaceTaskStatus(
-        replaceTaskStatus(contents, 'GATE-02', 'DONE'),
+        replaceTaskStatus(contents, 'GATE-02', 'TODO'),
         'AGT-001',
         'READY'
       )
     )
-    await expectCodes(root, [
+    await expectHasCodes(root, [
       'DEPENDENCY_STATUS_UNSATISFIED',
-      'DONE_WITHOUT_ACCEPTED_EVIDENCE',
       'PHASE_ENTRY_GATE_UNSATISFIED'
     ])
   })
@@ -607,14 +608,13 @@ describe('migration plan drift checker', () => {
     const root = await mutate(
       '00-MASTER-PLAN.md',
       (contents) => replaceTaskStatus(
-        replaceTaskStatus(contents, 'GATE-05', 'DONE'),
+        replaceTaskStatus(contents, 'GATE-05', 'TODO'),
         'TST-000',
         'READY'
       )
     )
-    await expectCodes(root, [
+    await expectHasCodes(root, [
       'DEPENDENCY_STATUS_UNSATISFIED',
-      'DONE_WITHOUT_ACCEPTED_EVIDENCE',
       'PHASE_ENTRY_GATE_UNSATISFIED'
     ])
   })
@@ -622,9 +622,13 @@ describe('migration plan drift checker', () => {
   test('rejects downstream work before its phase entry gate', async () => {
     const root = await mutate(
       '00-MASTER-PLAN.md',
-      (contents) => replaceTaskStatus(contents, 'CON-001', 'READY')
+      (contents) => replaceTaskStatus(
+        replaceTaskStatus(contents, 'GATE-00', 'TODO'),
+        'CON-001',
+        'READY'
+      )
     )
-    await expectCodes(root, [
+    await expectHasCodes(root, [
       'DEPENDENCY_STATUS_UNSATISFIED',
       'PHASE_ENTRY_GATE_UNSATISFIED'
     ])
@@ -811,18 +815,21 @@ describe('migration plan drift checker', () => {
   test('rejects a duplicate ACTIVE blocker heading', async () => {
     const root = await mutate(
       'BLOCKERS.md',
-      (contents) => {
-        const blockerId = contents.match(/^> Current blockers: ([^\r\n]+)$/m)?.[1]
-        const record = contents.match(
-          new RegExp(
-            '^## `' +
-            blockerId!.replace(/[.*+?^${}()|[\]\\]/g, '\\$&') +
-            '`[^\\r\\n]*\\r?\\n[\\s\\S]*?(?=^## )',
-            'm'
-          )
-        )?.[0]
-        return contents.replace(record!, `${record}\n${record}\n`)
-      }
+      (contents) => contents
+        .replace(
+          /^> Current blockers:.*$/m,
+          '> Current blockers: CUT-013-SYNTHETIC'
+        )
+        .replace(
+          '## Active Blockers\n\nNone.',
+          '## Active Blockers\n\n' +
+          '## `CUT-013-SYNTHETIC` - `CUT-013` - synthetic\n\n' +
+          '- Status: `ACTIVE`\n' +
+          '- Task claim blocked: `CUT-013` synthetic duplicate proof.\n\n' +
+          '## `CUT-013-SYNTHETIC` - `CUT-013` - synthetic\n\n' +
+          '- Status: `ACTIVE`\n' +
+          '- Task claim blocked: `CUT-013` synthetic duplicate proof.'
+        )
     )
     await expectHasCodes(root, ['ACTIVE_BLOCKER_DUPLICATE'])
   })

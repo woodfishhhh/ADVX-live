@@ -814,7 +814,10 @@ export function registerDesktopIpc(
     }
   });
 
-  ipcMain.handle("desktop:list-sources", () => listDesktopSources(getControlWindow()));
+  ipcMain.handle("desktop:list-sources", (event) => {
+    assertControlSender(event);
+    return listDesktopSources(getControlWindow());
+  });
   ipcMain.handle("desktop:select-source", async (event, sourceId: string) => {
     if (event.sender.id !== getControlWindow()?.webContents.id) return false;
     const sources = await listDesktopSources(getControlWindow());
@@ -825,8 +828,14 @@ export function registerDesktopIpc(
       : null;
     return exists;
   });
-  ipcMain.handle("media:get-access-status", getMediaAccessStatus);
-  ipcMain.handle("media:request-microphone", requestMicrophonePermission);
+  ipcMain.handle("media:get-access-status", (event) => {
+    assertControlSender(event);
+    return getMediaAccessStatus();
+  });
+  ipcMain.handle("media:request-microphone", (event) => {
+    assertControlSender(event);
+    return requestMicrophonePermission();
+  });
   ipcMain.handle("media:request-camera", (event) => {
     assertControlSender(event);
     return requestCameraPermission();
