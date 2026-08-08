@@ -5,12 +5,20 @@
   "type": "module",
   "types": "./src/index.ts",
   "exports": {
-    ".": "./src/index.ts"
+    ".": "./src/index.ts",
+    "./http": "./src/http/index.ts",
+    "./realtime": "./src/realtime/index.ts",
+    "./binary": "./src/binary/index.ts",
+    "./compatibility": "./src/compatibility.ts",
+    "./fixtures": "./src/fixtures/index.ts",
+    "./generated": "./src/generated/index.ts",
+    "./legacy": "./src/legacy.ts"
   },
   "scripts": {
-    "typecheck": "tsc --noEmit"
+    "typecheck": "tsc --noEmit",
+    "test": "bun test test/schema.test.ts test/binary.test.ts test/protocol-compatibility.test.ts"
   },
   "devDependencies": {
-    "typescript": "^5.8.0"
+    "typescript": "5.9.3"
   }
 }

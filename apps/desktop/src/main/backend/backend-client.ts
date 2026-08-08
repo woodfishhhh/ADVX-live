@@ -10,6 +10,7 @@ import type {
   BackendBarrageEvent,
   BackendAudienceSnapshot,
   BackendConnectionState,
+  BackendRuntime,
   BackendRuntimeStatus,
   BackendSessionSnapshot,
   BackendTranscriptEvent,
@@ -45,11 +46,25 @@ import {
   encodeAtomicBinaryEnvelope,
   encodeBinaryEnvelope
 } from "./realtime-binary";
+import {
+  BackendClientError,
+  createBackendControlTransport,
+  type BackendControlTransport,
+  type BackendKind
+} from "./backend-control-adapter";
+import {
+  backendKindForRuntime,
+  runtimeForBackendKind
+} from "./backend-runtime";
+import {
+  BackendRealtimeAdapter,
+  type ParsedRealtimeServerWire,
+  type RealtimeShutdown
+} from "./backend-realtime-adapter";
 
 const PROTOCOL_VERSION = 3;
 const PREFERRED_REALTIME_PROTOCOL_VERSION = 4;
 const SUPPORTED_REALTIME_PROTOCOL_VERSIONS = [4, 3] as const;
-const PROTOCOL_HEADER = "X-ADVX-Protocol-Version";
 const INGEST_ACK_TIMEOUT_MS = 10_000;
 const CONNECT_TIMEOUT_MS = 8_000;
 // The probe has four sequential upstream phases, each bounded at 30 seconds.
@@ -77,20 +92,20 @@ type BarrageListener = (event: BackendBarrageEvent) => void;
 type ViewerListener = (event: BackendViewerEvent) => void;
 type TranscriptListener = (event: BackendTranscriptEvent) => void;
 
-export class BackendClientError extends Error {
-  readonly code: string;
+type ParsedRealtimeMessage = ParsedRealtimeServerWire & {
+  message: RealtimeServerMessage | null;
+  duplicate: boolean;
+};
 
-  constructor(code: string, message: string) {
-    super(message);
-    this.name = "BackendClientError";
-    this.code = code;
-  }
-}
+export { BackendClientError } from "./backend-control-adapter";
 
 export class BackendClient {
   private readonly baseUrl: string;
   private readonly websocketUrl: string;
   private readonly localToken: string;
+  private readonly backendRuntime: BackendRuntime;
+  private readonly controlTransport: BackendControlTransport;
+  private readonly realtimeAdapter: BackendRealtimeAdapter;
   private socket: WebSocket | null = null;
   private realtimeProtocolVersion: RealtimeProtocolVersion | null = null;
   private connectPromise: Promise<void> | null = null;
@@ -113,10 +128,50 @@ export class BackendClient {
     system_audio: Promise.resolve()
   };
 
-  constructor(options: { baseUrl?: string; localToken: string }) {
+  constructor(options: {
+    baseUrl?: string;
+    localToken: string;
+    backendRuntime?: BackendRuntime;
+    backendKind?: BackendKind;
+    controlTransport?: BackendControlTransport;
+  }) {
     this.baseUrl = (options.baseUrl ?? "http://127.0.0.1:8765").replace(/\/$/, "");
     this.websocketUrl = this.baseUrl.replace(/^http/, "ws") + "/ws";
     this.localToken = options.localToken;
+    this.backendRuntime =
+      options.backendRuntime ??
+      (options.backendKind
+        ? runtimeForBackendKind(options.backendKind)
+        : options.controlTransport
+          ? runtimeForBackendKind(options.controlTransport.backendKind)
+          : "bun-source");
+    const backendKind = backendKindForRuntime(this.backendRuntime);
+    this.realtimeAdapter = new BackendRealtimeAdapter({
+      backendKind,
+      backendStartId: `desktop-${randomUUID()}`
+    });
+    this.controlTransport =
+      options.controlTransport ??
+      createBackendControlTransport({
+        baseUrl: this.baseUrl,
+        localToken: options.localToken,
+        backendKind
+      });
+  }
+
+  /** Bind the realtime connection to the currently supervised backend start. */
+  setBackendStartId(backendStartId: string): void {
+    const normalized = backendStartId.trim();
+    if (!normalized) {
+      throw new BackendClientError("protocol_error", "后端启动身份不能为空。");
+    }
+    if (!this.realtimeAdapter.setBackendStartId(normalized)) return;
+    const socket = this.socket;
+    this.socket = null;
+    this.realtimeProtocolVersion = null;
+    this.rejectPending(new BackendClientError("connection_closed", "后端启动身份已更新。"));
+    socket?.close(1012, "backend identity changed");
+    this.setConnection("disconnected");
   }
 
   onStatus(listener: StatusListener): () => void {
@@ -189,6 +244,8 @@ export class BackendClient {
     const socket = this.socket;
     this.socket = null;
     socket?.close(1000, "desktop shutdown");
+    this.providersConfigured = false;
+    this.runtimeProvidersByRevision.clear();
     this.setConnection("disconnected");
   }
 
@@ -825,37 +882,12 @@ export class BackendClient {
     options: RequestOptions = {}
   ): Promise<T> {
     this.requireLocalToken();
-    let response: Response;
-    try {
-      response = await fetch(`${this.baseUrl}${path}`, {
-        method,
-        headers: {
-          Authorization: `Bearer ${this.localToken}`,
-          [PROTOCOL_HEADER]: String(PROTOCOL_VERSION),
-          ...(body ? { "Content-Type": "application/json" } : {})
-        },
-        body: body ? JSON.stringify(body) : undefined,
-        signal: AbortSignal.timeout(options.timeoutMs ?? CONNECT_TIMEOUT_MS)
-      });
-    } catch (error) {
-      if (error instanceof Error && error.name === "TimeoutError") {
-        throw new BackendClientError(
-          options.timeoutCode ?? "backend_timeout",
-          options.timeoutMessage ?? "本地后端响应超时。"
-        );
-      }
-      throw new BackendClientError("backend_unavailable", "本地后端暂时不可用。");
-    }
-    if (!response.ok) {
-      const payload = (await response.json().catch(() => null)) as {
-        detail?: { code?: string; message?: string };
-      } | null;
-      throw new BackendClientError(
-        payload?.detail?.code ?? `http_${response.status}`,
-        payload?.detail?.message ?? "后端请求失败。"
-      );
-    }
-    return (await response.json()) as T;
+    return this.controlTransport.request<T>({
+      path,
+      method: method as "GET" | "POST" | "PUT" | "DELETE",
+      ...(body === undefined ? {} : { body }),
+      ...options
+    });
   }
 
   private async ensureConnected(): Promise<void> {
@@ -874,18 +906,21 @@ export class BackendClient {
     this.setConnection("connecting");
     this.realtimeProtocolVersion = null;
     return new Promise((resolve, reject) => {
+      const connectionIdentity = this.realtimeAdapter.beginConnection();
       const socket = new WebSocket(this.websocketUrl);
       this.socket = socket;
       let ready = false;
       const timeout = setTimeout(() => {
+        if (!this.realtimeAdapter.isCurrentConnection(connectionIdentity)) return;
         if (ready) return;
         socket.close();
         reject(new BackendClientError("backend_timeout", "连接本地后端超时。"));
       }, CONNECT_TIMEOUT_MS);
 
       socket.addEventListener("open", () => {
+        if (!this.realtimeAdapter.isCurrentConnection(connectionIdentity)) return;
         socket.send(
-          JSON.stringify({
+          this.realtimeAdapter.encodeClientMessage({
             type: "client.hello",
             protocol_version: PREFERRED_REALTIME_PROTOCOL_VERSION,
             supported_protocol_versions: SUPPORTED_REALTIME_PROTOCOL_VERSIONS,
@@ -894,9 +929,10 @@ export class BackendClient {
         );
       });
       socket.addEventListener("message", (event) => {
+        if (!this.realtimeAdapter.isCurrentConnection(connectionIdentity)) return;
         if (typeof event.data !== "string") return;
-        const message = this.parseMessage(event.data);
-        if (!message) {
+        const parsed = this.parseMessage(event.data);
+        if (!parsed) {
           if (!ready && this.connection === "failed") {
             reject(
               new BackendClientError(
@@ -907,22 +943,29 @@ export class BackendClient {
           }
           return;
         }
-        if (message.type === "backend.ready") {
+        if (parsed.shutdown) {
+          this.handleShutdown(socket, parsed.shutdown);
+          return;
+        }
+        if (parsed.message !== null && parsed.message.type === "backend.ready") {
           this.realtimeProtocolVersion =
-            message.protocol_version as RealtimeProtocolVersion;
+            parsed.message.protocol_version as RealtimeProtocolVersion;
           ready = true;
           clearTimeout(timeout);
-          this.applySession(message.session);
+          this.applySession(parsed.message.session);
           this.setConnection("connected");
           resolve();
           return;
         }
-        this.handleMessage(message);
+        if (parsed.duplicate || parsed.message === null) return;
+        this.handleMessage(parsed);
       });
       socket.addEventListener("error", () => {
+        if (!this.realtimeAdapter.isCurrentConnection(connectionIdentity)) return;
         if (!ready) reject(new BackendClientError("backend_unavailable", "无法连接本地后端。"));
       });
       socket.addEventListener("close", () => {
+        if (!this.realtimeAdapter.isCurrentConnection(connectionIdentity)) return;
         clearTimeout(timeout);
         if (this.socket === socket) this.socket = null;
         if (this.connection !== "failed") this.setConnection("disconnected");
@@ -933,26 +976,33 @@ export class BackendClient {
     });
   }
 
-  private parseMessage(value: string): RealtimeServerMessage | null {
+  private parseMessage(value: string): ParsedRealtimeMessage | null {
     try {
-      return validateRealtimeServerMessage(
+      const wire = this.realtimeAdapter.parseServerWire(
         JSON.parse(value),
         this.realtimeProtocolVersion
       );
+      if (wire.shutdown) {
+        return { ...wire, message: null, duplicate: false };
+      }
+      const message = validateRealtimeServerMessage(
+        wire.legacyMessage,
+        this.realtimeProtocolVersion
+      );
+      return {
+        ...wire,
+        message,
+        duplicate: !this.realtimeAdapter.acceptMessage(wire.messageId)
+      };
     } catch (error) {
       this.failProtocol(error);
       return null;
     }
   }
 
-  private handleMessage(value: unknown): void {
-    let message: RealtimeServerMessage;
-    try {
-      message = validateRealtimeServerMessage(value, this.realtimeProtocolVersion);
-    } catch (error) {
-      this.failProtocol(error);
-      return;
-    }
+  private handleMessage(value: ParsedRealtimeMessage): void {
+    const message = value.message;
+    if (message === null || value.duplicate) return;
     switch (message.type) {
       case "session.status":
         this.applySession(message.session);
@@ -960,9 +1010,7 @@ export class BackendClient {
       case "barrage.event": {
         if (
           message.barrage.expires_at_ms <= Date.now() ||
-          message.barrage.session_id !== this.session.sessionId ||
-          (this.runtime !== null &&
-            message.barrage.audience_epoch !== this.runtime.audience_epoch)
+          this.isStaleRealtimeScope(value, message.barrage.session_id, message.barrage.audience_epoch)
         ) {
           break;
         }
@@ -997,11 +1045,13 @@ export class BackendClient {
       case "viewer.muted":
       case "viewer.unmuted":
       case "viewer.kicked":
+        if (this.isStaleRealtimeScope(value, message.session_id, message.audience_epoch)) break;
         for (const listener of this.viewerListeners) {
           listener(message as BackendViewerEvent);
         }
         break;
       case "asr.transcript": {
+        if (this.isStaleRealtimeScope(value)) break;
         const event: BackendTranscriptEvent = {
           source: message.source,
           text: message.text,
@@ -1024,6 +1074,34 @@ export class BackendClient {
         this.rejectPending(new BackendClientError(message.code, message.message));
         break;
     }
+  }
+
+  private handleShutdown(socket: WebSocket, shutdown: RealtimeShutdown): void {
+    if (this.socket !== socket) return;
+    this.startupError =
+      shutdown.reason === "fatal_error" ? "本地后端报告了致命关闭。" : null;
+    this.socket = null;
+    this.realtimeProtocolVersion = null;
+    this.rejectPending(new BackendClientError("connection_closed", "后端已请求关闭实时连接。"));
+    socket.close(1000, `backend ${shutdown.reason}`);
+    if (this.connection !== "failed") this.setConnection("disconnected");
+    this.scheduleReconnect();
+  }
+
+  private isStaleRealtimeScope(
+    value: ParsedRealtimeMessage,
+    sessionId = value.sessionId,
+    audienceEpoch = value.audienceEpoch
+  ): boolean {
+    if (sessionId !== null && sessionId !== undefined && sessionId !== this.session.sessionId) {
+      return true;
+    }
+    return (
+      audienceEpoch !== null &&
+      audienceEpoch !== undefined &&
+      this.runtime !== null &&
+      audienceEpoch !== this.runtime.audience_epoch
+    );
   }
 
   private failProtocol(error: unknown): void {
@@ -1097,7 +1175,7 @@ export class BackendClient {
   }
 
   private sendJson(message: object): void {
-    this.requireSocket().send(JSON.stringify(message));
+    this.requireSocket().send(this.realtimeAdapter.encodeClientMessage(message));
   }
 
   private requireSocket(): WebSocket {
@@ -1132,6 +1210,13 @@ export class BackendClient {
 
   private applySession(snapshot: SessionSnapshot): BackendSessionSnapshot {
     if (
+      snapshot.revision < this.session.revision ||
+      (snapshot.revision === this.session.revision &&
+        snapshot.updated_at_ms < this.session.updatedAtMs)
+    ) {
+      return this.session;
+    }
+    if (
       snapshot.session_id &&
       snapshot.session_id === this.recoverableRuntimeSessionId &&
       (snapshot.state === "running" || snapshot.state === "paused")
@@ -1165,6 +1250,7 @@ export class BackendClient {
 
   private snapshot(): BackendRuntimeStatus {
     return {
+      backendRuntime: this.backendRuntime,
       connection: this.connection,
       providersConfigured: this.providersConfigured,
       startupError: this.startupError,
@@ -1221,6 +1307,60 @@ function sameRuntimeProviderCandidate(
 }
 
 type CanonicalRuntimeSpecProvider = CompiledRuntimeSpec["spec"]["provider"];
+
+/** The single Main-facing control surface consumed by IPC and model config. */
+export type BackendControlClient = Pick<
+  BackendClient,
+  | "onStatus"
+  | "onBarrage"
+  | "onViewerEvent"
+  | "onTranscript"
+  | "start"
+  | "beginStartup"
+  | "failStartup"
+  | "currentStatus"
+  | "restoreRecoverableRuntimeSession"
+  | "stop"
+  | "status"
+  | "configureProviders"
+  | "startSession"
+  | "queryRuntime"
+  | "queryAudience"
+  | "muteViewer"
+  | "unmuteViewer"
+  | "kickViewer"
+  | "runtimeProviderAtRevision"
+  | "applyRuntime"
+  | "rollbackRuntime"
+  | "recoverRuntime"
+  | "probeProvider"
+  | "queryDebugTraces"
+  | "queryAiCalls"
+  | "queryAiCall"
+  | "queryAiCallImage"
+  | "pauseSession"
+  | "resumeSession"
+  | "stopSession"
+  | "submitText"
+  | "listRoomMemories"
+  | "getRoomMemoryHead"
+  | "editRoomMemory"
+  | "revokeRoomMemory"
+  | "deleteRoomMemory"
+  | "resetRoomMemories"
+  | "listModeMemes"
+  | "importLegacyMeme"
+  | "listPendingMemeCandidates"
+  | "getModeMemeAutoIngest"
+  | "setModeMemeAutoIngest"
+  | "approveMemeCandidate"
+  | "rejectMemeCandidate"
+  | "mutateModeMeme"
+  | "editModeMeme"
+  | "submitFrame"
+  | "submitAudioSegment"
+  | "notifyVoiceActivity"
+>;
 
 function validateRealtimeServerMessage(
   value: unknown,

@@ -1,0 +1,18 @@
+{
+  "extends": "../tsconfig.node.json",
+  "compilerOptions": {
+    "allowImportingTsExtensions": true,
+    "lib": ["ES2023", "DOM", "DOM.Iterable"],
+    "noEmit": true,
+    "types": ["node", "bun"],
+    "typeRoots": [
+      "../node_modules/@types",
+      "../../backend-bun/node_modules/@types",
+      "../../../node_modules/@types"
+    ]
+  },
+  "include": [
+    "run-tst-008.ts",
+    "../../../tests/e2e/electron/*.ts"
+  ]
+}

@@ -1,0 +1,138 @@
+{
+  "schema_version": 1,
+  "task_id": "TST-006",
+  "categories": [
+    "json_field_shape",
+    "protocol_version",
+    "control_payload_size",
+    "binary_header_and_length",
+    "sequence_integrity",
+    "session_fencing",
+    "unknown_event_kind",
+    "media_metadata_limit"
+  ],
+  "control_cases": [
+    {
+      "id": "control_missing_required_field",
+      "mutation": "missing_client_request_id",
+      "expected_status": 422,
+      "expected_code": "runtime_start_rejected"
+    },
+    {
+      "id": "control_extra_field",
+      "mutation": "extra_top_level_field",
+      "expected_status": 422,
+      "expected_code": "runtime_start_rejected"
+    },
+    {
+      "id": "control_wrong_type",
+      "mutation": "numeric_client_request_id",
+      "expected_status": 422,
+      "expected_code": "runtime_start_rejected"
+    },
+    {
+      "id": "control_oversized_field",
+      "mutation": "oversized_room_display_name",
+      "expected_status": 422,
+      "expected_code": "runtime_start_rejected"
+    },
+    {
+      "id": "control_unsupported_protocol_version",
+      "mutation": "none",
+      "http_protocol_version": "99",
+      "expected_status": 422,
+      "expected_code": "unsupported_protocol_version"
+    }
+  ],
+  "sequence_cases": [
+    {
+      "id": "replay_sequence_gap",
+      "sequences": [1, 3],
+      "expected_status": 422,
+      "expected_code": "invalid_replay_request"
+    },
+    {
+      "id": "replay_sequence_duplicate",
+      "sequences": [1, 1],
+      "expected_status": 422,
+      "expected_code": "invalid_replay_request"
+    },
+    {
+      "id": "replay_sequence_reordered",
+      "sequences": [2, 1],
+      "expected_status": 422,
+      "expected_code": "invalid_replay_request"
+    }
+  ],
+  "realtime_cases": [
+    {
+      "id": "realtime_unknown_event_kind",
+      "mutation": "unknown_event_kind",
+      "expected_code": "invalid_message",
+      "expected_close_code": 4400
+    },
+    {
+      "id": "realtime_oversized_json",
+      "mutation": "oversized_json",
+      "expected_code": "message_too_large",
+      "expected_close_code": 1009
+    }
+  ],
+  "binary_cases": [
+    {
+      "id": "binary_invalid_magic",
+      "mutation": "invalid_magic",
+      "expected_code": "malformed_binary_envelope"
+    },
+    {
+      "id": "binary_unsupported_version",
+      "mutation": "unsupported_version",
+      "expected_code": "unsupported_binary_version"
+    },
+    {
+      "id": "binary_truncated_header",
+      "mutation": "truncated_header",
+      "expected_code": "malformed_binary_envelope"
+    },
+    {
+      "id": "binary_declared_length_mismatch",
+      "mutation": "declared_length_mismatch",
+      "expected_code": "malformed_binary_envelope"
+    },
+    {
+      "id": "binary_oversized_body_declaration",
+      "mutation": "oversized_body_declaration",
+      "expected_code": "payload_too_large"
+    },
+    {
+      "id": "binary_overlong_media_format",
+      "mutation": "overlong_media_format",
+      "expected_code": "malformed_binary_envelope"
+    }
+  ],
+  "session_cases": [
+    {
+      "id": "realtime_stale_session",
+      "mutation": "stale_session",
+      "expected_code": "session_not_active"
+    },
+    {
+      "id": "realtime_post_stop_traffic",
+      "mutation": "post_stop",
+      "expected_code": "session_not_active"
+    }
+  ],
+  "resource_limits": {
+    "max_corpus_file_bytes": 16384,
+    "max_generated_fixture_bytes": 4096,
+    "oversized_control_display_name_characters": 129,
+    "realtime_json_limit_bytes": 1024,
+    "oversized_realtime_padding_characters": 2048,
+    "oversized_binary_declared_body_bytes": 2097153,
+    "overlong_media_format_characters": 257
+  },
+  "applicability": {
+    "decompression": false,
+    "reason": "The retained HTTP, realtime, and ADVX-BIN ingress protocols do not accept compressed request bodies; bounded binary media metadata is the applicable limit."
+  }
+}

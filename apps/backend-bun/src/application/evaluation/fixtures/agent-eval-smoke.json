@@ -1,0 +1,33 @@
+{
+  "schema_version": 1,
+  "fixture_id": "agent-eval-smoke",
+  "fixture_version": "1.0.0",
+  "privacy_classification": "synthetic",
+  "provider_evidence_class": "fake",
+  "input": {
+    "room_id": "room-eval",
+    "wave_id": "wave-1",
+    "seed": "obs-008"
+  },
+  "assertions": [
+    "eligible_viewers_only",
+    "no_director_or_global_theme",
+    "barrage_silence_parse",
+    "barrage_bounds",
+    "reply_context_same_wave_freeze",
+    "stale_epoch_sequence_rejected",
+    "cancellation_no_late_memory_write",
+    "failure_degrades_without_invented_output"
+  ],
+  "expectations": {
+    "eligible_viewer_ids": ["viewer-1", "viewer-2"],
+    "max_barrage_count": 2,
+    "max_barrage_length": 160,
+    "max_repairs": 1,
+    "reply_context_event_ids": ["event-1", "event-2"],
+    "same_wave_frozen": true,
+    "minimum_stale_rejections": 2,
+    "cancellation_required": true,
+    "failure_must_degrade": true
+  }
+}

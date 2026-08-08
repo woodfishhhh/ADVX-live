@@ -22,12 +22,17 @@
 - 决定：用户在本机获得由 AI 观众组成的模拟直播体验，产品不向真实观众推流，也不创建公开直播间。
 - 影响：真实平台账号、礼物、在线人数和真人互动不是核心链路。
 
-### D-002：Windows 和 macOS 是目标平台
+### D-002：当前发布仅支持 Windows x64，macOS 保留架构边界
 
 - 状态：`Accepted`
-- 日期：2026-07-23
-- 决定：产品从架构上同时面向 Windows 和 macOS。
-- 影响：系统权限、Overlay、打包和测试必须保留平台适配边界，不能把 Windows 专有行为写进领域合同。
+- 日期：2026-07-23；2026-08-08 收窄当前发布范围
+- 决定：产品架构继续保留 Windows 和 macOS 平台边界，但当前发布与支持
+  范围仅为 Windows x64。macOS arm64/x64 当前未发布；在真实目标平台的
+  安装生命周期、原生媒体、签名和公证证据被独立接受前，不作 macOS
+  下载、支持或可用性声明。
+- 影响：系统权限、Overlay、打包和测试继续保留平台适配边界，不能把
+  Windows 专有行为写进领域合同。未来 macOS release owner 必须在首个
+  macOS release candidate 前完成平台验收并替换当前 limitation。
 
 ### D-003：桌面端使用 Electron
 
@@ -38,10 +43,10 @@
 
 ### D-004：本地后端使用 FastAPI
 
-- 状态：`Accepted`
+- 状态：`Superseded`，由 D-045 取代
 - 日期：2026-07-23
 - 决定：FastAPI 承担 ASR Provider 调度、近期上下文、AI 编排、Provider 接入和弹幕处理；Python 项目使用 `uv` 管理依赖和锁文件。
-- 影响：AI 逻辑不放入 Electron Renderer；FastAPI 是随桌面应用运行的本机组件，不依赖用户预装 Python。
+- 影响：这是迁移前的历史基线，不再描述当前产品后端。Python 实现仅作为迁移期间的 parity oracle 保留。
 
 ### D-005：主播语音通过本地 ASR 转写
 
@@ -89,9 +94,9 @@
 
 ### D-011：FastAPI 作为 Electron 管理的本地子进程
 
-- 状态：`Accepted`
+- 状态：`Superseded`，由 D-045 取代
 - 决定：Electron Main 启动仅监听回环地址的 FastAPI 子进程，负责健康检查、异常处理和退出清理。
-- 影响：生产构建携带自己的 Python Runtime；具体冻结/打包工具通过双平台构建 Spike 选择。
+- 影响：这是历史进程模型；当前发行包携带并监督编译后的 Bun 后端。
 
 ### D-012：控制面使用 HTTP，实时数据使用 WebSocket
 
@@ -102,8 +107,8 @@
 ### D-013：媒体由 Electron 统一采集
 
 - 状态：`Accepted`
-- 决定：Electron 使用 Chromium/Electron 媒体 API 统一处理屏幕和麦克风权限；通过 AudioWorklet 形成有界音频块并发送给 FastAPI。
-- 影响：Python 不直接枚举或独占麦克风。平台原生采集只在 Electron API 无法满足实测要求时引入。
+- 决定：Electron 使用 Chromium/Electron 媒体 API 统一处理屏幕和麦克风权限；通过 AudioWorklet 形成有界音频块并发送给受监督的 Bun 后端。
+- 影响：Bun 后端不直接枚举或独占麦克风。平台原生采集只在 Electron API 无法满足实测要求时引入。
 
 ### D-014：每个观众是独立且连续的逻辑实体
 
@@ -113,32 +118,33 @@
 
 ### D-015：发言与调度算法暂不固定
 
-- 状态：`Superseded`，由 D-034 取代
+- 状态：`Superseded`，历史上的 D-034 也已由 D-040 和 D-047 取代
 - 决定：旧版保留批量或独立调用、Director 拓扑和观众接话方式为开放问题。
-- 影响：首版现在已经锁定 ObservationWave、Director 精确选实例和一实例一独立请求。
+- 影响：当前实现没有中心 Director；发言机会由本地确定性规则和逐 Viewer 行为决策产生。
 
 ### D-016：首版模型请求使用非流式结构化结果
 
 - 状态：`Accepted`
 - 决定：弹幕输出很短，第一版优先请求一次完整的结构化结果；只有实测延迟需要时再增加流式解析。
-- 影响：Provider 必须支持超时与取消。对 JSON Schema 的支持由能力探测决定，模型结果仍需 Pydantic 校验。
+- 影响：Provider 必须支持超时与取消。对 JSON Schema 的支持由能力探测决定，模型结果仍需 TypeScript runtime schema 校验。
 
 ### D-017：透明 BrowserWindow 承担弹幕 Overlay
 
 - 状态：`Accepted`
 - 决定：弹幕使用透明、置顶、点击穿透的 Electron `BrowserWindow` 渲染；渲染引擎放在 Adapter 后并优先采用成熟弹幕库。
-- 影响：具体弹幕库需要在 Windows/macOS 上验证透明窗口、轨道、销毁和高 DPI 后选择。
+- 影响：具体弹幕库当前必须通过 Windows x64 验收；未来恢复 macOS 发布
+  声明前，还必须在 macOS 验证透明窗口、轨道、销毁和高 DPI。
 
 ### D-018：Pydantic 是跨进程数据合同来源
 
-- 状态：`Accepted`
+- 状态：`Superseded`，由 D-046 取代
 - 决定：FastAPI/Pydantic 定义控制面和事件 Schema，并生成 TypeScript 类型或客户端；WebSocket 事件同样需要版本化 Schema。
-- 影响：不在 Python 和 TypeScript 两侧长期手写两套容易漂移的合同。
+- 影响：这是迁移前的历史合同来源；当前权威合同来自 `@advx/contracts` 的 TypeScript runtime schemas。
 
 ### D-019：本地配置、密钥与日志基线
 
 - 状态：`Accepted`
-- 决定：普通配置、观众档案和观众记忆保存在本地。ASR 和模型凭据由 Electron `safeStorage` 保存，经短期鉴权的本地通道按会话注入 FastAPI 内存。两端使用带会话标识的结构化本地日志。
+- 决定：普通配置、观众档案和观众记忆保存在本地。ASR 和模型凭据由 Electron `safeStorage` 保存，经鉴权的本地通道按会话注入 Bun 后端内存；后端启动凭证通过一次性继承通道传递。两端使用带会话标识的结构化本地日志。
 - 影响：Renderer、命令行、普通配置和日志不出现明文凭据；日志不记录原始音频、完整画面和长段转写。
 
 ### D-020：ASR 模型首次下载并校验
@@ -164,15 +170,15 @@
 
 - 状态：`Accepted`
 - 日期：2026-07-23
-- 决定：FastAPI 后端使用单进程、单活动会话设计。API 只处理协议，Application Service 编排用例，Domain 维护不变量，业务层通过 Port 使用 Repository、ASR 和 Model Provider，SQLite、StepFun 和 OpenAI-compatible 实现属于 Adapter。
-- 影响：接口放在 Application Port，而不是具体 Infrastructure 或 Provider 模块中；WebSocket Handler、SQLAlchemy 模型和供应商 wire format 不能进入业务逻辑。具体模块设计见 [BACKEND_DESIGN.md](./BACKEND_DESIGN.md)。
+- 决定：Bun 后端使用单进程、单活动会话设计。API 只处理协议，Application Service 编排用例，Domain 维护不变量，业务层通过 Port 使用 Repository、ASR 和 Model Provider，`bun:sqlite`/Drizzle、StepFun 和 OpenAI-compatible 实现属于 Adapter。
+- 影响：接口放在 Application Port，而不是具体 Infrastructure 或 Provider 模块中；Elysia/WebSocket Handler、Drizzle schema 和供应商 wire format 不能进入业务逻辑。具体模块设计见 [BACKEND_DESIGN.md](./BACKEND_DESIGN.md)。
 
 ### D-024：结构化恢复状态使用 SQLite，原始媒体只保存在有界内存
 
 - 状态：`Accepted`
 - 日期：2026-07-23
 - 决定：Room、Session runtime revision、Viewer 池、共享长期记忆、记忆来源、模式成长梗和有界结构化 Room Event 使用 SQLite 持久化，并使用版本化迁移。原始音频、完整画面、思维链、完整 Prompt 和待显示弹幕不写入数据库。
-- 影响：有界 Room Event 用于后端恢复，不等于保存完整直播历史。recorded replay 使用显式制作、脱敏且版本化的 fixture/bundle，不自动保存原始媒体。数据库由 FastAPI 单独拥有，位于 Electron `userData` 数据目录；用户删除的记忆及来源执行物理删除。
+- 影响：有界 Room Event 用于后端恢复，不等于保存完整直播历史。recorded replay 使用显式制作、脱敏且版本化的 fixture/bundle，不自动保存原始媒体。数据库由 Bun 后端单独拥有，位于 Electron `userData` 数据目录；用户删除的记忆及来源执行物理删除。
 
 ### D-025：观众内容按模式、人格和成长梗库分层
 
@@ -190,17 +196,17 @@
 
 ### D-027：导演分别输出调度决定和成长梗候选
 
-- 状态：`Accepted`
+- 状态：`Superseded`，由 D-047 取代
 - 日期：2026-07-23
 - 决定：导演输出 `SceneAssessment`，并可附带独立的 `MemeCandidate`。梗可以来自用户文字、最终语音转写、近期真实事件或 AI 互动；导演判断成立且本地校验通过后，候选自动进入当时的激活模式。
-- 影响：自动入库必须可撤销，梗条目需要持久化、衰减和归档。`MemeCandidate` 不能直接显示为弹幕、写成 `audience_barrage` 或进入 Overlay；只有后续归属于明确观众的合法弹幕才能显示。
+- 影响：该中心导演语义不再是当前产品要求；成长梗仍须通过本地校验，且不能直接进入 Overlay。
 
 ### D-028：当前迭代先实现桌面前端与产品合同
 
 - 状态：`Superseded`，由 D-031 至 D-039 的 Viewer runtime 联动基线取代
 - 日期：2026-07-23
 - 决定：当前迭代先实现 Electron/React 桌面前端和共享 TypeScript 合同，覆盖模式、人格编辑、版本化 `personality.md` 与成长梗库的本地行为。
-- 影响：该阶段已经留下可用的桌面工作区，同时仓库已有 FastAPI/SQLite、StepFun ASR、OpenAI-compatible Provider 和 protocol v1 链路。当前目标是实现 Room shared brain、Viewer runtime、真实 Director、原子热更新、Debug/replay 和 protocol v2；现有 v1 或前端 demo 不能冒充这些 v2 能力。
+- 影响：这是迁移前的历史阶段记录，不描述当前 Bun runtime、当前协议版本或无中心 Director 的发言产品语义。
 
 ### D-029：成长梗使用可恢复的初始归档规则
 
@@ -262,14 +268,14 @@
 
 - 状态：`Accepted`
 - 日期：2026-07-24
-- 决定：Pydantic/JSON Schema 是合同来源；Debug API、结构化 trace、headless harness 和 recorded/live replay 是首版必要能力，UI 只消费同一数据源。
+- 决定：TypeScript runtime schemas/JSON Schema 是合同来源；Debug API、结构化 trace、headless harness 和 recorded/live replay 是首版必要能力，UI 只消费同一数据源。
 - 影响：agent 不依赖 UI 即可创建 Session、提交 fixture、查询状态、导出 trace 和重放。测试环境与真实 Room 数据强隔离，live replay 必须显式开启。
 
 ### D-038：Provider 使用单 profile 和角色模型
 
 - 状态：`Accepted`
 - 日期：2026-07-24
-- 决定：首版使用一个活动 OpenAI-compatible Model Provider profile，Director、Viewer、memory 和 visual summary 可以覆盖不同 model ID；StepFun ASR 独立配置。
+- 决定：首版使用一个活动 OpenAI-compatible Model Provider profile，Viewer、memory 和 visual summary 可以覆盖不同 model ID；StepFun ASR 独立配置。
 - 影响：endpoint 或模型热更新前必须 capability probe。当前凭据实际模型列表和能力是执行 Gate，Provider 不可用时真实验收状态为 `BLOCKED`。
 
 ### D-039：首个完整 E2E 使用固定 CS2/CSGO 场景
@@ -283,7 +289,7 @@
 
 - 状态：`Accepted`
 - 日期：2026-07-24
-- 决定：PersonaTemplate 是持久化行为模板，ViewerInstance 是仅属于单次 Session 的独立观众，拥有与 Persona 无关的用户名和头像种子。Mode 使用 `persona_counts` 直接设置每种人格的 Viewer 数，`0` 表示不参与，合计必须为 1 到 32；总在线目标由该合计派生。Director 只输出 `SceneAssessment`；每个 active 且未禁言 Viewer 使用本地可解释概率和稳定抽样独立决定是否发言，最终候选再各自调用一次模型。
+- 决定：PersonaTemplate 是持久化行为模板，ViewerInstance 是仅属于单次 Session 的独立观众，拥有与 Persona 无关的用户名和头像种子。Mode 使用 `persona_counts` 直接设置每种人格的 Viewer 数，`0` 表示不参与，合计必须为 1 到 32；总在线目标由该合计派生。每个 active 且未禁言 Viewer 使用本地可解释概率和稳定抽样独立决定是否发言，最终候选再各自调用一次模型；不存在中心 Director 模型或 `SceneAssessment` 必经步骤。
 - 影响：Viewer 可以加入、离开、同场重返、限时禁言、解除禁言和被踢；被踢后本场不可重返并由所缺人格的新 Viewer 补位。显式 Mode 热更新按新人数精确重平衡，并优先保留仍在配额内的 ViewerIdentity。最终提交同时校验 epoch、sequence、presence/moderation/behavior revisions。正常关播清空当前 audience 和私有状态，新直播创建全新 Viewer；异常重启恢复同一未终止 Session 的 Viewer。
 
 ### D-041：麦克风与 Windows 系统声音使用独立 ASR 通道
@@ -329,9 +335,68 @@
   其 final 作为优先级 2 的真实输入触发 Viewer，候选预算使用模式配置的真实输入预算，
   默认最多 6 位。
 
+### D-044：Bun SQLite 实时路径使用有界同步切片
+
+- 状态：`Accepted`
+- 日期：2026-08-04
+- 决定：Bun 后端继续使用单写者同步 `bun:sqlite`，但实时路径必须满足当前
+  HEAD 的实测预算：RoomEvent append p95 不超过 5 ms，且单次不超过 10 ms；
+  最近上下文读取 p95 不超过 12 ms，并固定为 public 16 条加 reply 8 条、序列化
+  结果不超过 64 KiB；原子 runtime revision 应用 p95 不超过 8 ms；32 Viewer
+  恢复（含打开、完整性检查、查询和关闭）p95 不超过 25 ms；长期记忆读取固定
+  Top-K 16 且 p95 不超过 8 ms；outbox 每批最多 16 条、每批后必须 yield，claim
+  p95 不超过 10 ms。交错后台读取负载下的事件循环延迟 p95 不超过 25 ms。
+- 测量：Windows x64、Bun 1.3.14、HEAD
+  `41665a96cf67eb82cbe02f83abbbe2b79b100e48`，在完整六次迁移的真实 WAL
+  临时数据库上交错 438 次后台 Room/Session 读取。RoomEvent append p95/max 为
+  2.335/2.769 ms；上下文读取 p95 为 6.981 ms，实际 16 条、10,693 bytes；
+  runtime revision p95 为 4.194 ms；32 Viewer 恢复 p95 为 10.781 ms；Top-K
+  memory p95 为 2.753 ms；16 条 outbox batch p95 为 4.440 ms，20 批均完成
+  yield；事件循环延迟 p95 为 16.836 ms。Windows 调度下记录到 52.505 ms
+  的单次最大延迟，但任何单个被测 persistence slice 的最大值不超过 10.909 ms，
+  因此门禁使用 p95 并保留完整原始结果，而不把调度峰值误归因于一次 SQLite 调用。
+- 影响：提高上下文行数、memory Top-K、outbox batch 或同步事务工作量前必须重新
+  测量。超过预算时应拆分工作、缩小批次或在批次间 yield，不得直接放宽门槛。
+  本次只使用合成临时数据库；macOS 和发布硬件矩阵仍由后续平台门禁复测。
+- 验证证据：
+  `.omx/artifacts/typescript-bun/GATE-03/gate-03-maker-root-20260804-001/persistence-budget-probe.json`。
+
+### D-045：当前本地后端使用 Bun、TypeScript 与 Elysia
+
+- 状态：`Accepted`
+- 日期：2026-08-08
+- 决定：`apps/backend-bun` 是当前产品后端。Electron Main 启动并监督 Bun
+  源码后端或发行包内的编译后端；服务只监听 `127.0.0.1:8765`，以一次性
+  继承通道接收启动凭证，并在退出时完成会话停止、端口释放和子进程树清理。
+- 影响：当前开发、CI、打包和发布命令以 Bun 1.3.14 为入口。Windows x64
+  是唯一发布与支持范围；`apps/backend` 在迁移结束人工门禁前仅作 Python
+  parity oracle，不是产品运行时或新功能落点。
+
+### D-046：TypeScript runtime schemas 是跨进程合同来源
+
+- 状态：`Accepted`
+- 日期：2026-08-08
+- 决定：`@advx/contracts` 的 TypeScript runtime schemas 和版本注册表是
+  当前合同权威。控制面使用 HTTP v3，实时通道写入 v4 并在兼容窗口内读取
+  v3，二进制 envelope 写入 `ADVX-BIN/3`；Bun OpenAPI 生成 TypeScript
+  客户端类型并受漂移检查保护。
+- 影响：Electron 与 Bun 后端不得分别手写长期漂移的合同。协议升级必须经过
+  显式版本兼容门禁，Python oracle 只能比较行为，不能覆盖当前合同权威。
+
+### D-047：发言产品语义不使用中心 Director
+
+- 状态：`Accepted`
+- 日期：2026-08-08
+- 决定：当前产品没有中心 Director 模型，也不要求 `SceneAssessment` 作为
+  每波发言的必经步骤。Observation 经过本地合并、优先级、预算和新鲜度规则
+  形成机会；每个 Viewer 再基于自身状态和可解释的本地规则独立决定是否发言，
+  只有通过合同与内容校验的候选才能进入 Overlay。
+- 影响：当前文档、界面和模型角色不得继续承诺“导演选人”语义。历史 Director
+  方案只能保留在明确标记为 `Superseded` 或 Historical 的记录中。
+
 ## 4. 开放问题
 
-### Q-001：Electron 与 FastAPI 的媒体编码是什么？
+### Q-001：Electron 与 Bun 后端的媒体编码是什么？
 
 - 状态：`Resolved by D-043`
 - 结论：StepFun ASR 输入使用单声道 16 kHz PCM S16LE；画面接受 JPEG、PNG 或 WebP；
@@ -355,8 +420,9 @@
 
 ### Q-009：后端冻结和弹幕引擎如何落地？
 
-- 状态：`Open`
-- 需要回答：Python Runtime 使用哪种目录式冻结工具，双平台 Spike 后选择哪个弹幕库，以及嵌套 Runtime 如何完成签名和更新。
+- 状态：`Resolved by D-045 and Phase 08 packaging evidence`
+- 结论：Windows x64 发行包携带编译后的 Bun 后端，由 Electron 监督其安装、
+  启动、升级和卸载生命周期；签名状态由发布门禁独立声明，不再冻结 Python Runtime。
 
 ## 5. 已取代的旧决定
 
@@ -364,13 +430,13 @@
 
 | 旧决定 | 当前处理 |
 | --- | --- |
-| 仅支持 Windows | 被 D-002 取代 |
+| 不保留平台边界地仅支持 Windows | D-002 保留平台隔离，但当前发布仍只支持 Windows x64 |
 | 固定使用 StepFun `step-explore` | 被 D-006 取代 |
 | 未经 Provider 隔离的 StepAudio 云端 ASR | D-022 改为通过统一 `AsrProvider` 接入 |
 | 固定 32 个独立人格调用 | D-031 将 32 改为 ViewerInstance 上限，PersonaTemplate 数量独立 |
-| 固定的人群导演模型 | D-034 固定 Director 合同和一实例一独立请求，但角色 model ID 可配置 |
+| 固定的人群导演模型 | D-047 移除中心 Director，改为本地机会规则和逐 Viewer 独立决策 |
 | CSGO 四类事件作为产品验收 | D-039 改为固定 CS fixture 加脚本化输入和真实 smoke |
-| Electron UtilityProcess 承担 AI 后端 | 被 D-004 取代 |
+| Electron UtilityProcess 承担 AI 后端 | D-045 改为 Electron 监督独立 Bun 后端子进程 |
 | 黑客松四天排期和并发阶梯 | 不属于长期产品文档 |
 | 供应商专用请求头、SSE 事件和密钥规则 | 未来放入对应 Provider 的实现文档或代码 |
 

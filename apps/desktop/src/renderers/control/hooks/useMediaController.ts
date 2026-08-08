@@ -7,6 +7,7 @@ import {
   type VisualMode
 } from '../visual'
 import type {
+  BackendLossCapturePolicy,
   FatalMediaKind,
   MediaController,
   UseMediaControllerOptions
@@ -21,6 +22,20 @@ export type LiveStartEligibility = {
   visualMode: VisualMode
   hasScreen: boolean
   hasCamera: boolean
+}
+
+export function shouldStopCaptureOnBackendLoss({
+  previousBackendConnected,
+  backendConnected,
+  audienceSessionActive,
+  sessionStatus
+}: BackendLossCapturePolicy): boolean {
+  return (
+    previousBackendConnected &&
+    !backendConnected &&
+    audienceSessionActive &&
+    ['starting', 'running', 'paused', 'stopping'].includes(sessionStatus)
+  )
 }
 
 export function resolveAudioChannelStatus({
@@ -69,6 +84,7 @@ export function useMediaController({
   const sessionStatusRef = useRef<SessionStatus>(sessionStatus)
   const audienceSessionActiveRef = useRef(false)
   const fatalMediaRef = useRef<(kind: FatalMediaKind, error: string) => void>(() => undefined)
+  const previousBackendConnectedRef = useRef(backendConnected)
 
   const setAudienceSessionActive = useCallback((active: boolean): void => {
     audienceSessionActiveRef.current = active
@@ -99,6 +115,20 @@ export function useMediaController({
     audienceAvailable: backendConnected && providerProfileAvailable,
     onAudienceSessionActiveChange: setAudienceSessionActive
   })
+
+  useEffect(() => {
+    const previousBackendConnected = previousBackendConnectedRef.current
+    previousBackendConnectedRef.current = backendConnected
+    if (!shouldStopCaptureOnBackendLoss({
+      previousBackendConnected,
+      backendConnected,
+      audienceSessionActive: audienceSessionActiveRef.current,
+      sessionStatus
+    })) {
+      return
+    }
+    void session.stopSession(true, 'backend-loss')
+  }, [backendConnected, session.stopSession, sessionStatus])
 
   const isSessionActive = ['starting', 'running', 'paused', 'stopping'].includes(sessionStatus)
   const canStart = canStartLive({

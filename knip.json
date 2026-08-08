@@ -1,0 +1,54 @@
+{
+  "$schema": "https://unpkg.com/knip@6/schema.json",
+  "workspaces": {
+    ".": {
+      "entry": ["vitest.config.ts", "scripts/**/*.{ts,mjs}", "tests/**/*.ts"],
+      "project": ["scripts/**/*.{ts,mjs}", "tests/**/*.ts", "vitest.config.ts"]
+    },
+    "apps/backend-bun": {
+      "entry": [
+        "src/index.ts",
+        "src/main.ts",
+        "src/headless/cli.ts",
+        "src/diagnostics/cli.ts",
+        "src/profiling/cli.ts",
+        "src/openapi/snapshot.ts",
+        "src/profiling/heap-snapshot-preload.ts",
+        "src/infrastructure/persistence/sqlite/persistence-crash-fixture.ts",
+        "scripts/**/*.ts"
+      ],
+      "project": ["src/**/*.ts", "scripts/**/*.ts"]
+    },
+    "apps/desktop": {
+      "entry": [
+        "electron.vite.config.ts",
+        "src/main/index.ts",
+        "src/preload/*.ts",
+        "src/renderers/*/main.{ts,tsx}",
+        "scripts/**/*.{ts,mjs}"
+      ],
+      "project": ["electron.vite.config.ts", "src/**/*.{ts,tsx}", "scripts/**/*.{ts,mjs}"]
+    },
+    "packages/contracts": {
+      "entry": [
+        "src/index.ts",
+        "src/http/index.ts",
+        "src/realtime/index.ts",
+        "src/binary/index.ts",
+        "src/compatibility.ts",
+        "src/fixtures/index.ts",
+        "src/generated/index.ts",
+        "src/legacy.ts",
+        "src/schema.type-test.ts",
+        "test/contract-parity.ts",
+        "test/binary-portability.ts"
+      ],
+      "project": ["src/**/*.ts", "test/**/*.ts"]
+    }
+  },
+  "ignoreBinaries": ["taskkill.exe", "uv"],
+  "ignoreIssues": {
+    "packages/contracts/src/generated/**": ["exports", "types", "enumMembers", "namespaceMembers"],
+    "apps/desktop/src/**/*.d.ts": ["exports", "types"]
+  }
+}

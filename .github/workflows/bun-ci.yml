@@ -1,0 +1,176 @@
+name: Bun CI Gates
+
+on:
+  push:
+    branches:
+      - main
+      - TS_backend_refactor
+  pull_request:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: bun-ci-${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  quality:
+    name: Contracts, quality, and build
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    env:
+      CI: 'true'
+    steps:
+      - name: Check out source
+        uses: actions/checkout@v4
+
+      - name: Set up Bun
+        uses: oven-sh/setup-bun@v2
+        with:
+          bun-version: 1.3.14
+
+      - name: Set up Node for Electron tooling
+        uses: actions/setup-node@v4
+        with:
+          node-version: 24.18.0
+
+      - name: Install from the Bun lockfile
+        run: bun install --frozen-lockfile --ignore-scripts
+
+      - name: Check contract generation and drift
+        run: bun run contracts:bun-openapi:check
+
+      - name: Typecheck every runtime and automation boundary
+        run: |
+          bun run typecheck
+          bun run typecheck:tst-012
+          bun run typecheck:cut-006
+
+      - name: Lint and format
+        run: |
+          bun run lint
+          bun run format:check
+
+      - name: Replay, evaluation, and evidence
+        run: |
+          bun run replay
+          bun run eval
+          bun run evidence
+
+      - name: Build distributable runtime boundaries
+        run: bun run build
+
+      - name: Audit resolved dependencies
+        run: bun run audit
+
+      - name: Validate the CI contract
+        run: bun run test:tst-012
+
+      - name: Upload quality evidence
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: quality-evidence
+          path: .omx/artifacts/test-results/viewer-runtime-evidence/
+          if-no-files-found: error
+          retention-days: 7
+
+  test-matrix:
+    name: Test ${{ matrix.lane }}
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - lane: bun-unit-integration
+            os: ubuntu-latest
+          - lane: windows-recorded-electron
+            os: windows-latest
+    runs-on: ${{ matrix.os }}
+    timeout-minutes: 45
+    env:
+      CI: 'true'
+    steps:
+      - name: Check out source
+        uses: actions/checkout@v4
+
+      - name: Set up Bun
+        uses: oven-sh/setup-bun@v2
+        with:
+          bun-version: 1.3.14
+
+      - name: Set up Node for Electron tooling
+        uses: actions/setup-node@v4
+        with:
+          node-version: 24.18.0
+
+      - name: Install from the Bun lockfile
+        run: bun install --frozen-lockfile --ignore-scripts
+
+      - name: Run Bun unit and integration tests
+        if: matrix.lane == 'bun-unit-integration'
+        run: |
+          bun test scripts/process-lifecycle.test.ts scripts/viewer-runtime-evidence.test.ts
+          bun run --filter @advx/backend-bun test:bck-001
+          bun run --filter @advx/backend-bun test:bck-003
+          bun run --filter @advx/desktop test
+
+      - name: Run recorded Electron lifecycle tests
+        if: matrix.lane == 'windows-recorded-electron'
+        run: bun run test:tst-008
+
+      - name: Upload test evidence
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: test-${{ matrix.lane }}
+          path: |
+            .omx/artifacts/test-results/
+            apps/desktop/artifacts/
+          if-no-files-found: warn
+          retention-days: 7
+
+  package-matrix:
+    name: Package Windows ${{ matrix.arch }}
+    strategy:
+      fail-fast: false
+      matrix:
+        arch:
+          - x64
+    runs-on: windows-latest
+    timeout-minutes: 45
+    env:
+      CI: 'true'
+    steps:
+      - name: Check out source
+        uses: actions/checkout@v4
+
+      - name: Set up Bun
+        uses: oven-sh/setup-bun@v2
+        with:
+          bun-version: 1.3.14
+
+      - name: Set up Node for Electron tooling
+        uses: actions/setup-node@v4
+        with:
+          node-version: 24.18.0
+
+      - name: Install from the Bun lockfile
+        run: bun install --frozen-lockfile --ignore-scripts
+
+      - name: Build unpacked Windows package
+        run: bun run package:desktop
+
+      - name: Write package artifact manifest
+        run: bun scripts/write-ci-artifact-manifest.ts --artifact-root .omx/artifacts/ci/windows-${{ matrix.arch }}
+
+      - name: Upload unpacked package and manifest
+        uses: actions/upload-artifact@v4
+        with:
+          name: advx-live-windows-${{ matrix.arch }}
+          path: |
+            apps/desktop/release/win-unpacked/
+            .omx/artifacts/ci/windows-${{ matrix.arch }}/artifact-manifest.json
+          if-no-files-found: error
+          retention-days: 7

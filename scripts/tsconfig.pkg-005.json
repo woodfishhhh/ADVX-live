@@ -1,0 +1,11 @@
+{
+  "extends": "./tsconfig.pkg-004.json",
+  "compilerOptions": {
+    "noEmit": true
+  },
+  "include": [
+    "./check-pkg-005.ts",
+    "../apps/backend-bun/src/**/*.d.ts",
+    "../apps/desktop/src/**/*.d.ts"
+  ]
+}

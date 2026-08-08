@@ -1,6 +1,6 @@
 # AI 观众联动需求锁定记录
 
-> 状态：历史需求记录。AI 观众发言部分已由 [AUDIENCE_SPEAKING_PRODUCT_SPEC.md](./AUDIENCE_SPEAKING_PRODUCT_SPEC.md) 取代；其中 Director 相关约束不再适用。
+> 状态：`Historical / Superseded`。AI 观众发言部分已由 [AUDIENCE_SPEAKING_PRODUCT_SPEC.md](./AUDIENCE_SPEAKING_PRODUCT_SPEC.md) 取代；当前技术实现由 [ARCHITECTURE.md](./ARCHITECTURE.md) 和 [BACKEND_DESIGN.md](./BACKEND_DESIGN.md) 描述。本文中的 Director 和“当前”措辞仅为访谈历史。
 >
 > 日期：2026-07-24
 >

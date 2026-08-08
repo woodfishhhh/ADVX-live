@@ -1,0 +1,12 @@
+{
+  "extends": "../tsconfig.node.json",
+  "compilerOptions": {
+    "noEmit": true,
+    "types": ["node", "bun"],
+    "typeRoots": [
+      "../node_modules/@types",
+      "../../backend-bun/node_modules/@types"
+    ]
+  },
+  "include": ["run-tst-007.ts"]
+}

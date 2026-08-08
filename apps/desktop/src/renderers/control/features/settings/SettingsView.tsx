@@ -8,13 +8,13 @@ import {
   Sparkles
 } from 'lucide-react'
 import type {
-  AudienceMode,
   BarrageDisplayMode,
   BarrageMode,
   ModelConfigStatus,
   OverlaySettings,
   OverlayTarget
 } from '../../../../shared/contracts'
+import type { AudienceMode } from '../../../../shared/audience'
 import { SelectDropdown } from '../../components/SelectDropdown'
 
 export type SettingsViewProps = {

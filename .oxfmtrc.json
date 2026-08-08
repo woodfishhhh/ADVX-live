@@ -1,0 +1,31 @@
+{
+  "$schema": "./node_modules/oxfmt/configuration_schema.json",
+  "printWidth": 100,
+  "tabWidth": 2,
+  "useTabs": false,
+  "semi": false,
+  "singleQuote": true,
+  "jsxSingleQuote": false,
+  "trailingComma": "none",
+  "endOfLine": "lf",
+  "insertFinalNewline": true,
+  "proseWrap": "preserve",
+  "sortImports": false,
+  "sortPackageJson": false,
+  "ignorePatterns": [
+    ".codex/**",
+    ".omx/**",
+    "output/**",
+    "promo/**",
+    "node_modules/**",
+    "apps/backend/**",
+    "apps/backend-bun/dist/**",
+    "apps/desktop/artifacts/**",
+    "apps/desktop/out/**",
+    "packages/contracts/src/generated/**",
+    "coverage/**",
+    "dist/**",
+    "out/**",
+    "release/**"
+  ]
+}

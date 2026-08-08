@@ -4,11 +4,20 @@ directories:
   output: release
 files:
   - out/**
+electronFuses:
+  runAsNode: false
+  enableCookieEncryption: true
+  enableNodeOptionsEnvironmentVariable: false
+  enableNodeCliInspectArguments: false
+  enableEmbeddedAsarIntegrityValidation: true
+  onlyLoadAppFromAsar: true
+  loadBrowserProcessSpecificV8Snapshot: false
+  grantFileProtocolExtraPrivileges: true
 extraResources:
-  - from: ../backend/dist
+  - from: ../backend-bun/dist
     to: backend
     filter:
-      - "**/*"
+      - advx-backend-bun*
 mac:
   target: dmg
   extendInfo:

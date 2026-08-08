@@ -23,6 +23,13 @@ export type UseMediaControllerOptions = {
   audienceWorkspace: AudienceWorkspaceState
 }
 
+export type BackendLossCapturePolicy = {
+  previousBackendConnected: boolean
+  backendConnected: boolean
+  audienceSessionActive: boolean
+  sessionStatus: SessionStatus
+}
+
 export type FatalMediaKind = 'display' | 'camera' | 'microphone'
 
 export type MediaOperation = {

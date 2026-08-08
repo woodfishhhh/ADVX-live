@@ -57,7 +57,7 @@ export function useAudienceRuntimeControl({
       {
         roomId: room.room_id,
         displayName: room.display_name,
-        revision: room.revision
+        revision: room.revision ?? 1
       }
     )
     return runtimeConfigMatchesLocal(snapshot.config_hash, localHash)

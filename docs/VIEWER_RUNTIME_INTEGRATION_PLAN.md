@@ -1,6 +1,6 @@
 # AI 观众前后端联动实施计划
 
-> 状态：历史实施计划。AI 观众发言部分已由 [AUDIENCE_SPEAKING_PRODUCT_SPEC.md](./AUDIENCE_SPEAKING_PRODUCT_SPEC.md) 取代；其中 Director 相关链路不再适用。
+> 状态：`Historical / Superseded`。AI 观众发言部分已由 [AUDIENCE_SPEAKING_PRODUCT_SPEC.md](./AUDIENCE_SPEAKING_PRODUCT_SPEC.md) 取代；当前技术实现由 [ARCHITECTURE.md](./ARCHITECTURE.md) 和 [BACKEND_DESIGN.md](./BACKEND_DESIGN.md) 描述。本文中的 FastAPI、Director、旧命令和“当前”措辞仅为 2026-07-24 快照。
 >
 > 锁定日期：2026-07-24
 >

@@ -6,7 +6,7 @@ description: Run the Microsoft SkillOpt-Sleep workflow for ADVX Live's room-6657
 # SkillOpt-Sleep
 
 Use the project wrapper for every room-6657 optimization action:
-`python scripts/run_room_6657_skillopt.py <action>`.
+`bun scripts/run-room-6657-skillopt.ts <action>`.
 
 Do not invoke the upstream `skillopt_sleep` CLI directly from this repository.
 The wrapper pins the upstream commit, uses project-private state, selects the

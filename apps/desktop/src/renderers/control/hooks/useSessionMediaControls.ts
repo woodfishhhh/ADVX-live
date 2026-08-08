@@ -288,15 +288,17 @@ export function useSessionMediaControls({
 
   const stopSession = useCallback(async (
     releaseVisualPreview = false,
-    reason: 'backend-stop-requested' | 'emergency-stop' = 'backend-stop-requested'
+    reason: 'backend-loss' | 'backend-stop-requested' | 'emergency-stop' = 'backend-stop-requested'
   ): Promise<void> => {
     const devices = devicesRef.current
     const operationId = devices.operation.begin(true)
     if (operationId === null) return
     let backendSessionActive = backendSessionActiveRef.current
+    const backendLost = reason === 'backend-loss'
+    if (backendLost) setAudienceSessionActive(false)
     sessionStatusRef.current = 'stopping'
     dispatchSession({ type: 'stop' })
-    window.advx.reportSessionLifecycle({ reason })
+    if (!backendLost) window.advx.reportSessionLifecycle({ reason })
     if (releaseVisualPreview) {
       devices.stopCapture()
       devices.stopCamera()
@@ -316,22 +318,26 @@ export function useSessionMediaControls({
       )
     }
     let stopError: string | null = null
-    try {
-      if (!backendSessionActive) {
-        const status = await window.advx.getBackendStatus()
-        backendSessionActive = canStopBackendSession(status.session)
+    if (!backendLost) {
+      try {
+        if (!backendSessionActive) {
+          const status = await window.advx.getBackendStatus()
+          backendSessionActive = canStopBackendSession(status.session)
+        }
+        if (backendSessionActive) {
+          const backendSession = await window.advx.stopBackendSession()
+          syncBackendSession(backendSession)
+        }
+      } catch (error) {
+        const errorMessage = describeBackendError(error, '连接异常。')
+        window.advx.reportSessionLifecycle({
+          reason: 'backend-stop-failed',
+          error: errorMessage
+        })
+        stopError = `后端 Session 未能确认停止：${errorMessage}`
       }
-      if (backendSessionActive) {
-        const backendSession = await window.advx.stopBackendSession()
-        syncBackendSession(backendSession)
-      }
-    } catch (error) {
-      const errorMessage = describeBackendError(error, '连接异常。')
-      window.advx.reportSessionLifecycle({
-        reason: 'backend-stop-failed',
-        error: errorMessage
-      })
-      stopError = `后端 Session 未能确认停止：${errorMessage}`
+    } else {
+      stopError = '本地后端连接中断，已停止采集。'
     }
     try {
       const overlayError = await releaseOverlay()
@@ -342,7 +348,15 @@ export function useSessionMediaControls({
       setAudienceSessionActive(false)
       if (devices.operation.isCurrent(operationId)) {
         sessionStatusRef.current = stopError ? 'error' : 'idle'
-        if (stopError) dispatchSession({ type: 'fail', error: stopError })
+        if (stopError) {
+          if (backendLost) {
+            window.advx.reportSessionLifecycle({
+              reason: 'backend-loss',
+              error: stopError
+            })
+          }
+          dispatchSession({ type: 'fail', error: stopError })
+        }
         else {
           startClientRequestIdRef.current = null
           dispatchSession({ type: 'stopped' })

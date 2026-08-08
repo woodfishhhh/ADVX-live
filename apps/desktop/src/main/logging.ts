@@ -94,12 +94,19 @@ function initializeLoggingInternal(): void {
     crashDumpsDirectory ??= join(app.getPath('userData'), 'crash-dumps')
     mkdirSync(crashDumpsDirectory, { recursive: true })
     app.setPath('crashDumps', crashDumpsDirectory)
+    const crashReporterAnnotations = {
+      app_version: app.getVersion(),
+      electron_version: process.versions.electron ?? 'unknown',
+      chrome_version: process.versions.chrome ?? 'unknown',
+      node_version: process.versions.node ?? 'unknown',
+      bun_version: process.versions.bun ?? 'unknown',
+      session_id: applicationRunId
+    }
     crashReporter.start({
       uploadToServer: false,
-      globalExtra: {
-        app_version: app.getVersion(),
-        session_id: applicationRunId
-      }
+      submitURL: '',
+      extra: crashReporterAnnotations,
+      globalExtra: crashReporterAnnotations
     })
   } catch (error) {
     if (loggingReady) logger.warn('crash-reporter.start.failed', error)
@@ -128,6 +135,7 @@ type ActionLog = {
 type SessionLifecycleLog = {
   reason:
     | 'backend-start-failed'
+    | 'backend-loss'
     | 'backend-stop-failed'
     | 'backend-stop-requested'
     | 'emergency-stop'
@@ -138,6 +146,7 @@ type SessionLifecycleLog = {
 
 const SESSION_LIFECYCLE_REASONS = new Set<SessionLifecycleLog['reason']>([
   'backend-start-failed',
+  'backend-loss',
   'backend-stop-failed',
   'backend-stop-requested',
   'emergency-stop',

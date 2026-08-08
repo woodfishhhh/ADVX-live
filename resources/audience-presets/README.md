@@ -10,3 +10,6 @@ Persona documents use this portable layout:
 3. IDs are stable lowercase snake_case or kebab-case values and must not be regenerated from display names.
 
 See `persona-example.md` for a round-trippable example.
+
+The `room-6657` directory contains retained language-neutral historical style
+metadata. The current Bun backend does not load those files at runtime.

@@ -111,7 +111,7 @@ export function encodeAtomicBinaryEnvelope(input: BinaryEnvelopeInput): Uint8Arr
 
   const header = Buffer.from(JSON.stringify({
     media_type: input.mediaType,
-    ...(input.mediaType === "audio" ? { source: input.source } : {}),
+    source: input.mediaType === "audio" ? input.source : null,
     session_id: input.sessionId,
     input_id: input.inputId,
     captured_at_ms: input.capturedAtMs,

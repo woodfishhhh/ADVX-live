@@ -1,14 +1,17 @@
 # Repository scripts
 
-Scripts in this directory must work on both Windows and macOS. Prefer Node.js or Python over platform-specific shell scripts.
+Current repository automation is TypeScript executed by Bun. Node is allowed
+only for Electron/Playwright tooling. The supported release host is Windows
+x64; scripts that intentionally support another host must still declare and
+test that boundary rather than silently skipping work.
 
 ## sb6657 style corpus
 
 Fetch the public read-only barrage corpus into ignored local data, then derive an aggregate-only profile:
 
 ```powershell
-python scripts/fetch_sb6657_corpus.py --page-size 500 --delay 0.35
-python scripts/profile_sb6657_corpus.py
+bun scripts/fetch-sb6657-corpus.ts --page-size 500 --delay 0.35
+bun scripts/profile-sb6657-corpus.ts
 ```
 
 The fetcher deliberately omits `dpahjdoiaw` and `siteToken`. Never commit `.advx-data/sb6657/corpus.jsonl`; only the reviewed aggregate profile belongs in source control.
@@ -18,20 +21,20 @@ The fetcher deliberately omits `dpahjdoiaw` and `siteToken`. Never commit `.advx
 Compile the reviewed project Skill into the backend runtime artifact:
 
 ```powershell
-python scripts/sync_room_6657_skill.py
-python scripts/sync_room_6657_skill.py --check
+bun scripts/sync-room-6657-skill.ts
+bun scripts/sync-room-6657-skill.ts --check
 ```
 
 Download the locked Microsoft SkillOpt checkout and run the isolated, review-gated optimization loop:
 
 ```powershell
-python scripts/run_room_6657_skillopt.py bootstrap
-python scripts/run_room_6657_skillopt.py dry-run --backend mock
-python scripts/run_room_6657_skillopt.py run --backend codex
-python scripts/run_room_6657_skillopt.py status
-python scripts/run_room_6657_skillopt.py evaluate --backend codex --skill <candidate>
-python scripts/run_room_6657_skillopt.py approve --staging <path> --reason <text>
-python scripts/run_room_6657_skillopt.py adopt --staging <path>
+bun scripts/run-room-6657-skillopt.ts bootstrap
+bun scripts/run-room-6657-skillopt.ts dry-run --backend mock
+bun scripts/run-room-6657-skillopt.ts run --backend codex
+bun scripts/run-room-6657-skillopt.ts status
+bun scripts/run-room-6657-skillopt.ts evaluate --backend codex --skill <candidate>
+bun scripts/run-room-6657-skillopt.ts approve --staging <path> --reason <text>
+bun scripts/run-room-6657-skillopt.ts adopt --staging <path>
 ```
 
 Real model calls use a temporary minimal workspace, a sanitized environment,

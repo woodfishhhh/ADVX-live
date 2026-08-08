@@ -1,0 +1,5495 @@
+{
+  "alembic": {
+    "base": "0001_initial",
+    "heads": [
+      "0006_viewer_lifecycle"
+    ],
+    "ordered": [
+      {
+        "description": "Create the initial local persistence schema.",
+        "downRevision": null,
+        "revision": "0001_initial",
+        "source": "apps/backend/src/advx_backend/infrastructure/persistence/sqlite/migrations/versions/0001_initial.py",
+        "sourceSha256": "d49b3f967e46fa9ecace630fec86f615e771507de8d460e0386455c40e5a627c"
+      },
+      {
+        "description": "Add Room shared-brain and runtime persistence.",
+        "downRevision": "0001_initial",
+        "revision": "0002_room_runtime",
+        "source": "apps/backend/src/advx_backend/infrastructure/persistence/sqlite/migrations/versions/0002_room_runtime.py",
+        "sourceSha256": "ac9fb0b98dcbd30833ba5ad676d04322b175dadfbe984bb8fa701d114eafe6b4"
+      },
+      {
+        "description": "Persist ModeMeme candidates and namespace settings.",
+        "downRevision": "0002_room_runtime",
+        "revision": "0003_mode_meme_candidates",
+        "source": "apps/backend/src/advx_backend/infrastructure/persistence/sqlite/migrations/versions/0003_mode_meme_candidates.py",
+        "sourceSha256": "4d31c8f6aca7e4e8fdcaa7d019af9c187f94f10be62342cc5099afb436e1b12e"
+      },
+      {
+        "description": "Add durable ModeMeme idempotency keys.",
+        "downRevision": "0003_mode_meme_candidates",
+        "revision": "0004_shared_brain_controls",
+        "source": "apps/backend/src/advx_backend/infrastructure/persistence/sqlite/migrations/versions/0004_shared_brain_controls.py",
+        "sourceSha256": "2aa511537599c02cb1158e76608a671347a234fb972e1900e96c2a07a80b9dfe"
+      },
+      {
+        "description": "Keep memory evidence snapshots after bounded room event pruning.",
+        "downRevision": "0004_shared_brain_controls",
+        "revision": "0005_detach_memory_evidence_events",
+        "source": "apps/backend/src/advx_backend/infrastructure/persistence/sqlite/migrations/versions/0005_detach_memory_evidence_events.py",
+        "sourceSha256": "ae9762cf183aba131ab96e554abd972363606c513275306de10c059963b76282"
+      },
+      {
+        "description": "Persist session-scoped Viewer identity, presence, moderation and behavior.",
+        "downRevision": "0005_detach_memory_evidence_events",
+        "revision": "0006_viewer_lifecycle",
+        "source": "apps/backend/src/advx_backend/infrastructure/persistence/sqlite/migrations/versions/0006_viewer_lifecycle.py",
+        "sourceSha256": "3d10f279974d534be92694a3098e5f897bc80a5b522d35e5f9d7324f6fe513ba"
+      }
+    ]
+  },
+  "authority": {
+    "currentHead": "0006_viewer_lifecycle",
+    "declarativeModel": "apps/backend/src/advx_backend/infrastructure/persistence/sqlite/models.py",
+    "declarativeModelSha256": "b991ae45869073e57cc19d602391662cd8f4ba18b580b4110c7e6386f6c17db5",
+    "migrationRoot": "apps/backend/src/advx_backend/infrastructure/persistence/sqlite/migrations"
+  },
+  "comparison": {
+    "databaseDefaultMismatchCount": 19,
+    "databaseDefaultMismatches": [
+      {
+        "column": "controller_state_json",
+        "databaseDefault": "'{}'",
+        "modelPythonDefault": {
+          "kind": "scalar",
+          "value": "{}"
+        },
+        "modelServerDefault": null,
+        "table": "session_records"
+      },
+      {
+        "column": "next_creation_ordinal",
+        "databaseDefault": "'1'",
+        "modelPythonDefault": {
+          "kind": "scalar",
+          "value": 1
+        },
+        "modelServerDefault": null,
+        "table": "session_records"
+      },
+      {
+        "column": "population_revision",
+        "databaseDefault": "'1'",
+        "modelPythonDefault": {
+          "kind": "scalar",
+          "value": 1
+        },
+        "modelServerDefault": null,
+        "table": "session_records"
+      },
+      {
+        "column": "session_seed",
+        "databaseDefault": "''",
+        "modelPythonDefault": {
+          "kind": "scalar",
+          "value": ""
+        },
+        "modelServerDefault": null,
+        "table": "session_records"
+      },
+      {
+        "column": "target_concurrent_viewers",
+        "databaseDefault": "'1'",
+        "modelPythonDefault": {
+          "kind": "scalar",
+          "value": 1
+        },
+        "modelServerDefault": null,
+        "table": "session_records"
+      },
+      {
+        "column": "avatar_seed",
+        "databaseDefault": "''",
+        "modelPythonDefault": {
+          "kind": "scalar",
+          "value": ""
+        },
+        "modelServerDefault": null,
+        "table": "session_viewer_instances"
+      },
+      {
+        "column": "behavior_revision",
+        "databaseDefault": "'1'",
+        "modelPythonDefault": {
+          "kind": "scalar",
+          "value": 1
+        },
+        "modelServerDefault": null,
+        "table": "session_viewer_instances"
+      },
+      {
+        "column": "behavior_state_json",
+        "databaseDefault": "'{}'",
+        "modelPythonDefault": {
+          "kind": "scalar",
+          "value": "{}"
+        },
+        "modelServerDefault": null,
+        "table": "session_viewer_instances"
+      },
+      {
+        "column": "color_seed",
+        "databaseDefault": "''",
+        "modelPythonDefault": {
+          "kind": "scalar",
+          "value": ""
+        },
+        "modelServerDefault": null,
+        "table": "session_viewer_instances"
+      },
+      {
+        "column": "created_at_ms",
+        "databaseDefault": "'0'",
+        "modelPythonDefault": {
+          "kind": "scalar",
+          "value": 0
+        },
+        "modelServerDefault": null,
+        "table": "session_viewer_instances"
+      },
+      {
+        "column": "join_count",
+        "databaseDefault": "'0'",
+        "modelPythonDefault": {
+          "kind": "scalar",
+          "value": 0
+        },
+        "modelServerDefault": null,
+        "table": "session_viewer_instances"
+      },
+      {
+        "column": "locale",
+        "databaseDefault": "'zh-CN'",
+        "modelPythonDefault": {
+          "kind": "scalar",
+          "value": "zh-CN"
+        },
+        "modelServerDefault": null,
+        "table": "session_viewer_instances"
+      },
+      {
+        "column": "moderation_revision",
+        "databaseDefault": "'1'",
+        "modelPythonDefault": {
+          "kind": "scalar",
+          "value": 1
+        },
+        "modelServerDefault": null,
+        "table": "session_viewer_instances"
+      },
+      {
+        "column": "persona_content_hash",
+        "databaseDefault": "'0000000000000000000000000000000000000000000000000000000000000000'",
+        "modelPythonDefault": {
+          "kind": "scalar",
+          "value": "0000000000000000000000000000000000000000000000000000000000000000"
+        },
+        "modelServerDefault": null,
+        "table": "session_viewer_instances"
+      },
+      {
+        "column": "presence_revision",
+        "databaseDefault": "'1'",
+        "modelPythonDefault": {
+          "kind": "scalar",
+          "value": 1
+        },
+        "modelServerDefault": null,
+        "table": "session_viewer_instances"
+      },
+      {
+        "column": "presence_state",
+        "databaseDefault": "'active'",
+        "modelPythonDefault": {
+          "kind": "scalar",
+          "value": "active"
+        },
+        "modelServerDefault": null,
+        "table": "session_viewer_instances"
+      },
+      {
+        "column": "updated_at_ms",
+        "databaseDefault": "'0'",
+        "modelPythonDefault": {
+          "kind": "scalar",
+          "value": 0
+        },
+        "modelServerDefault": null,
+        "table": "session_viewer_instances"
+      },
+      {
+        "column": "username",
+        "databaseDefault": "''",
+        "modelPythonDefault": {
+          "kind": "scalar",
+          "value": ""
+        },
+        "modelServerDefault": null,
+        "table": "session_viewer_instances"
+      },
+      {
+        "column": "viewer_sequence",
+        "databaseDefault": "'0'",
+        "modelPythonDefault": {
+          "kind": "scalar",
+          "value": 0
+        },
+        "modelServerDefault": null,
+        "table": "session_viewer_instances"
+      }
+    ],
+    "databaseOnlyTables": [],
+    "exactSemanticMatch": false,
+    "modelOnlyTables": [],
+    "structuralMatch": true,
+    "structuralMismatchCount": 0,
+    "structuralMismatches": []
+  },
+  "declarativeModel": {
+    "tableCount": 19,
+    "tables": [
+      {
+        "checkConstraints": [
+          {
+            "name": "ck_audience_host_relationships_revision_positive",
+            "sql": "revision >= 1"
+          },
+          {
+            "name": "ck_audience_host_relationships_updated_at_nonnegative",
+            "sql": "updated_at_ms >= 0"
+          },
+          {
+            "name": "ck_audience_host_relationships_updated_by_allowed",
+            "sql": "updated_by IN ('memory', 'user')"
+          }
+        ],
+        "columns": [
+          {
+            "name": "audience_id",
+            "nullable": false,
+            "primaryKey": true,
+            "pythonDefault": null,
+            "serverDefault": null,
+            "type": "TEXT"
+          },
+          {
+            "name": "revision",
+            "nullable": false,
+            "primaryKey": false,
+            "pythonDefault": null,
+            "serverDefault": null,
+            "type": "INTEGER"
+          },
+          {
+            "name": "source_memory_id",
+            "nullable": true,
+            "primaryKey": false,
+            "pythonDefault": null,
+            "serverDefault": null,
+            "type": "TEXT"
+          },
+          {
+            "name": "state_json",
+            "nullable": false,
+            "primaryKey": false,
+            "pythonDefault": null,
+            "serverDefault": null,
+            "type": "TEXT"
+          },
+          {
+            "name": "summary",
+            "nullable": false,
+            "primaryKey": false,
+            "pythonDefault": null,
+            "serverDefault": null,
+            "type": "TEXT"
+          },
+          {
+            "name": "updated_at_ms",
+            "nullable": false,
+            "primaryKey": false,
+            "pythonDefault": null,
+            "serverDefault": null,
+            "type": "INTEGER"
+          },
+          {
+            "name": "updated_by",
+            "nullable": false,
+            "primaryKey": false,
+            "pythonDefault": null,
+            "serverDefault": null,
+            "type": "TEXT"
+          }
+        ],
+        "foreignKeys": [
+          {
+            "columns": [
+              "audience_id"
+            ],
+            "name": "fk_audience_host_relationships_audience_id_audience_profiles",
+            "onDelete": "CASCADE",
+            "onUpdate": null,
+            "referredColumns": [
+              "audience_id"
+            ],
+            "referredTable": "audience_profiles"
+          },
+          {
+            "columns": [
+              "source_memory_id"
+            ],
+            "name": "fk_audience_host_relationships_source_memory_id_audience_memories",
+            "onDelete": "SET NULL",
+            "onUpdate": null,
+            "referredColumns": [
+              "memory_id"
+            ],
+            "referredTable": "audience_memories"
+          }
+        ],
+        "indexes": [],
+        "name": "audience_host_relationships",
+        "primaryKey": [
+          "audience_id"
+        ],
+        "uniqueConstraints": []
+      },
+      {
+        "checkConstraints": [
+          {
+            "name": "ck_audience_memories_confidence_range",
+            "sql": "confidence >= 0.0 AND confidence <= 1.0"
+          },
+          {
+            "name": "ck_audience_memories_created_at_nonnegative",
+            "sql": "created_at_ms >= 0"
+          },
+          {
+            "name": "ck_audience_memories_importance_range",
+            "sql": "importance >= 0.0 AND importance <= 1.0"
+          },
+          {
+            "name": "ck_audience_memories_not_self_superseded",
+            "sql": "superseded_by IS NULL OR superseded_by != memory_id"
+          },
+          {
+            "name": "ck_audience_memories_origin_allowed",
+            "sql": "origin IN ('extracted', 'user')"
+          },
+          {
+            "name": "ck_audience_memories_revision_positive",
+            "sql": "revision >= 1"
+          },
+          {
+            "name": "ck_audience_memories_state_allowed",
+            "sql": "state IN ('active', 'superseded')"
+          },
+          {
+            "name": "ck_audience_memories_updated_after_created",
+            "sql": "updated_at_ms >= created_at_ms"
+          }
+        ],
+        "columns": [
+          {
+            "name": "audience_id",
+            "nullable": false,
+            "primaryKey": false,
+            "pythonDefault": null,
+            "serverDefault": null,
+            "type": "TEXT"
+          },
+          {
+            "name": "confidence",
+            "nullable": false,
+            "primaryKey": false,
+            "pythonDefault": null,
+            "serverDefault": null,
+            "type": "FLOAT"
+          },
+          {
+            "name": "content",
+            "nullable": false,
+            "primaryKey": false,
+            "pythonDefault": null,
+            "serverDefault": null,
+            "type": "TEXT"
+          },
+          {
+            "name": "created_at_ms",
+            "nullable": false,
+            "primaryKey": false,
+            "pythonDefault": null,
+            "serverDefault": null,
+            "type": "INTEGER"
+          },
+          {
+            "name": "expires_at_ms",
+            "nullable": true,
+            "primaryKey": false,
+            "pythonDefault": null,
+            "serverDefault": null,
+            "type": "INTEGER"
+          },
+          {
+            "name": "importance",
+            "nullable": false,
+            "primaryKey": false,
+            "pythonDefault": null,
+            "serverDefault": null,
+            "type": "FLOAT"
+          },
+          {
+            "name": "last_recalled_at_ms",
+            "nullable": true,
+            "primaryKey": false,
+            "pythonDefault": null,
+            "serverDefault": null,
+            "type": "INTEGER"
+          },
+          {
+            "name": "memory_id",
+            "nullable": false,
+            "primaryKey": true,
+            "pythonDefault": null,
+            "serverDefault": null,
+            "type": "TEXT"
+          },
+          {
+            "name": "memory_type",
+            "nullable": false,
+            "primaryKey": false,
+            "pythonDefault": null,
+            "serverDefault": null,
+            "type": "TEXT"
+          },
+          {
+            "name": "origin",
+            "nullable": false,
+            "primaryKey": false,
+            "pythonDefault": null,
+            "serverDefault": null,
+            "type": "TEXT"
+          },
+          {
+            "name": "revision",
+            "nullable": false,
+            "primaryKey": false,
+            "pythonDefault": null,
+            "serverDefault": null,
+            "type": "INTEGER"
+          },
+          {
+            "name": "state",
+            "nullable": false,
+            "primaryKey": false,
+            "pythonDefault": null,
+            "serverDefault": null,
+            "type": "TEXT"
+          },
+          {
+            "name": "superseded_by",
+            "nullable": true,
+            "primaryKey": false,
+            "pythonDefault": null,
+            "serverDefault": null,
+            "type": "TEXT"
+          },
+          {
+            "name": "tags_json",
+            "nullable": false,
+            "primaryKey": false,
+            "pythonDefault": null,
+            "serverDefault": null,
+            "type": "TEXT"
+          },
+          {
+            "name": "updated_at_ms",
+            "nullable": false,
+            "primaryKey": false,
+            "pythonDefault": null,
+            "serverDefault": null,
+            "type": "INTEGER"
+          }
+        ],
+        "foreignKeys": [
+          {
+            "columns": [
+              "audience_id"
+            ],
+            "name": "fk_audience_memories_audience_id_audience_profiles",
+            "onDelete": "CASCADE",
+            "onUpdate": null,
+            "referredColumns": [
+              "audience_id"
+            ],
+            "referredTable": "audience_profiles"
+          },
+          {
+            "columns": [
+              "superseded_by"
+            ],
+            "name": "fk_audience_memories_superseded_by_audience_memories",
+            "onDelete": "SET NULL",
+            "onUpdate": null,
+            "referredColumns": [
+              "memory_id"
+            ],
+            "referredTable": "audience_memories"
+          }
+        ],
+        "indexes": [
+          {
+            "columns": [
+              "audience_id",
+              "state",
+              "updated_at_ms"
+            ],
+            "name": "ix_audience_memories_audience_state_updated_at_ms",
+            "unique": false
+          },
+          {
+            "columns": [
+              "audience_id",
+              "state",
+              "importance",
+              "last_recalled_at_ms"
+            ],
+            "name": "ix_audience_memories_retrieval",
+            "unique": false
+          }
+        ],
+        "name": "audience_memories",
+        "primaryKey": [
+          "memory_id"
+        ],
+        "uniqueConstraints": []
+      },
+      {
+        "checkConstraints": [
+          {
+            "name": "ck_audience_peer_relationships_distinct_audiences",
+            "sql": "audience_id != peer_audience_id"
+          },
+          {
+            "name": "ck_audience_peer_relationships_revision_positive",
+            "sql": "revision >= 1"
+          },
+          {
+            "name": "ck_audience_peer_relationships_updated_at_nonnegative",
+            "sql": "updated_at_ms >= 0"
+          },
+          {
+            "name": "ck_audience_peer_relationships_updated_by_allowed",
+            "sql": "updated_by IN ('memory', 'user')"
+          }
+        ],
+        "columns": [
+          {
+            "name": "audience_id",
+            "nullable": false,
+            "primaryKey": true,
+            "pythonDefault": null,
+            "serverDefault": null,
+            "type": "TEXT"
+          },
+          {
+            "name": "peer_audience_id",
+            "nullable": false,
+            "primaryKey": true,
+            "pythonDefault": null,
+            "serverDefault": null,
+            "type": "TEXT"
+          },
+          {
+            "name": "revision",
+            "nullable": false,
+            "primaryKey": false,
+            "pythonDefault": null,
+            "serverDefault": null,
+            "type": "INTEGER"
+          },
+          {
+            "name": "source_memory_id",
+            "nullable": true,
+            "primaryKey": false,
+            "pythonDefault": null,
+            "serverDefault": null,
+            "type": "TEXT"
+          },
+          {
+            "name": "state_json",
+            "nullable": false,
+            "primaryKey": false,
+            "pythonDefault": null,
+            "serverDefault": null,
+            "type": "TEXT"
+          },
+          {
+            "name": "summary",
+            "nullable": false,
+            "primaryKey": false,
+            "pythonDefault": null,
+            "serverDefault": null,
+            "type": "TEXT"
+          },
+          {
+            "name": "updated_at_ms",
+            "nullable": false,
+            "primaryKey": false,
+            "pythonDefault": null,
+            "serverDefault": null,
+            "type": "INTEGER"
+          },
+          {
+            "name": "updated_by",
+            "nullable": false,
+            "primaryKey": false,
+            "pythonDefault": null,
+            "serverDefault": null,
+            "type": "TEXT"
+          }
+        ],
+        "foreignKeys": [
+          {
+            "columns": [
+              "audience_id"
+            ],
+            "name": "fk_audience_peer_relationships_audience_id_audience_profiles",
+            "onDelete": "CASCADE",
+            "onUpdate": null,
+            "referredColumns": [
+              "audience_id"
+            ],
+            "referredTable": "audience_profiles"
+          },
+          {
+            "columns": [
+              "peer_audience_id"
+            ],
+            "name": "fk_audience_peer_relationships_peer_audience_id_audience_profiles",
+            "onDelete": "CASCADE",
+            "onUpdate": null,
+            "referredColumns": [
+              "audience_id"
+            ],
+            "referredTable": "audience_profiles"
+          },
+          {
+            "columns": [
+              "source_memory_id"
+            ],
+            "name": "fk_audience_peer_relationships_source_memory_id_audience_memories",
+            "onDelete": "SET NULL",
+            "onUpdate": null,
+            "referredColumns": [
+              "memory_id"
+            ],
+            "referredTable": "audience_memories"
+          }
+        ],
+        "indexes": [],
+        "name": "audience_peer_relationships",
+        "primaryKey": [
+          "audience_id",
+          "peer_audience_id"
+        ],
+        "uniqueConstraints": []
+      },
+      {
+        "checkConstraints": [
+          {
+            "name": "ck_audience_profiles_created_at_nonnegative",
+            "sql": "created_at_ms >= 0"
+          },
+          {
+            "name": "ck_audience_profiles_enabled_boolean",
+            "sql": "enabled IN (0, 1)"
+          },
+          {
+            "name": "ck_audience_profiles_origin_allowed",
+            "sql": "origin IN ('preset', 'custom')"
+          },
+          {
+            "name": "ck_audience_profiles_revision_positive",
+            "sql": "revision >= 1"
+          },
+          {
+            "name": "ck_audience_profiles_updated_after_created",
+            "sql": "updated_at_ms >= created_at_ms"
+          }
+        ],
+        "columns": [
+          {
+            "name": "audience_id",
+            "nullable": false,
+            "primaryKey": true,
+            "pythonDefault": null,
+            "serverDefault": null,
+            "type": "TEXT"
+          },
+          {
+            "name": "avatar_ref",
+            "nullable": true,
+            "primaryKey": false,
+            "pythonDefault": null,
+            "serverDefault": null,
+            "type": "TEXT"
+          },
+          {
+            "name": "created_at_ms",
+            "nullable": false,
+            "primaryKey": false,
+            "pythonDefault": null,
+            "serverDefault": null,
+            "type": "INTEGER"
+          },
+          {
+            "name": "display_name",
+            "nullable": false,
+            "primaryKey": false,
+            "pythonDefault": null,
+            "serverDefault": null,
+            "type": "TEXT"
+          },
+          {
+            "name": "enabled",
+            "nullable": false,
+            "primaryKey": false,
+            "pythonDefault": null,
+            "serverDefault": null,
+            "type": "INTEGER"
+          },
+          {
+            "name": "origin",
+            "nullable": false,
+            "primaryKey": false,
+            "pythonDefault": null,
+            "serverDefault": null,
+            "type": "TEXT"
+          },
+          {
+            "name": "personality_json",
+            "nullable": false,
+            "primaryKey": false,
+            "pythonDefault": null,
+            "serverDefault": null,
+            "type": "TEXT"
+          },
+          {
+            "name": "preferences_json",
+            "nullable": false,
+            "primaryKey": false,
+            "pythonDefault": null,
+            "serverDefault": null,
+            "type": "TEXT"
+          },
+          {
+            "name": "preset_id",
+            "nullable": true,
+            "primaryKey": false,
+            "pythonDefault": null,
+            "serverDefault": null,
+            "type": "TEXT"
+          },
+          {
+            "name": "preset_version",
+            "nullable": true,
+            "primaryKey": false,
+            "pythonDefault": null,
+            "serverDefault": null,
+            "type": "INTEGER"
+          },
+          {
+            "name": "revision",
+            "nullable": false,
+            "primaryKey": false,
+            "pythonDefault": null,
+            "serverDefault": null,
+            "type": "INTEGER"
+          },
+          {
+            "name": "speaking_style_json",
+            "nullable": false,
+            "primaryKey": false,
+            "pythonDefault": null,
+            "serverDefault": null,
+            "type": "TEXT"
+          },
+          {
+            "name": "updated_at_ms",
+            "nullable": false,
+            "primaryKey": false,
+            "pythonDefault": null,
+            "serverDefault": null,
+            "type": "INTEGER"
+          }
+        ],
+        "foreignKeys": [],
+        "indexes": [
+          {
+            "columns": [
+              "enabled",
+              "updated_at_ms"
+            ],
+            "name": "ix_audience_profiles_enabled_updated_at_ms",
+            "unique": false
+          }
+        ],
+        "name": "audience_profiles",
+        "primaryKey": [
+          "audience_id"
+        ],
+        "uniqueConstraints": []
+      },
+      {
+        "checkConstraints": [
+          {
+            "name": "ck_memory_evidence_occurred_at_nonnegative",
+            "sql": "occurred_at_ms >= 0"
+          }
+        ],
+        "columns": [
+          {
+            "name": "evidence_summary",
+            "nullable": false,
+            "primaryKey": false,
+            "pythonDefault": null,
+            "serverDefault": null,
+            "type": "TEXT"
+          },
+          {
+            "name": "memory_id",
+            "nullable": false,
+            "primaryKey": true,
+            "pythonDefault": null,
+            "serverDefault": null,
+            "type": "TEXT"
+          },
+          {
+            "name": "occurred_at_ms",
+            "nullable": false,
+            "primaryKey": false,
+            "pythonDefault": null,
+            "serverDefault": null,
+            "type": "INTEGER"
+          },
+          {
+            "name": "session_id",
+            "nullable": false,
+            "primaryKey": true,
+            "pythonDefault": null,
+            "serverDefault": null,
+            "type": "TEXT"
+          },
+          {
+            "name": "source_event_id",
+            "nullable": false,
+            "primaryKey": true,
+            "pythonDefault": null,
+            "serverDefault": null,
+            "type": "TEXT"
+          },
+          {
+            "name": "source_type",
+            "nullable": false,
+            "primaryKey": false,
+            "pythonDefault": null,
+            "serverDefault": null,
+            "type": "TEXT"
+          }
+        ],
+        "foreignKeys": [
+          {
+            "columns": [
+              "memory_id"
+            ],
+            "name": "fk_memory_evidence_memory_id_audience_memories",
+            "onDelete": "CASCADE",
+            "onUpdate": null,
+            "referredColumns": [
+              "memory_id"
+            ],
+            "referredTable": "audience_memories"
+          },
+          {
+            "columns": [
+              "session_id"
+            ],
+            "name": "fk_memory_evidence_session_id_session_records",
+            "onDelete": "CASCADE",
+            "onUpdate": null,
+            "referredColumns": [
+              "session_id"
+            ],
+            "referredTable": "session_records"
+          }
+        ],
+        "indexes": [
+          {
+            "columns": [
+              "session_id",
+              "source_event_id"
+            ],
+            "name": "ix_memory_evidence_session_event",
+            "unique": false
+          }
+        ],
+        "name": "memory_evidence",
+        "primaryKey": [
+          "memory_id",
+          "session_id",
+          "source_event_id"
+        ],
+        "uniqueConstraints": []
+      },
+      {
+        "checkConstraints": [
+          {
+            "name": "ck_mode_meme_candidates_audience_epoch_positive",
+            "sql": "audience_epoch >= 1"
+          },
+          {
+            "name": "ck_mode_meme_candidates_created_at_nonnegative",
+            "sql": "created_at_ms >= 0"
+          },
+          {
+            "name": "ck_mode_meme_candidates_outcome_allowed",
+            "sql": "outcome IN ('pending', 'accepted', 'rejected')"
+          },
+          {
+            "name": "ck_mode_meme_candidates_updated_after_created",
+            "sql": "updated_at_ms >= created_at_ms"
+          }
+        ],
+        "columns": [
+          {
+            "name": "audience_epoch",
+            "nullable": false,
+            "primaryKey": false,
+            "pythonDefault": null,
+            "serverDefault": null,
+            "type": "INTEGER"
+          },
+          {
+            "name": "candidate_id",
+            "nullable": false,
+            "primaryKey": true,
+            "pythonDefault": null,
+            "serverDefault": null,
+            "type": "TEXT"
+          },
+          {
+            "name": "created_at_ms",
+            "nullable": false,
+            "primaryKey": false,
+            "pythonDefault": null,
+            "serverDefault": null,
+            "type": "INTEGER"
+          },
+          {
+            "name": "evidence_event_ids_json",
+            "nullable": false,
+            "primaryKey": false,
+            "pythonDefault": null,
+            "serverDefault": null,
+            "type": "TEXT"
+          },
+          {
+            "name": "evidence_frame_indexes_json",
+            "nullable": false,
+            "primaryKey": false,
+            "pythonDefault": null,
+            "serverDefault": null,
+            "type": "TEXT"
+          },
+          {
+            "name": "idempotency_key",
+            "nullable": false,
+            "primaryKey": false,
+            "pythonDefault": null,
+            "serverDefault": null,
+            "type": "TEXT"
+          },
+          {
+            "name": "mode_namespace",
+            "nullable": false,
+            "primaryKey": false,
+            "pythonDefault": null,
+            "serverDefault": null,
+            "type": "TEXT"
+          },
+          {
+            "name": "observation_id",
+            "nullable": false,
+            "primaryKey": false,
+            "pythonDefault": null,
+            "serverDefault": null,
+            "type": "TEXT"
+          },
+          {
+            "name": "outcome",
+            "nullable": false,
+            "primaryKey": false,
+            "pythonDefault": null,
+            "serverDefault": null,
+            "type": "TEXT"
+          },
+          {
+            "name": "result_meme_id",
+            "nullable": true,
+            "primaryKey": false,
+            "pythonDefault": null,
+            "serverDefault": null,
+            "type": "TEXT"
+          },
+          {
+            "name": "room_id",
+            "nullable": false,
+            "primaryKey": false,
+            "pythonDefault": null,
+            "serverDefault": null,
+            "type": "TEXT"
+          },
+          {
+            "name": "session_id",
+            "nullable": false,
+            "primaryKey": false,
+            "pythonDefault": null,
+            "serverDefault": null,
+            "type": "TEXT"
+          },
+          {
+            "name": "text",
+            "nullable": false,
+            "primaryKey": false,
+            "pythonDefault": null,
+            "serverDefault": null,
+            "type": "TEXT"
+          },
+          {
+            "name": "updated_at_ms",
+            "nullable": false,
+            "primaryKey": false,
+            "pythonDefault": null,
+            "serverDefault": null,
+            "type": "INTEGER"
+          }
+        ],
+        "foreignKeys": [
+          {
+            "columns": [
+              "result_meme_id"
+            ],
+            "name": "fk_mode_meme_candidates_result_meme_id_mode_memes",
+            "onDelete": "SET NULL",
+            "onUpdate": null,
+            "referredColumns": [
+              "meme_id"
+            ],
+            "referredTable": "mode_memes"
+          },
+          {
+            "columns": [
+              "room_id"
+            ],
+            "name": "fk_mode_meme_candidates_room_id_rooms",
+            "onDelete": "CASCADE",
+            "onUpdate": null,
+            "referredColumns": [
+              "room_id"
+            ],
+            "referredTable": "rooms"
+          },
+          {
+            "columns": [
+              "session_id"
+            ],
+            "name": "fk_mode_meme_candidates_session_id_session_records",
+            "onDelete": "CASCADE",
+            "onUpdate": null,
+            "referredColumns": [
+              "session_id"
+            ],
+            "referredTable": "session_records"
+          }
+        ],
+        "indexes": [
+          {
+            "columns": [
+              "mode_namespace",
+              "outcome",
+              "created_at_ms"
+            ],
+            "name": "ix_mode_meme_candidates_namespace_outcome_created",
+            "unique": false
+          }
+        ],
+        "name": "mode_meme_candidates",
+        "primaryKey": [
+          "candidate_id"
+        ],
+        "uniqueConstraints": [
+          {
+            "columns": [
+              "mode_namespace",
+              "idempotency_key"
+            ],
+            "name": "uq_mode_meme_candidates_namespace_idempotency"
+          }
+        ]
+      },
+      {
+        "checkConstraints": [
+          {
+            "name": "ck_mode_meme_events_action_allowed",
+            "sql": "action IN ('created', 'edited', 'revoked', 'restored', 'disabled', 'archived')"
+          },
+          {
+            "name": "ck_mode_meme_events_created_at_nonnegative",
+            "sql": "created_at_ms >= 0"
+          },
+          {
+            "name": "ck_mode_meme_events_new_revision_positive",
+            "sql": "new_revision >= 1"
+          },
+          {
+            "name": "ck_mode_meme_events_previous_revision_nonnegative",
+            "sql": "previous_revision >= 0"
+          }
+        ],
+        "columns": [
+          {
+            "name": "action",
+            "nullable": false,
+            "primaryKey": false,
+            "pythonDefault": null,
+            "serverDefault": null,
+            "type": "TEXT"
+          },
+          {
+            "name": "created_at_ms",
+            "nullable": false,
+            "primaryKey": false,
+            "pythonDefault": null,
+            "serverDefault": null,
+            "type": "INTEGER"
+          },
+          {
+            "name": "event_id",
+            "nullable": false,
+            "primaryKey": true,
+            "pythonDefault": null,
+            "serverDefault": null,
+            "type": "TEXT"
+          },
+          {
+            "name": "meme_id",
+            "nullable": false,
+            "primaryKey": false,
+            "pythonDefault": null,
+            "serverDefault": null,
+            "type": "TEXT"
+          },
+          {
+            "name": "new_revision",
+            "nullable": false,
+            "primaryKey": false,
+            "pythonDefault": null,
+            "serverDefault": null,
+            "type": "INTEGER"
+          },
+          {
+            "name": "payload_json",
+            "nullable": false,
+            "primaryKey": false,
+            "pythonDefault": null,
+            "serverDefault": null,
+            "type": "TEXT"
+          },
+          {
+            "name": "previous_revision",
+            "nullable": false,
+            "primaryKey": false,
+            "pythonDefault": null,
+            "serverDefault": null,
+            "type": "INTEGER"
+          }
+        ],
+        "foreignKeys": [
+          {
+            "columns": [
+              "meme_id"
+            ],
+            "name": "fk_mode_meme_events_meme_id_mode_memes",
+            "onDelete": "CASCADE",
+            "onUpdate": null,
+            "referredColumns": [
+              "meme_id"
+            ],
+            "referredTable": "mode_memes"
+          }
+        ],
+        "indexes": [],
+        "name": "mode_meme_events",
+        "primaryKey": [
+          "event_id"
+        ],
+        "uniqueConstraints": []
+      },
+      {
+        "checkConstraints": [
+          {
+            "name": "ck_mode_meme_settings_created_at_nonnegative",
+            "sql": "created_at_ms >= 0"
+          },
+          {
+            "name": "ck_mode_meme_settings_revision_positive",
+            "sql": "revision >= 1"
+          },
+          {
+            "name": "ck_mode_meme_settings_updated_after_created",
+            "sql": "updated_at_ms >= created_at_ms"
+          }
+        ],
+        "columns": [
+          {
+            "name": "auto_ingest_enabled",
+            "nullable": false,
+            "primaryKey": false,
+            "pythonDefault": null,
+            "serverDefault": null,
+            "type": "BOOLEAN"
+          },
+          {
+            "name": "created_at_ms",
+            "nullable": false,
+            "primaryKey": false,
+            "pythonDefault": null,
+            "serverDefault": null,
+            "type": "INTEGER"
+          },
+          {
+            "name": "mode_namespace",
+            "nullable": false,
+            "primaryKey": true,
+            "pythonDefault": null,
+            "serverDefault": null,
+            "type": "TEXT"
+          },
+          {
+            "name": "revision",
+            "nullable": false,
+            "primaryKey": false,
+            "pythonDefault": null,
+            "serverDefault": null,
+            "type": "INTEGER"
+          },
+          {
+            "name": "updated_at_ms",
+            "nullable": false,
+            "primaryKey": false,
+            "pythonDefault": null,
+            "serverDefault": null,
+            "type": "INTEGER"
+          }
+        ],
+        "foreignKeys": [],
+        "indexes": [],
+        "name": "mode_meme_settings",
+        "primaryKey": [
+          "mode_namespace"
+        ],
+        "uniqueConstraints": []
+      },
+      {
+        "checkConstraints": [
+          {
+            "name": "ck_mode_memes_created_at_nonnegative",
+            "sql": "created_at_ms >= 0"
+          },
+          {
+            "name": "ck_mode_memes_intensity_range",
+            "sql": "intensity >= 0.0 AND intensity <= 1.0"
+          },
+          {
+            "name": "ck_mode_memes_revision_positive",
+            "sql": "revision >= 1"
+          },
+          {
+            "name": "ck_mode_memes_state_allowed",
+            "sql": "state IN ('active', 'disabled', 'archived', 'revoked')"
+          },
+          {
+            "name": "ck_mode_memes_updated_after_created",
+            "sql": "updated_at_ms >= created_at_ms"
+          }
+        ],
+        "columns": [
+          {
+            "name": "content",
+            "nullable": false,
+            "primaryKey": false,
+            "pythonDefault": null,
+            "serverDefault": null,
+            "type": "TEXT"
+          },
+          {
+            "name": "created_at_ms",
+            "nullable": false,
+            "primaryKey": false,
+            "pythonDefault": null,
+            "serverDefault": null,
+            "type": "INTEGER"
+          },
+          {
+            "name": "intensity",
+            "nullable": false,
+            "primaryKey": false,
+            "pythonDefault": null,
+            "serverDefault": null,
+            "type": "FLOAT"
+          },
+          {
+            "name": "meme_id",
+            "nullable": false,
+            "primaryKey": true,
+            "pythonDefault": null,
+            "serverDefault": null,
+            "type": "TEXT"
+          },
+          {
+            "name": "mode_namespace",
+            "nullable": false,
+            "primaryKey": false,
+            "pythonDefault": null,
+            "serverDefault": null,
+            "type": "TEXT"
+          },
+          {
+            "name": "revision",
+            "nullable": false,
+            "primaryKey": false,
+            "pythonDefault": null,
+            "serverDefault": null,
+            "type": "INTEGER"
+          },
+          {
+            "name": "source_json",
+            "nullable": false,
+            "primaryKey": false,
+            "pythonDefault": null,
+            "serverDefault": null,
+            "type": "TEXT"
+          },
+          {
+            "name": "state",
+            "nullable": false,
+            "primaryKey": false,
+            "pythonDefault": null,
+            "serverDefault": null,
+            "type": "TEXT"
+          },
+          {
+            "name": "updated_at_ms",
+            "nullable": false,
+            "primaryKey": false,
+            "pythonDefault": null,
+            "serverDefault": null,
+            "type": "INTEGER"
+          }
+        ],
+        "foreignKeys": [],
+        "indexes": [
+          {
+            "columns": [
+              "mode_namespace",
+              "state",
+              "updated_at_ms"
+            ],
+            "name": "ix_mode_memes_namespace_state_updated",
+            "unique": false
+          }
+        ],
+        "name": "mode_memes",
+        "primaryKey": [
+          "meme_id"
+        ],
+        "uniqueConstraints": []
+      },
+      {
+        "checkConstraints": [
+          {
+            "name": "ck_room_events_audience_epoch_nonnegative",
+            "sql": "audience_epoch >= 0"
+          },
+          {
+            "name": "ck_room_events_occurred_at_nonnegative",
+            "sql": "occurred_at_ms >= 0"
+          },
+          {
+            "name": "ck_room_events_sequence_nonnegative",
+            "sql": "sequence >= 0"
+          }
+        ],
+        "columns": [
+          {
+            "name": "audience_epoch",
+            "nullable": false,
+            "primaryKey": false,
+            "pythonDefault": null,
+            "serverDefault": null,
+            "type": "INTEGER"
+          },
+          {
+            "name": "content_hash",
+            "nullable": false,
+            "primaryKey": false,
+            "pythonDefault": null,
+            "serverDefault": null,
+            "type": "TEXT"
+          },
+          {
+            "name": "content_json",
+            "nullable": false,
+            "primaryKey": false,
+            "pythonDefault": null,
+            "serverDefault": null,
+            "type": "TEXT"
+          },
+          {
+            "name": "event_id",
+            "nullable": false,
+            "primaryKey": true,
+            "pythonDefault": null,
+            "serverDefault": null,
+            "type": "TEXT"
+          },
+          {
+            "name": "occurred_at_ms",
+            "nullable": false,
+            "primaryKey": false,
+            "pythonDefault": null,
+            "serverDefault": null,
+            "type": "INTEGER"
+          },
+          {
+            "name": "room_id",
+            "nullable": false,
+            "primaryKey": false,
+            "pythonDefault": null,
+            "serverDefault": null,
+            "type": "TEXT"
+          },
+          {
+            "name": "sequence",
+            "nullable": false,
+            "primaryKey": false,
+            "pythonDefault": null,
+            "serverDefault": null,
+            "type": "INTEGER"
+          },
+          {
+            "name": "session_id",
+            "nullable": false,
+            "primaryKey": false,
+            "pythonDefault": null,
+            "serverDefault": null,
+            "type": "TEXT"
+          },
+          {
+            "name": "source_id",
+            "nullable": false,
+            "primaryKey": false,
+            "pythonDefault": null,
+            "serverDefault": null,
+            "type": "TEXT"
+          },
+          {
+            "name": "source_type",
+            "nullable": false,
+            "primaryKey": false,
+            "pythonDefault": null,
+            "serverDefault": null,
+            "type": "TEXT"
+          }
+        ],
+        "foreignKeys": [
+          {
+            "columns": [
+              "room_id"
+            ],
+            "name": "fk_room_events_room_id_rooms",
+            "onDelete": "CASCADE",
+            "onUpdate": null,
+            "referredColumns": [
+              "room_id"
+            ],
+            "referredTable": "rooms"
+          },
+          {
+            "columns": [
+              "session_id"
+            ],
+            "name": "fk_room_events_session_id_session_records",
+            "onDelete": "CASCADE",
+            "onUpdate": null,
+            "referredColumns": [
+              "session_id"
+            ],
+            "referredTable": "session_records"
+          }
+        ],
+        "indexes": [
+          {
+            "columns": [
+              "room_id",
+              "occurred_at_ms"
+            ],
+            "name": "ix_room_events_room_occurred_at_ms",
+            "unique": false
+          }
+        ],
+        "name": "room_events",
+        "primaryKey": [
+          "event_id"
+        ],
+        "uniqueConstraints": [
+          {
+            "columns": [
+              "room_id",
+              "session_id",
+              "sequence"
+            ],
+            "name": "uq_room_events_room_session_sequence"
+          }
+        ]
+      },
+      {
+        "checkConstraints": [
+          {
+            "name": "ck_room_long_term_memories_confidence_range",
+            "sql": "confidence >= 0.0 AND confidence <= 1.0"
+          },
+          {
+            "name": "ck_room_long_term_memories_created_at_nonnegative",
+            "sql": "created_at_ms >= 0"
+          },
+          {
+            "name": "ck_room_long_term_memories_importance_range",
+            "sql": "importance >= 0.0 AND importance <= 1.0"
+          },
+          {
+            "name": "ck_room_long_term_memories_not_self_superseded",
+            "sql": "superseded_by IS NULL OR superseded_by != memory_id"
+          },
+          {
+            "name": "ck_room_long_term_memories_revision_positive",
+            "sql": "revision >= 1"
+          },
+          {
+            "name": "ck_room_long_term_memories_state_allowed",
+            "sql": "state IN ('active', 'superseded', 'revoked')"
+          },
+          {
+            "name": "ck_room_long_term_memories_updated_after_created",
+            "sql": "updated_at_ms >= created_at_ms"
+          }
+        ],
+        "columns": [
+          {
+            "name": "confidence",
+            "nullable": false,
+            "primaryKey": false,
+            "pythonDefault": null,
+            "serverDefault": null,
+            "type": "FLOAT"
+          },
+          {
+            "name": "content",
+            "nullable": false,
+            "primaryKey": false,
+            "pythonDefault": null,
+            "serverDefault": null,
+            "type": "TEXT"
+          },
+          {
+            "name": "created_at_ms",
+            "nullable": false,
+            "primaryKey": false,
+            "pythonDefault": null,
+            "serverDefault": null,
+            "type": "INTEGER"
+          },
+          {
+            "name": "expires_at_ms",
+            "nullable": true,
+            "primaryKey": false,
+            "pythonDefault": null,
+            "serverDefault": null,
+            "type": "INTEGER"
+          },
+          {
+            "name": "importance",
+            "nullable": false,
+            "primaryKey": false,
+            "pythonDefault": null,
+            "serverDefault": null,
+            "type": "FLOAT"
+          },
+          {
+            "name": "last_recalled_at_ms",
+            "nullable": true,
+            "primaryKey": false,
+            "pythonDefault": null,
+            "serverDefault": null,
+            "type": "INTEGER"
+          },
+          {
+            "name": "memory_id",
+            "nullable": false,
+            "primaryKey": true,
+            "pythonDefault": null,
+            "serverDefault": null,
+            "type": "TEXT"
+          },
+          {
+            "name": "memory_type",
+            "nullable": false,
+            "primaryKey": false,
+            "pythonDefault": null,
+            "serverDefault": null,
+            "type": "TEXT"
+          },
+          {
+            "name": "origin",
+            "nullable": false,
+            "primaryKey": false,
+            "pythonDefault": null,
+            "serverDefault": null,
+            "type": "TEXT"
+          },
+          {
+            "name": "revision",
+            "nullable": false,
+            "primaryKey": false,
+            "pythonDefault": null,
+            "serverDefault": null,
+            "type": "INTEGER"
+          },
+          {
+            "name": "room_id",
+            "nullable": false,
+            "primaryKey": false,
+            "pythonDefault": null,
+            "serverDefault": null,
+            "type": "TEXT"
+          },
+          {
+            "name": "state",
+            "nullable": false,
+            "primaryKey": false,
+            "pythonDefault": null,
+            "serverDefault": null,
+            "type": "TEXT"
+          },
+          {
+            "name": "superseded_by",
+            "nullable": true,
+            "primaryKey": false,
+            "pythonDefault": null,
+            "serverDefault": null,
+            "type": "TEXT"
+          },
+          {
+            "name": "tags_json",
+            "nullable": false,
+            "primaryKey": false,
+            "pythonDefault": null,
+            "serverDefault": null,
+            "type": "TEXT"
+          },
+          {
+            "name": "updated_at_ms",
+            "nullable": false,
+            "primaryKey": false,
+            "pythonDefault": null,
+            "serverDefault": null,
+            "type": "INTEGER"
+          }
+        ],
+        "foreignKeys": [
+          {
+            "columns": [
+              "room_id"
+            ],
+            "name": "fk_room_long_term_memories_room_id_rooms",
+            "onDelete": "CASCADE",
+            "onUpdate": null,
+            "referredColumns": [
+              "room_id"
+            ],
+            "referredTable": "rooms"
+          },
+          {
+            "columns": [
+              "superseded_by"
+            ],
+            "name": "fk_room_long_term_memories_superseded_by_room_long_term_memories",
+            "onDelete": "SET NULL",
+            "onUpdate": null,
+            "referredColumns": [
+              "memory_id"
+            ],
+            "referredTable": "room_long_term_memories"
+          }
+        ],
+        "indexes": [
+          {
+            "columns": [
+              "room_id",
+              "state",
+              "importance",
+              "last_recalled_at_ms"
+            ],
+            "name": "ix_room_long_term_memories_retrieval",
+            "unique": false
+          },
+          {
+            "columns": [
+              "room_id",
+              "state",
+              "updated_at_ms"
+            ],
+            "name": "ix_room_long_term_memories_room_state_updated",
+            "unique": false
+          }
+        ],
+        "name": "room_long_term_memories",
+        "primaryKey": [
+          "memory_id"
+        ],
+        "uniqueConstraints": []
+      },
+      {
+        "checkConstraints": [
+          {
+            "name": "ck_room_memory_candidates_base_revision_nonnegative",
+            "sql": "base_revision >= 0"
+          },
+          {
+            "name": "ck_room_memory_candidates_created_at_nonnegative",
+            "sql": "created_at_ms >= 0"
+          },
+          {
+            "name": "ck_room_memory_candidates_outcome_allowed",
+            "sql": "outcome IN ('pending', 'created', 'merged', 'replaced', 'rejected', 'stale')"
+          },
+          {
+            "name": "ck_room_memory_candidates_updated_after_created",
+            "sql": "updated_at_ms >= created_at_ms"
+          }
+        ],
+        "columns": [
+          {
+            "name": "base_revision",
+            "nullable": false,
+            "primaryKey": false,
+            "pythonDefault": null,
+            "serverDefault": null,
+            "type": "INTEGER"
+          },
+          {
+            "name": "candidate_id",
+            "nullable": false,
+            "primaryKey": true,
+            "pythonDefault": null,
+            "serverDefault": null,
+            "type": "TEXT"
+          },
+          {
+            "name": "candidate_type",
+            "nullable": false,
+            "primaryKey": false,
+            "pythonDefault": null,
+            "serverDefault": null,
+            "type": "TEXT"
+          },
+          {
+            "name": "content",
+            "nullable": false,
+            "primaryKey": false,
+            "pythonDefault": null,
+            "serverDefault": null,
+            "type": "TEXT"
+          },
+          {
+            "name": "created_at_ms",
+            "nullable": false,
+            "primaryKey": false,
+            "pythonDefault": null,
+            "serverDefault": null,
+            "type": "INTEGER"
+          },
+          {
+            "name": "decision_json",
+            "nullable": false,
+            "primaryKey": false,
+            "pythonDefault": null,
+            "serverDefault": null,
+            "type": "TEXT"
+          },
+          {
+            "name": "evidence_event_ids_json",
+            "nullable": false,
+            "primaryKey": false,
+            "pythonDefault": null,
+            "serverDefault": null,
+            "type": "TEXT"
+          },
+          {
+            "name": "idempotency_key",
+            "nullable": false,
+            "primaryKey": false,
+            "pythonDefault": null,
+            "serverDefault": null,
+            "type": "TEXT"
+          },
+          {
+            "name": "outcome",
+            "nullable": false,
+            "primaryKey": false,
+            "pythonDefault": null,
+            "serverDefault": null,
+            "type": "TEXT"
+          },
+          {
+            "name": "result_memory_id",
+            "nullable": true,
+            "primaryKey": false,
+            "pythonDefault": null,
+            "serverDefault": null,
+            "type": "TEXT"
+          },
+          {
+            "name": "room_id",
+            "nullable": false,
+            "primaryKey": false,
+            "pythonDefault": null,
+            "serverDefault": null,
+            "type": "TEXT"
+          },
+          {
+            "name": "tags_json",
+            "nullable": false,
+            "primaryKey": false,
+            "pythonDefault": null,
+            "serverDefault": null,
+            "type": "TEXT"
+          },
+          {
+            "name": "updated_at_ms",
+            "nullable": false,
+            "primaryKey": false,
+            "pythonDefault": null,
+            "serverDefault": null,
+            "type": "INTEGER"
+          }
+        ],
+        "foreignKeys": [
+          {
+            "columns": [
+              "result_memory_id"
+            ],
+            "name": "fk_room_memory_candidates_result_memory_id_room_long_term_memories",
+            "onDelete": "SET NULL",
+            "onUpdate": null,
+            "referredColumns": [
+              "memory_id"
+            ],
+            "referredTable": "room_long_term_memories"
+          },
+          {
+            "columns": [
+              "room_id"
+            ],
+            "name": "fk_room_memory_candidates_room_id_rooms",
+            "onDelete": "CASCADE",
+            "onUpdate": null,
+            "referredColumns": [
+              "room_id"
+            ],
+            "referredTable": "rooms"
+          }
+        ],
+        "indexes": [],
+        "name": "room_memory_candidates",
+        "primaryKey": [
+          "candidate_id"
+        ],
+        "uniqueConstraints": [
+          {
+            "columns": [
+              "room_id",
+              "idempotency_key"
+            ],
+            "name": "uq_room_memory_candidates_room_idempotency"
+          }
+        ]
+      },
+      {
+        "checkConstraints": [
+          {
+            "name": "ck_room_memory_evidence_occurred_at_nonnegative",
+            "sql": "occurred_at_ms >= 0"
+          }
+        ],
+        "columns": [
+          {
+            "name": "event_id",
+            "nullable": false,
+            "primaryKey": true,
+            "pythonDefault": null,
+            "serverDefault": null,
+            "type": "TEXT"
+          },
+          {
+            "name": "evidence_summary",
+            "nullable": false,
+            "primaryKey": false,
+            "pythonDefault": null,
+            "serverDefault": null,
+            "type": "TEXT"
+          },
+          {
+            "name": "memory_id",
+            "nullable": false,
+            "primaryKey": true,
+            "pythonDefault": null,
+            "serverDefault": null,
+            "type": "TEXT"
+          },
+          {
+            "name": "occurred_at_ms",
+            "nullable": false,
+            "primaryKey": false,
+            "pythonDefault": null,
+            "serverDefault": null,
+            "type": "INTEGER"
+          },
+          {
+            "name": "source_type",
+            "nullable": false,
+            "primaryKey": false,
+            "pythonDefault": null,
+            "serverDefault": null,
+            "type": "TEXT"
+          }
+        ],
+        "foreignKeys": [
+          {
+            "columns": [
+              "memory_id"
+            ],
+            "name": "fk_room_memory_evidence_memory_id_room_long_term_memories",
+            "onDelete": "CASCADE",
+            "onUpdate": null,
+            "referredColumns": [
+              "memory_id"
+            ],
+            "referredTable": "room_long_term_memories"
+          }
+        ],
+        "indexes": [
+          {
+            "columns": [
+              "event_id",
+              "memory_id"
+            ],
+            "name": "ix_room_memory_evidence_event_memory",
+            "unique": false
+          }
+        ],
+        "name": "room_memory_evidence",
+        "primaryKey": [
+          "memory_id",
+          "event_id"
+        ],
+        "uniqueConstraints": []
+      },
+      {
+        "checkConstraints": [
+          {
+            "name": "ck_room_memory_heads_revision_nonnegative",
+            "sql": "revision >= 0"
+          },
+          {
+            "name": "ck_room_memory_heads_updated_at_nonnegative",
+            "sql": "updated_at_ms >= 0"
+          }
+        ],
+        "columns": [
+          {
+            "name": "revision",
+            "nullable": false,
+            "primaryKey": false,
+            "pythonDefault": null,
+            "serverDefault": null,
+            "type": "INTEGER"
+          },
+          {
+            "name": "room_id",
+            "nullable": false,
+            "primaryKey": true,
+            "pythonDefault": null,
+            "serverDefault": null,
+            "type": "TEXT"
+          },
+          {
+            "name": "updated_at_ms",
+            "nullable": false,
+            "primaryKey": false,
+            "pythonDefault": null,
+            "serverDefault": null,
+            "type": "INTEGER"
+          }
+        ],
+        "foreignKeys": [
+          {
+            "columns": [
+              "room_id"
+            ],
+            "name": "fk_room_memory_heads_room_id_rooms",
+            "onDelete": "CASCADE",
+            "onUpdate": null,
+            "referredColumns": [
+              "room_id"
+            ],
+            "referredTable": "rooms"
+          }
+        ],
+        "indexes": [],
+        "name": "room_memory_heads",
+        "primaryKey": [
+          "room_id"
+        ],
+        "uniqueConstraints": []
+      },
+      {
+        "checkConstraints": [
+          {
+            "name": "ck_rooms_created_at_nonnegative",
+            "sql": "created_at_ms >= 0"
+          },
+          {
+            "name": "ck_rooms_revision_nonnegative",
+            "sql": "revision >= 0"
+          },
+          {
+            "name": "ck_rooms_state_allowed",
+            "sql": "state IN ('active', 'cleared')"
+          },
+          {
+            "name": "ck_rooms_updated_after_created",
+            "sql": "updated_at_ms >= created_at_ms"
+          }
+        ],
+        "columns": [
+          {
+            "name": "created_at_ms",
+            "nullable": false,
+            "primaryKey": false,
+            "pythonDefault": null,
+            "serverDefault": null,
+            "type": "INTEGER"
+          },
+          {
+            "name": "display_name",
+            "nullable": false,
+            "primaryKey": false,
+            "pythonDefault": null,
+            "serverDefault": null,
+            "type": "TEXT"
+          },
+          {
+            "name": "revision",
+            "nullable": false,
+            "primaryKey": false,
+            "pythonDefault": {
+              "kind": "scalar",
+              "value": 0
+            },
+            "serverDefault": null,
+            "type": "INTEGER"
+          },
+          {
+            "name": "room_id",
+            "nullable": false,
+            "primaryKey": true,
+            "pythonDefault": null,
+            "serverDefault": null,
+            "type": "TEXT"
+          },
+          {
+            "name": "state",
+            "nullable": false,
+            "primaryKey": false,
+            "pythonDefault": null,
+            "serverDefault": null,
+            "type": "TEXT"
+          },
+          {
+            "name": "updated_at_ms",
+            "nullable": false,
+            "primaryKey": false,
+            "pythonDefault": null,
+            "serverDefault": null,
+            "type": "INTEGER"
+          }
+        ],
+        "foreignKeys": [],
+        "indexes": [],
+        "name": "rooms",
+        "primaryKey": [
+          "room_id"
+        ],
+        "uniqueConstraints": []
+      },
+      {
+        "checkConstraints": [
+          {
+            "name": "ck_session_audiences_joined_at_nonnegative",
+            "sql": "joined_at_ms >= 0"
+          },
+          {
+            "name": "ck_session_audiences_left_after_joined",
+            "sql": "left_at_ms IS NULL OR left_at_ms >= joined_at_ms"
+          },
+          {
+            "name": "ck_session_audiences_profile_revision_positive",
+            "sql": "profile_revision >= 1"
+          }
+        ],
+        "columns": [
+          {
+            "name": "audience_id",
+            "nullable": false,
+            "primaryKey": true,
+            "pythonDefault": null,
+            "serverDefault": null,
+            "type": "TEXT"
+          },
+          {
+            "name": "joined_at_ms",
+            "nullable": false,
+            "primaryKey": false,
+            "pythonDefault": null,
+            "serverDefault": null,
+            "type": "INTEGER"
+          },
+          {
+            "name": "left_at_ms",
+            "nullable": true,
+            "primaryKey": false,
+            "pythonDefault": null,
+            "serverDefault": null,
+            "type": "INTEGER"
+          },
+          {
+            "name": "profile_revision",
+            "nullable": false,
+            "primaryKey": false,
+            "pythonDefault": null,
+            "serverDefault": null,
+            "type": "INTEGER"
+          },
+          {
+            "name": "session_id",
+            "nullable": false,
+            "primaryKey": true,
+            "pythonDefault": null,
+            "serverDefault": null,
+            "type": "TEXT"
+          }
+        ],
+        "foreignKeys": [
+          {
+            "columns": [
+              "audience_id"
+            ],
+            "name": "fk_session_audiences_audience_id_audience_profiles",
+            "onDelete": "CASCADE",
+            "onUpdate": null,
+            "referredColumns": [
+              "audience_id"
+            ],
+            "referredTable": "audience_profiles"
+          },
+          {
+            "columns": [
+              "session_id"
+            ],
+            "name": "fk_session_audiences_session_id_session_records",
+            "onDelete": "CASCADE",
+            "onUpdate": null,
+            "referredColumns": [
+              "session_id"
+            ],
+            "referredTable": "session_records"
+          }
+        ],
+        "indexes": [
+          {
+            "columns": [
+              "audience_id",
+              "session_id"
+            ],
+            "name": "ix_session_audiences_audience_session",
+            "unique": false
+          }
+        ],
+        "name": "session_audiences",
+        "primaryKey": [
+          "session_id",
+          "audience_id"
+        ],
+        "uniqueConstraints": []
+      },
+      {
+        "checkConstraints": [
+          {
+            "name": "ck_session_records_audience_epoch_nonnegative",
+            "sql": "audience_epoch IS NULL OR audience_epoch >= 0"
+          },
+          {
+            "name": "ck_session_records_completion_consistent",
+            "sql": "(ended_at_ms IS NULL AND outcome IS NULL) OR (ended_at_ms IS NOT NULL AND outcome IS NOT NULL)"
+          },
+          {
+            "name": "ck_session_records_ended_after_started",
+            "sql": "ended_at_ms IS NULL OR ended_at_ms >= started_at_ms"
+          },
+          {
+            "name": "ck_session_records_outcome_allowed",
+            "sql": "outcome IS NULL OR outcome IN ('completed', 'error', 'interrupted')"
+          },
+          {
+            "name": "ck_session_records_started_at_nonnegative",
+            "sql": "started_at_ms >= 0"
+          },
+          {
+            "name": "ck_session_records_state_allowed",
+            "sql": "state IS NULL OR state IN ('starting', 'running', 'paused', 'stopping', 'stopped', 'failed')"
+          }
+        ],
+        "columns": [
+          {
+            "name": "active_config_hash",
+            "nullable": true,
+            "primaryKey": false,
+            "pythonDefault": null,
+            "serverDefault": null,
+            "type": "TEXT"
+          },
+          {
+            "name": "app_version",
+            "nullable": false,
+            "primaryKey": false,
+            "pythonDefault": null,
+            "serverDefault": null,
+            "type": "TEXT"
+          },
+          {
+            "name": "audience_epoch",
+            "nullable": true,
+            "primaryKey": false,
+            "pythonDefault": null,
+            "serverDefault": null,
+            "type": "INTEGER"
+          },
+          {
+            "name": "client_request_hash",
+            "nullable": true,
+            "primaryKey": false,
+            "pythonDefault": null,
+            "serverDefault": null,
+            "type": "TEXT"
+          },
+          {
+            "name": "client_request_id",
+            "nullable": true,
+            "primaryKey": false,
+            "pythonDefault": null,
+            "serverDefault": null,
+            "type": "TEXT"
+          },
+          {
+            "name": "controller_state_json",
+            "nullable": false,
+            "primaryKey": false,
+            "pythonDefault": {
+              "kind": "scalar",
+              "value": "{}"
+            },
+            "serverDefault": null,
+            "type": "TEXT"
+          },
+          {
+            "name": "ended_at_ms",
+            "nullable": true,
+            "primaryKey": false,
+            "pythonDefault": null,
+            "serverDefault": null,
+            "type": "INTEGER"
+          },
+          {
+            "name": "next_creation_ordinal",
+            "nullable": false,
+            "primaryKey": false,
+            "pythonDefault": {
+              "kind": "scalar",
+              "value": 1
+            },
+            "serverDefault": null,
+            "type": "INTEGER"
+          },
+          {
+            "name": "outcome",
+            "nullable": true,
+            "primaryKey": false,
+            "pythonDefault": null,
+            "serverDefault": null,
+            "type": "TEXT"
+          },
+          {
+            "name": "population_revision",
+            "nullable": false,
+            "primaryKey": false,
+            "pythonDefault": {
+              "kind": "scalar",
+              "value": 1
+            },
+            "serverDefault": null,
+            "type": "INTEGER"
+          },
+          {
+            "name": "recovery_json",
+            "nullable": true,
+            "primaryKey": false,
+            "pythonDefault": null,
+            "serverDefault": null,
+            "type": "TEXT"
+          },
+          {
+            "name": "room_id",
+            "nullable": true,
+            "primaryKey": false,
+            "pythonDefault": null,
+            "serverDefault": null,
+            "type": "TEXT"
+          },
+          {
+            "name": "session_id",
+            "nullable": false,
+            "primaryKey": true,
+            "pythonDefault": null,
+            "serverDefault": null,
+            "type": "TEXT"
+          },
+          {
+            "name": "session_seed",
+            "nullable": false,
+            "primaryKey": false,
+            "pythonDefault": {
+              "kind": "scalar",
+              "value": ""
+            },
+            "serverDefault": null,
+            "type": "TEXT"
+          },
+          {
+            "name": "started_at_ms",
+            "nullable": false,
+            "primaryKey": false,
+            "pythonDefault": null,
+            "serverDefault": null,
+            "type": "INTEGER"
+          },
+          {
+            "name": "state",
+            "nullable": true,
+            "primaryKey": false,
+            "pythonDefault": null,
+            "serverDefault": null,
+            "type": "TEXT"
+          },
+          {
+            "name": "target_concurrent_viewers",
+            "nullable": false,
+            "primaryKey": false,
+            "pythonDefault": {
+              "kind": "scalar",
+              "value": 1
+            },
+            "serverDefault": null,
+            "type": "INTEGER"
+          }
+        ],
+        "foreignKeys": [
+          {
+            "columns": [
+              "room_id"
+            ],
+            "name": "fk_session_records_room_id_rooms",
+            "onDelete": "CASCADE",
+            "onUpdate": null,
+            "referredColumns": [
+              "room_id"
+            ],
+            "referredTable": "rooms"
+          }
+        ],
+        "indexes": [
+          {
+            "columns": [
+              "ended_at_ms"
+            ],
+            "name": "ix_session_records_ended_at_ms",
+            "unique": false
+          },
+          {
+            "columns": [
+              "room_id",
+              "state",
+              "ended_at_ms"
+            ],
+            "name": "ix_session_records_room_state_ended_at_ms",
+            "unique": false
+          }
+        ],
+        "name": "session_records",
+        "primaryKey": [
+          "session_id"
+        ],
+        "uniqueConstraints": [
+          {
+            "columns": [
+              "client_request_id"
+            ],
+            "name": "uq_session_records_client_request_id"
+          }
+        ]
+      },
+      {
+        "checkConstraints": [
+          {
+            "name": "ck_session_runtime_revisions_base_revision_nonnegative",
+            "sql": "base_revision >= 0"
+          },
+          {
+            "name": "ck_session_runtime_revisions_created_at_nonnegative",
+            "sql": "created_at_ms >= 0"
+          },
+          {
+            "name": "ck_session_runtime_revisions_revision_positive",
+            "sql": "revision >= 1"
+          },
+          {
+            "name": "ck_session_runtime_revisions_status_allowed",
+            "sql": "status IN ('pending', 'committed', 'rejected', 'rolled_back')"
+          },
+          {
+            "name": "ck_session_runtime_revisions_updated_after_created",
+            "sql": "updated_at_ms >= created_at_ms"
+          }
+        ],
+        "columns": [
+          {
+            "name": "apply_id",
+            "nullable": false,
+            "primaryKey": false,
+            "pythonDefault": null,
+            "serverDefault": null,
+            "type": "TEXT"
+          },
+          {
+            "name": "base_revision",
+            "nullable": false,
+            "primaryKey": false,
+            "pythonDefault": null,
+            "serverDefault": null,
+            "type": "INTEGER"
+          },
+          {
+            "name": "canonical_spec_json",
+            "nullable": false,
+            "primaryKey": false,
+            "pythonDefault": null,
+            "serverDefault": null,
+            "type": "TEXT"
+          },
+          {
+            "name": "config_hash",
+            "nullable": false,
+            "primaryKey": false,
+            "pythonDefault": null,
+            "serverDefault": null,
+            "type": "TEXT"
+          },
+          {
+            "name": "created_at_ms",
+            "nullable": false,
+            "primaryKey": false,
+            "pythonDefault": null,
+            "serverDefault": null,
+            "type": "INTEGER"
+          },
+          {
+            "name": "diff_summary_json",
+            "nullable": false,
+            "primaryKey": false,
+            "pythonDefault": null,
+            "serverDefault": null,
+            "type": "TEXT"
+          },
+          {
+            "name": "revision",
+            "nullable": false,
+            "primaryKey": true,
+            "pythonDefault": null,
+            "serverDefault": null,
+            "type": "INTEGER"
+          },
+          {
+            "name": "session_id",
+            "nullable": false,
+            "primaryKey": true,
+            "pythonDefault": null,
+            "serverDefault": null,
+            "type": "TEXT"
+          },
+          {
+            "name": "status",
+            "nullable": false,
+            "primaryKey": false,
+            "pythonDefault": null,
+            "serverDefault": null,
+            "type": "TEXT"
+          },
+          {
+            "name": "updated_at_ms",
+            "nullable": false,
+            "primaryKey": false,
+            "pythonDefault": null,
+            "serverDefault": null,
+            "type": "INTEGER"
+          }
+        ],
+        "foreignKeys": [
+          {
+            "columns": [
+              "session_id"
+            ],
+            "name": "fk_session_runtime_revisions_session_id_session_records",
+            "onDelete": "CASCADE",
+            "onUpdate": null,
+            "referredColumns": [
+              "session_id"
+            ],
+            "referredTable": "session_records"
+          }
+        ],
+        "indexes": [
+          {
+            "columns": [
+              "session_id",
+              "config_hash"
+            ],
+            "name": "ix_runtime_revision_session_config_hash",
+            "unique": false
+          }
+        ],
+        "name": "session_runtime_revisions",
+        "primaryKey": [
+          "session_id",
+          "revision"
+        ],
+        "uniqueConstraints": [
+          {
+            "columns": [
+              "session_id",
+              "apply_id"
+            ],
+            "name": "uq_runtime_revision_session_apply"
+          }
+        ]
+      },
+      {
+        "checkConstraints": [
+          {
+            "name": "ck_session_viewer_instances_created_epoch_nonnegative",
+            "sql": "created_epoch >= 0"
+          },
+          {
+            "name": "ck_session_viewer_instances_ordinal_nonnegative",
+            "sql": "ordinal >= 0"
+          },
+          {
+            "name": "ck_session_viewer_instances_persona_revision_positive",
+            "sql": "persona_revision >= 1"
+          },
+          {
+            "name": "ck_session_viewer_instances_removed_after_created",
+            "sql": "removed_epoch IS NULL OR removed_epoch >= created_epoch"
+          },
+          {
+            "name": "ck_session_viewer_instances_state_allowed",
+            "sql": "state IN ('active', 'removed')"
+          }
+        ],
+        "columns": [
+          {
+            "name": "avatar_seed",
+            "nullable": false,
+            "primaryKey": false,
+            "pythonDefault": {
+              "kind": "scalar",
+              "value": ""
+            },
+            "serverDefault": null,
+            "type": "TEXT"
+          },
+          {
+            "name": "behavior_revision",
+            "nullable": false,
+            "primaryKey": false,
+            "pythonDefault": {
+              "kind": "scalar",
+              "value": 1
+            },
+            "serverDefault": null,
+            "type": "INTEGER"
+          },
+          {
+            "name": "behavior_state_json",
+            "nullable": false,
+            "primaryKey": false,
+            "pythonDefault": {
+              "kind": "scalar",
+              "value": "{}"
+            },
+            "serverDefault": null,
+            "type": "TEXT"
+          },
+          {
+            "name": "color_seed",
+            "nullable": false,
+            "primaryKey": false,
+            "pythonDefault": {
+              "kind": "scalar",
+              "value": ""
+            },
+            "serverDefault": null,
+            "type": "TEXT"
+          },
+          {
+            "name": "created_at_ms",
+            "nullable": false,
+            "primaryKey": false,
+            "pythonDefault": {
+              "kind": "scalar",
+              "value": 0
+            },
+            "serverDefault": null,
+            "type": "INTEGER"
+          },
+          {
+            "name": "created_epoch",
+            "nullable": false,
+            "primaryKey": false,
+            "pythonDefault": null,
+            "serverDefault": null,
+            "type": "INTEGER"
+          },
+          {
+            "name": "display_name",
+            "nullable": false,
+            "primaryKey": false,
+            "pythonDefault": null,
+            "serverDefault": null,
+            "type": "TEXT"
+          },
+          {
+            "name": "join_count",
+            "nullable": false,
+            "primaryKey": false,
+            "pythonDefault": {
+              "kind": "scalar",
+              "value": 0
+            },
+            "serverDefault": null,
+            "type": "INTEGER"
+          },
+          {
+            "name": "joined_at_ms",
+            "nullable": true,
+            "primaryKey": false,
+            "pythonDefault": null,
+            "serverDefault": null,
+            "type": "INTEGER"
+          },
+          {
+            "name": "kick_reason",
+            "nullable": true,
+            "primaryKey": false,
+            "pythonDefault": null,
+            "serverDefault": null,
+            "type": "TEXT"
+          },
+          {
+            "name": "kicked_at_ms",
+            "nullable": true,
+            "primaryKey": false,
+            "pythonDefault": null,
+            "serverDefault": null,
+            "type": "INTEGER"
+          },
+          {
+            "name": "last_left_at_ms",
+            "nullable": true,
+            "primaryKey": false,
+            "pythonDefault": null,
+            "serverDefault": null,
+            "type": "INTEGER"
+          },
+          {
+            "name": "locale",
+            "nullable": false,
+            "primaryKey": false,
+            "pythonDefault": {
+              "kind": "scalar",
+              "value": "zh-CN"
+            },
+            "serverDefault": null,
+            "type": "TEXT"
+          },
+          {
+            "name": "micro_variant_json",
+            "nullable": false,
+            "primaryKey": false,
+            "pythonDefault": null,
+            "serverDefault": null,
+            "type": "TEXT"
+          },
+          {
+            "name": "moderation_revision",
+            "nullable": false,
+            "primaryKey": false,
+            "pythonDefault": {
+              "kind": "scalar",
+              "value": 1
+            },
+            "serverDefault": null,
+            "type": "INTEGER"
+          },
+          {
+            "name": "mute_reason",
+            "nullable": true,
+            "primaryKey": false,
+            "pythonDefault": null,
+            "serverDefault": null,
+            "type": "TEXT"
+          },
+          {
+            "name": "muted_until_ms",
+            "nullable": true,
+            "primaryKey": false,
+            "pythonDefault": null,
+            "serverDefault": null,
+            "type": "INTEGER"
+          },
+          {
+            "name": "ordinal",
+            "nullable": false,
+            "primaryKey": false,
+            "pythonDefault": null,
+            "serverDefault": null,
+            "type": "INTEGER"
+          },
+          {
+            "name": "persona_content_hash",
+            "nullable": false,
+            "primaryKey": false,
+            "pythonDefault": {
+              "kind": "scalar",
+              "value": "0000000000000000000000000000000000000000000000000000000000000000"
+            },
+            "serverDefault": null,
+            "type": "TEXT"
+          },
+          {
+            "name": "persona_id",
+            "nullable": false,
+            "primaryKey": false,
+            "pythonDefault": null,
+            "serverDefault": null,
+            "type": "TEXT"
+          },
+          {
+            "name": "persona_revision",
+            "nullable": false,
+            "primaryKey": false,
+            "pythonDefault": null,
+            "serverDefault": null,
+            "type": "INTEGER"
+          },
+          {
+            "name": "presence_revision",
+            "nullable": false,
+            "primaryKey": false,
+            "pythonDefault": {
+              "kind": "scalar",
+              "value": 1
+            },
+            "serverDefault": null,
+            "type": "INTEGER"
+          },
+          {
+            "name": "presence_state",
+            "nullable": false,
+            "primaryKey": false,
+            "pythonDefault": {
+              "kind": "scalar",
+              "value": "active"
+            },
+            "serverDefault": null,
+            "type": "TEXT"
+          },
+          {
+            "name": "removed_epoch",
+            "nullable": true,
+            "primaryKey": false,
+            "pythonDefault": null,
+            "serverDefault": null,
+            "type": "INTEGER"
+          },
+          {
+            "name": "session_id",
+            "nullable": false,
+            "primaryKey": true,
+            "pythonDefault": null,
+            "serverDefault": null,
+            "type": "TEXT"
+          },
+          {
+            "name": "state",
+            "nullable": false,
+            "primaryKey": false,
+            "pythonDefault": null,
+            "serverDefault": null,
+            "type": "TEXT"
+          },
+          {
+            "name": "updated_at_ms",
+            "nullable": false,
+            "primaryKey": false,
+            "pythonDefault": {
+              "kind": "scalar",
+              "value": 0
+            },
+            "serverDefault": null,
+            "type": "INTEGER"
+          },
+          {
+            "name": "username",
+            "nullable": false,
+            "primaryKey": false,
+            "pythonDefault": {
+              "kind": "scalar",
+              "value": ""
+            },
+            "serverDefault": null,
+            "type": "TEXT"
+          },
+          {
+            "name": "viewer_instance_id",
+            "nullable": false,
+            "primaryKey": true,
+            "pythonDefault": null,
+            "serverDefault": null,
+            "type": "TEXT"
+          },
+          {
+            "name": "viewer_sequence",
+            "nullable": false,
+            "primaryKey": false,
+            "pythonDefault": {
+              "kind": "scalar",
+              "value": 0
+            },
+            "serverDefault": null,
+            "type": "INTEGER"
+          }
+        ],
+        "foreignKeys": [
+          {
+            "columns": [
+              "session_id"
+            ],
+            "name": "fk_session_viewer_instances_session_id_session_records",
+            "onDelete": "CASCADE",
+            "onUpdate": null,
+            "referredColumns": [
+              "session_id"
+            ],
+            "referredTable": "session_records"
+          }
+        ],
+        "indexes": [
+          {
+            "columns": [
+              "session_id",
+              "persona_id",
+              "ordinal"
+            ],
+            "name": "ix_session_viewer_instances_session_persona_ordinal",
+            "unique": false
+          },
+          {
+            "columns": [
+              "session_id",
+              "state",
+              "viewer_instance_id"
+            ],
+            "name": "ix_session_viewer_instances_session_state_viewer",
+            "unique": false
+          }
+        ],
+        "name": "session_viewer_instances",
+        "primaryKey": [
+          "session_id",
+          "viewer_instance_id"
+        ],
+        "uniqueConstraints": []
+      }
+    ]
+  },
+  "intentionalSQLiteBehavior": [
+    "Foreign keys are enabled for every application connection.",
+    "The journal mode is WAL and synchronous mode is NORMAL.",
+    "The default busy timeout is 5000 milliseconds.",
+    "Startup runs quick_check, creates an online backup for an existing database, and applies Alembic before services start.",
+    "Startup proves write ownership with BEGIN IMMEDIATE and rolls the probe back.",
+    "Constraint names are not semantic parity keys; columns, predicates, uniqueness, and foreign-key actions are.",
+    "Two migrated tables retain database defaults that the declarative model expresses as Python-side defaults; DAT-002 and the owning repository tasks must preserve or explicitly migrate that behavior."
+  ],
+  "migratedDatabase": {
+    "alembicVersionTable": {
+      "checkConstraints": [],
+      "columns": [
+        {
+          "default": null,
+          "name": "version_num",
+          "nullable": false,
+          "primaryKey": true,
+          "type": "VARCHAR(32)"
+        }
+      ],
+      "foreignKeys": [],
+      "indexes": [],
+      "name": "alembic_version",
+      "primaryKey": [
+        "version_num"
+      ],
+      "uniqueConstraints": []
+    },
+    "pragmas": {
+      "alembicVersion": "0006_viewer_lifecycle",
+      "busyTimeoutMs": 5000,
+      "foreignKeys": 1,
+      "journalMode": "wal",
+      "quickCheck": "ok",
+      "synchronous": 1
+    },
+    "tableCount": 19,
+    "tables": [
+      {
+        "checkConstraints": [
+          {
+            "name": "ck_audience_host_relationships_ck_audience_host_relationships_revision_positive",
+            "sql": "revision >= 1"
+          },
+          {
+            "name": "ck_audience_host_relationships_ck_audience_host_relationships_updated_at_nonnegative",
+            "sql": "updated_at_ms >= 0"
+          },
+          {
+            "name": "ck_audience_host_relationships_ck_audience_host_relationships_updated_by_allowed",
+            "sql": "updated_by IN ('memory', 'user')"
+          }
+        ],
+        "columns": [
+          {
+            "default": null,
+            "name": "audience_id",
+            "nullable": false,
+            "primaryKey": true,
+            "type": "TEXT"
+          },
+          {
+            "default": null,
+            "name": "revision",
+            "nullable": false,
+            "primaryKey": false,
+            "type": "INTEGER"
+          },
+          {
+            "default": null,
+            "name": "source_memory_id",
+            "nullable": true,
+            "primaryKey": false,
+            "type": "TEXT"
+          },
+          {
+            "default": null,
+            "name": "state_json",
+            "nullable": false,
+            "primaryKey": false,
+            "type": "TEXT"
+          },
+          {
+            "default": null,
+            "name": "summary",
+            "nullable": false,
+            "primaryKey": false,
+            "type": "TEXT"
+          },
+          {
+            "default": null,
+            "name": "updated_at_ms",
+            "nullable": false,
+            "primaryKey": false,
+            "type": "INTEGER"
+          },
+          {
+            "default": null,
+            "name": "updated_by",
+            "nullable": false,
+            "primaryKey": false,
+            "type": "TEXT"
+          }
+        ],
+        "foreignKeys": [
+          {
+            "columns": [
+              "audience_id"
+            ],
+            "name": "fk_audience_host_relationships_audience_id_audience_profiles",
+            "onDelete": "CASCADE",
+            "onUpdate": null,
+            "referredColumns": [
+              "audience_id"
+            ],
+            "referredTable": "audience_profiles"
+          },
+          {
+            "columns": [
+              "source_memory_id"
+            ],
+            "name": "fk_audience_host_relationships_source_memory_id_audience_memories",
+            "onDelete": "SET NULL",
+            "onUpdate": null,
+            "referredColumns": [
+              "memory_id"
+            ],
+            "referredTable": "audience_memories"
+          }
+        ],
+        "indexes": [],
+        "name": "audience_host_relationships",
+        "primaryKey": [
+          "audience_id"
+        ],
+        "uniqueConstraints": []
+      },
+      {
+        "checkConstraints": [
+          {
+            "name": "ck_audience_memories_ck_audience_memories_confidence_range",
+            "sql": "confidence >= 0.0 AND confidence <= 1.0"
+          },
+          {
+            "name": "ck_audience_memories_ck_audience_memories_created_at_nonnegative",
+            "sql": "created_at_ms >= 0"
+          },
+          {
+            "name": "ck_audience_memories_ck_audience_memories_importance_range",
+            "sql": "importance >= 0.0 AND importance <= 1.0"
+          },
+          {
+            "name": "ck_audience_memories_ck_audience_memories_not_self_superseded",
+            "sql": "superseded_by IS NULL OR superseded_by != memory_id"
+          },
+          {
+            "name": "ck_audience_memories_ck_audience_memories_origin_allowed",
+            "sql": "origin IN ('extracted', 'user')"
+          },
+          {
+            "name": "ck_audience_memories_ck_audience_memories_revision_positive",
+            "sql": "revision >= 1"
+          },
+          {
+            "name": "ck_audience_memories_ck_audience_memories_state_allowed",
+            "sql": "state IN ('active', 'superseded')"
+          },
+          {
+            "name": "ck_audience_memories_ck_audience_memories_updated_after_created",
+            "sql": "updated_at_ms >= created_at_ms"
+          }
+        ],
+        "columns": [
+          {
+            "default": null,
+            "name": "audience_id",
+            "nullable": false,
+            "primaryKey": false,
+            "type": "TEXT"
+          },
+          {
+            "default": null,
+            "name": "confidence",
+            "nullable": false,
+            "primaryKey": false,
+            "type": "FLOAT"
+          },
+          {
+            "default": null,
+            "name": "content",
+            "nullable": false,
+            "primaryKey": false,
+            "type": "TEXT"
+          },
+          {
+            "default": null,
+            "name": "created_at_ms",
+            "nullable": false,
+            "primaryKey": false,
+            "type": "INTEGER"
+          },
+          {
+            "default": null,
+            "name": "expires_at_ms",
+            "nullable": true,
+            "primaryKey": false,
+            "type": "INTEGER"
+          },
+          {
+            "default": null,
+            "name": "importance",
+            "nullable": false,
+            "primaryKey": false,
+            "type": "FLOAT"
+          },
+          {
+            "default": null,
+            "name": "last_recalled_at_ms",
+            "nullable": true,
+            "primaryKey": false,
+            "type": "INTEGER"
+          },
+          {
+            "default": null,
+            "name": "memory_id",
+            "nullable": false,
+            "primaryKey": true,
+            "type": "TEXT"
+          },
+          {
+            "default": null,
+            "name": "memory_type",
+            "nullable": false,
+            "primaryKey": false,
+            "type": "TEXT"
+          },
+          {
+            "default": null,
+            "name": "origin",
+            "nullable": false,
+            "primaryKey": false,
+            "type": "TEXT"
+          },
+          {
+            "default": null,
+            "name": "revision",
+            "nullable": false,
+            "primaryKey": false,
+            "type": "INTEGER"
+          },
+          {
+            "default": null,
+            "name": "state",
+            "nullable": false,
+            "primaryKey": false,
+            "type": "TEXT"
+          },
+          {
+            "default": null,
+            "name": "superseded_by",
+            "nullable": true,
+            "primaryKey": false,
+            "type": "TEXT"
+          },
+          {
+            "default": null,
+            "name": "tags_json",
+            "nullable": false,
+            "primaryKey": false,
+            "type": "TEXT"
+          },
+          {
+            "default": null,
+            "name": "updated_at_ms",
+            "nullable": false,
+            "primaryKey": false,
+            "type": "INTEGER"
+          }
+        ],
+        "foreignKeys": [
+          {
+            "columns": [
+              "audience_id"
+            ],
+            "name": "fk_audience_memories_audience_id_audience_profiles",
+            "onDelete": "CASCADE",
+            "onUpdate": null,
+            "referredColumns": [
+              "audience_id"
+            ],
+            "referredTable": "audience_profiles"
+          },
+          {
+            "columns": [
+              "superseded_by"
+            ],
+            "name": "fk_audience_memories_superseded_by_audience_memories",
+            "onDelete": "SET NULL",
+            "onUpdate": null,
+            "referredColumns": [
+              "memory_id"
+            ],
+            "referredTable": "audience_memories"
+          }
+        ],
+        "indexes": [
+          {
+            "columns": [
+              "audience_id",
+              "state",
+              "updated_at_ms"
+            ],
+            "name": "ix_audience_memories_audience_state_updated_at_ms",
+            "unique": false
+          },
+          {
+            "columns": [
+              "audience_id",
+              "state",
+              "importance",
+              "last_recalled_at_ms"
+            ],
+            "name": "ix_audience_memories_retrieval",
+            "unique": false
+          }
+        ],
+        "name": "audience_memories",
+        "primaryKey": [
+          "memory_id"
+        ],
+        "uniqueConstraints": []
+      },
+      {
+        "checkConstraints": [
+          {
+            "name": "ck_audience_peer_relationships_ck_audience_peer_relationships_distinct_audiences",
+            "sql": "audience_id != peer_audience_id"
+          },
+          {
+            "name": "ck_audience_peer_relationships_ck_audience_peer_relationships_revision_positive",
+            "sql": "revision >= 1"
+          },
+          {
+            "name": "ck_audience_peer_relationships_ck_audience_peer_relationships_updated_at_nonnegative",
+            "sql": "updated_at_ms >= 0"
+          },
+          {
+            "name": "ck_audience_peer_relationships_ck_audience_peer_relationships_updated_by_allowed",
+            "sql": "updated_by IN ('memory', 'user')"
+          }
+        ],
+        "columns": [
+          {
+            "default": null,
+            "name": "audience_id",
+            "nullable": false,
+            "primaryKey": true,
+            "type": "TEXT"
+          },
+          {
+            "default": null,
+            "name": "peer_audience_id",
+            "nullable": false,
+            "primaryKey": true,
+            "type": "TEXT"
+          },
+          {
+            "default": null,
+            "name": "revision",
+            "nullable": false,
+            "primaryKey": false,
+            "type": "INTEGER"
+          },
+          {
+            "default": null,
+            "name": "source_memory_id",
+            "nullable": true,
+            "primaryKey": false,
+            "type": "TEXT"
+          },
+          {
+            "default": null,
+            "name": "state_json",
+            "nullable": false,
+            "primaryKey": false,
+            "type": "TEXT"
+          },
+          {
+            "default": null,
+            "name": "summary",
+            "nullable": false,
+            "primaryKey": false,
+            "type": "TEXT"
+          },
+          {
+            "default": null,
+            "name": "updated_at_ms",
+            "nullable": false,
+            "primaryKey": false,
+            "type": "INTEGER"
+          },
+          {
+            "default": null,
+            "name": "updated_by",
+            "nullable": false,
+            "primaryKey": false,
+            "type": "TEXT"
+          }
+        ],
+        "foreignKeys": [
+          {
+            "columns": [
+              "audience_id"
+            ],
+            "name": "fk_audience_peer_relationships_audience_id_audience_profiles",
+            "onDelete": "CASCADE",
+            "onUpdate": null,
+            "referredColumns": [
+              "audience_id"
+            ],
+            "referredTable": "audience_profiles"
+          },
+          {
+            "columns": [
+              "peer_audience_id"
+            ],
+            "name": "fk_audience_peer_relationships_peer_audience_id_audience_profiles",
+            "onDelete": "CASCADE",
+            "onUpdate": null,
+            "referredColumns": [
+              "audience_id"
+            ],
+            "referredTable": "audience_profiles"
+          },
+          {
+            "columns": [
+              "source_memory_id"
+            ],
+            "name": "fk_audience_peer_relationships_source_memory_id_audience_memories",
+            "onDelete": "SET NULL",
+            "onUpdate": null,
+            "referredColumns": [
+              "memory_id"
+            ],
+            "referredTable": "audience_memories"
+          }
+        ],
+        "indexes": [],
+        "name": "audience_peer_relationships",
+        "primaryKey": [
+          "audience_id",
+          "peer_audience_id"
+        ],
+        "uniqueConstraints": []
+      },
+      {
+        "checkConstraints": [
+          {
+            "name": "ck_audience_profiles_ck_audience_profiles_created_at_nonnegative",
+            "sql": "created_at_ms >= 0"
+          },
+          {
+            "name": "ck_audience_profiles_ck_audience_profiles_enabled_boolean",
+            "sql": "enabled IN (0, 1)"
+          },
+          {
+            "name": "ck_audience_profiles_ck_audience_profiles_origin_allowed",
+            "sql": "origin IN ('preset', 'custom')"
+          },
+          {
+            "name": "ck_audience_profiles_ck_audience_profiles_revision_positive",
+            "sql": "revision >= 1"
+          },
+          {
+            "name": "ck_audience_profiles_ck_audience_profiles_updated_after_created",
+            "sql": "updated_at_ms >= created_at_ms"
+          }
+        ],
+        "columns": [
+          {
+            "default": null,
+            "name": "audience_id",
+            "nullable": false,
+            "primaryKey": true,
+            "type": "TEXT"
+          },
+          {
+            "default": null,
+            "name": "avatar_ref",
+            "nullable": true,
+            "primaryKey": false,
+            "type": "TEXT"
+          },
+          {
+            "default": null,
+            "name": "created_at_ms",
+            "nullable": false,
+            "primaryKey": false,
+            "type": "INTEGER"
+          },
+          {
+            "default": null,
+            "name": "display_name",
+            "nullable": false,
+            "primaryKey": false,
+            "type": "TEXT"
+          },
+          {
+            "default": null,
+            "name": "enabled",
+            "nullable": false,
+            "primaryKey": false,
+            "type": "INTEGER"
+          },
+          {
+            "default": null,
+            "name": "origin",
+            "nullable": false,
+            "primaryKey": false,
+            "type": "TEXT"
+          },
+          {
+            "default": null,
+            "name": "personality_json",
+            "nullable": false,
+            "primaryKey": false,
+            "type": "TEXT"
+          },
+          {
+            "default": null,
+            "name": "preferences_json",
+            "nullable": false,
+            "primaryKey": false,
+            "type": "TEXT"
+          },
+          {
+            "default": null,
+            "name": "preset_id",
+            "nullable": true,
+            "primaryKey": false,
+            "type": "TEXT"
+          },
+          {
+            "default": null,
+            "name": "preset_version",
+            "nullable": true,
+            "primaryKey": false,
+            "type": "INTEGER"
+          },
+          {
+            "default": null,
+            "name": "revision",
+            "nullable": false,
+            "primaryKey": false,
+            "type": "INTEGER"
+          },
+          {
+            "default": null,
+            "name": "speaking_style_json",
+            "nullable": false,
+            "primaryKey": false,
+            "type": "TEXT"
+          },
+          {
+            "default": null,
+            "name": "updated_at_ms",
+            "nullable": false,
+            "primaryKey": false,
+            "type": "INTEGER"
+          }
+        ],
+        "foreignKeys": [],
+        "indexes": [
+          {
+            "columns": [
+              "enabled",
+              "updated_at_ms"
+            ],
+            "name": "ix_audience_profiles_enabled_updated_at_ms",
+            "unique": false
+          }
+        ],
+        "name": "audience_profiles",
+        "primaryKey": [
+          "audience_id"
+        ],
+        "uniqueConstraints": []
+      },
+      {
+        "checkConstraints": [
+          {
+            "name": "ck_memory_evidence_ck_memory_evidence_occurred_at_nonnegative",
+            "sql": "occurred_at_ms >= 0"
+          }
+        ],
+        "columns": [
+          {
+            "default": null,
+            "name": "evidence_summary",
+            "nullable": false,
+            "primaryKey": false,
+            "type": "TEXT"
+          },
+          {
+            "default": null,
+            "name": "memory_id",
+            "nullable": false,
+            "primaryKey": true,
+            "type": "TEXT"
+          },
+          {
+            "default": null,
+            "name": "occurred_at_ms",
+            "nullable": false,
+            "primaryKey": false,
+            "type": "INTEGER"
+          },
+          {
+            "default": null,
+            "name": "session_id",
+            "nullable": false,
+            "primaryKey": true,
+            "type": "TEXT"
+          },
+          {
+            "default": null,
+            "name": "source_event_id",
+            "nullable": false,
+            "primaryKey": true,
+            "type": "TEXT"
+          },
+          {
+            "default": null,
+            "name": "source_type",
+            "nullable": false,
+            "primaryKey": false,
+            "type": "TEXT"
+          }
+        ],
+        "foreignKeys": [
+          {
+            "columns": [
+              "memory_id"
+            ],
+            "name": "fk_memory_evidence_memory_id_audience_memories",
+            "onDelete": "CASCADE",
+            "onUpdate": null,
+            "referredColumns": [
+              "memory_id"
+            ],
+            "referredTable": "audience_memories"
+          },
+          {
+            "columns": [
+              "session_id"
+            ],
+            "name": "fk_memory_evidence_session_id_session_records",
+            "onDelete": "CASCADE",
+            "onUpdate": null,
+            "referredColumns": [
+              "session_id"
+            ],
+            "referredTable": "session_records"
+          }
+        ],
+        "indexes": [
+          {
+            "columns": [
+              "session_id",
+              "source_event_id"
+            ],
+            "name": "ix_memory_evidence_session_event",
+            "unique": false
+          }
+        ],
+        "name": "memory_evidence",
+        "primaryKey": [
+          "memory_id",
+          "session_id",
+          "source_event_id"
+        ],
+        "uniqueConstraints": []
+      },
+      {
+        "checkConstraints": [
+          {
+            "name": "ck_mode_meme_candidates_ck_mode_meme_candidates_audience_epoch_positive",
+            "sql": "audience_epoch >= 1"
+          },
+          {
+            "name": "ck_mode_meme_candidates_ck_mode_meme_candidates_created_at_nonnegative",
+            "sql": "created_at_ms >= 0"
+          },
+          {
+            "name": "ck_mode_meme_candidates_ck_mode_meme_candidates_outcome_allowed",
+            "sql": "outcome IN ('pending', 'accepted', 'rejected')"
+          },
+          {
+            "name": "ck_mode_meme_candidates_ck_mode_meme_candidates_updated_after_created",
+            "sql": "updated_at_ms >= created_at_ms"
+          }
+        ],
+        "columns": [
+          {
+            "default": null,
+            "name": "audience_epoch",
+            "nullable": false,
+            "primaryKey": false,
+            "type": "INTEGER"
+          },
+          {
+            "default": null,
+            "name": "candidate_id",
+            "nullable": false,
+            "primaryKey": true,
+            "type": "TEXT"
+          },
+          {
+            "default": null,
+            "name": "created_at_ms",
+            "nullable": false,
+            "primaryKey": false,
+            "type": "INTEGER"
+          },
+          {
+            "default": null,
+            "name": "evidence_event_ids_json",
+            "nullable": false,
+            "primaryKey": false,
+            "type": "TEXT"
+          },
+          {
+            "default": null,
+            "name": "evidence_frame_indexes_json",
+            "nullable": false,
+            "primaryKey": false,
+            "type": "TEXT"
+          },
+          {
+            "default": null,
+            "name": "idempotency_key",
+            "nullable": false,
+            "primaryKey": false,
+            "type": "TEXT"
+          },
+          {
+            "default": null,
+            "name": "mode_namespace",
+            "nullable": false,
+            "primaryKey": false,
+            "type": "TEXT"
+          },
+          {
+            "default": null,
+            "name": "observation_id",
+            "nullable": false,
+            "primaryKey": false,
+            "type": "TEXT"
+          },
+          {
+            "default": null,
+            "name": "outcome",
+            "nullable": false,
+            "primaryKey": false,
+            "type": "TEXT"
+          },
+          {
+            "default": null,
+            "name": "result_meme_id",
+            "nullable": true,
+            "primaryKey": false,
+            "type": "TEXT"
+          },
+          {
+            "default": null,
+            "name": "room_id",
+            "nullable": false,
+            "primaryKey": false,
+            "type": "TEXT"
+          },
+          {
+            "default": null,
+            "name": "session_id",
+            "nullable": false,
+            "primaryKey": false,
+            "type": "TEXT"
+          },
+          {
+            "default": null,
+            "name": "text",
+            "nullable": false,
+            "primaryKey": false,
+            "type": "TEXT"
+          },
+          {
+            "default": null,
+            "name": "updated_at_ms",
+            "nullable": false,
+            "primaryKey": false,
+            "type": "INTEGER"
+          }
+        ],
+        "foreignKeys": [
+          {
+            "columns": [
+              "result_meme_id"
+            ],
+            "name": "fk_mode_meme_candidates_result_meme_id_mode_memes",
+            "onDelete": "SET NULL",
+            "onUpdate": null,
+            "referredColumns": [
+              "meme_id"
+            ],
+            "referredTable": "mode_memes"
+          },
+          {
+            "columns": [
+              "room_id"
+            ],
+            "name": "fk_mode_meme_candidates_room_id_rooms",
+            "onDelete": "CASCADE",
+            "onUpdate": null,
+            "referredColumns": [
+              "room_id"
+            ],
+            "referredTable": "rooms"
+          },
+          {
+            "columns": [
+              "session_id"
+            ],
+            "name": "fk_mode_meme_candidates_session_id_session_records",
+            "onDelete": "CASCADE",
+            "onUpdate": null,
+            "referredColumns": [
+              "session_id"
+            ],
+            "referredTable": "session_records"
+          }
+        ],
+        "indexes": [
+          {
+            "columns": [
+              "mode_namespace",
+              "outcome",
+              "created_at_ms"
+            ],
+            "name": "ix_mode_meme_candidates_namespace_outcome_created",
+            "unique": false
+          }
+        ],
+        "name": "mode_meme_candidates",
+        "primaryKey": [
+          "candidate_id"
+        ],
+        "uniqueConstraints": [
+          {
+            "columns": [
+              "mode_namespace",
+              "idempotency_key"
+            ],
+            "name": "uq_mode_meme_candidates_namespace_idempotency"
+          }
+        ]
+      },
+      {
+        "checkConstraints": [
+          {
+            "name": "ck_mode_meme_events_ck_mode_meme_events_action_allowed",
+            "sql": "action IN ('created', 'edited', 'revoked', 'restored', 'disabled', 'archived')"
+          },
+          {
+            "name": "ck_mode_meme_events_ck_mode_meme_events_created_at_nonnegative",
+            "sql": "created_at_ms >= 0"
+          },
+          {
+            "name": "ck_mode_meme_events_ck_mode_meme_events_new_revision_positive",
+            "sql": "new_revision >= 1"
+          },
+          {
+            "name": "ck_mode_meme_events_ck_mode_meme_events_previous_revision_nonnegative",
+            "sql": "previous_revision >= 0"
+          }
+        ],
+        "columns": [
+          {
+            "default": null,
+            "name": "action",
+            "nullable": false,
+            "primaryKey": false,
+            "type": "TEXT"
+          },
+          {
+            "default": null,
+            "name": "created_at_ms",
+            "nullable": false,
+            "primaryKey": false,
+            "type": "INTEGER"
+          },
+          {
+            "default": null,
+            "name": "event_id",
+            "nullable": false,
+            "primaryKey": true,
+            "type": "TEXT"
+          },
+          {
+            "default": null,
+            "name": "meme_id",
+            "nullable": false,
+            "primaryKey": false,
+            "type": "TEXT"
+          },
+          {
+            "default": null,
+            "name": "new_revision",
+            "nullable": false,
+            "primaryKey": false,
+            "type": "INTEGER"
+          },
+          {
+            "default": null,
+            "name": "payload_json",
+            "nullable": false,
+            "primaryKey": false,
+            "type": "TEXT"
+          },
+          {
+            "default": null,
+            "name": "previous_revision",
+            "nullable": false,
+            "primaryKey": false,
+            "type": "INTEGER"
+          }
+        ],
+        "foreignKeys": [
+          {
+            "columns": [
+              "meme_id"
+            ],
+            "name": "fk_mode_meme_events_meme_id_mode_memes",
+            "onDelete": "CASCADE",
+            "onUpdate": null,
+            "referredColumns": [
+              "meme_id"
+            ],
+            "referredTable": "mode_memes"
+          }
+        ],
+        "indexes": [],
+        "name": "mode_meme_events",
+        "primaryKey": [
+          "event_id"
+        ],
+        "uniqueConstraints": []
+      },
+      {
+        "checkConstraints": [
+          {
+            "name": "ck_mode_meme_settings_ck_mode_meme_settings_created_at_nonnegative",
+            "sql": "created_at_ms >= 0"
+          },
+          {
+            "name": "ck_mode_meme_settings_ck_mode_meme_settings_revision_positive",
+            "sql": "revision >= 1"
+          },
+          {
+            "name": "ck_mode_meme_settings_ck_mode_meme_settings_updated_after_created",
+            "sql": "updated_at_ms >= created_at_ms"
+          }
+        ],
+        "columns": [
+          {
+            "default": null,
+            "name": "auto_ingest_enabled",
+            "nullable": false,
+            "primaryKey": false,
+            "type": "BOOLEAN"
+          },
+          {
+            "default": null,
+            "name": "created_at_ms",
+            "nullable": false,
+            "primaryKey": false,
+            "type": "INTEGER"
+          },
+          {
+            "default": null,
+            "name": "mode_namespace",
+            "nullable": false,
+            "primaryKey": true,
+            "type": "TEXT"
+          },
+          {
+            "default": null,
+            "name": "revision",
+            "nullable": false,
+            "primaryKey": false,
+            "type": "INTEGER"
+          },
+          {
+            "default": null,
+            "name": "updated_at_ms",
+            "nullable": false,
+            "primaryKey": false,
+            "type": "INTEGER"
+          }
+        ],
+        "foreignKeys": [],
+        "indexes": [],
+        "name": "mode_meme_settings",
+        "primaryKey": [
+          "mode_namespace"
+        ],
+        "uniqueConstraints": []
+      },
+      {
+        "checkConstraints": [
+          {
+            "name": "ck_mode_memes_ck_mode_memes_created_at_nonnegative",
+            "sql": "created_at_ms >= 0"
+          },
+          {
+            "name": "ck_mode_memes_ck_mode_memes_intensity_range",
+            "sql": "intensity >= 0.0 AND intensity <= 1.0"
+          },
+          {
+            "name": "ck_mode_memes_ck_mode_memes_revision_positive",
+            "sql": "revision >= 1"
+          },
+          {
+            "name": "ck_mode_memes_ck_mode_memes_state_allowed",
+            "sql": "state IN ('active', 'disabled', 'archived', 'revoked')"
+          },
+          {
+            "name": "ck_mode_memes_ck_mode_memes_updated_after_created",
+            "sql": "updated_at_ms >= created_at_ms"
+          }
+        ],
+        "columns": [
+          {
+            "default": null,
+            "name": "content",
+            "nullable": false,
+            "primaryKey": false,
+            "type": "TEXT"
+          },
+          {
+            "default": null,
+            "name": "created_at_ms",
+            "nullable": false,
+            "primaryKey": false,
+            "type": "INTEGER"
+          },
+          {
+            "default": null,
+            "name": "intensity",
+            "nullable": false,
+            "primaryKey": false,
+            "type": "FLOAT"
+          },
+          {
+            "default": null,
+            "name": "meme_id",
+            "nullable": false,
+            "primaryKey": true,
+            "type": "TEXT"
+          },
+          {
+            "default": null,
+            "name": "mode_namespace",
+            "nullable": false,
+            "primaryKey": false,
+            "type": "TEXT"
+          },
+          {
+            "default": null,
+            "name": "revision",
+            "nullable": false,
+            "primaryKey": false,
+            "type": "INTEGER"
+          },
+          {
+            "default": null,
+            "name": "source_json",
+            "nullable": false,
+            "primaryKey": false,
+            "type": "TEXT"
+          },
+          {
+            "default": null,
+            "name": "state",
+            "nullable": false,
+            "primaryKey": false,
+            "type": "TEXT"
+          },
+          {
+            "default": null,
+            "name": "updated_at_ms",
+            "nullable": false,
+            "primaryKey": false,
+            "type": "INTEGER"
+          }
+        ],
+        "foreignKeys": [],
+        "indexes": [
+          {
+            "columns": [
+              "mode_namespace",
+              "state",
+              "updated_at_ms"
+            ],
+            "name": "ix_mode_memes_namespace_state_updated",
+            "unique": false
+          }
+        ],
+        "name": "mode_memes",
+        "primaryKey": [
+          "meme_id"
+        ],
+        "uniqueConstraints": []
+      },
+      {
+        "checkConstraints": [
+          {
+            "name": "ck_room_events_ck_room_events_audience_epoch_nonnegative",
+            "sql": "audience_epoch >= 0"
+          },
+          {
+            "name": "ck_room_events_ck_room_events_occurred_at_nonnegative",
+            "sql": "occurred_at_ms >= 0"
+          },
+          {
+            "name": "ck_room_events_ck_room_events_sequence_nonnegative",
+            "sql": "sequence >= 0"
+          }
+        ],
+        "columns": [
+          {
+            "default": null,
+            "name": "audience_epoch",
+            "nullable": false,
+            "primaryKey": false,
+            "type": "INTEGER"
+          },
+          {
+            "default": null,
+            "name": "content_hash",
+            "nullable": false,
+            "primaryKey": false,
+            "type": "TEXT"
+          },
+          {
+            "default": null,
+            "name": "content_json",
+            "nullable": false,
+            "primaryKey": false,
+            "type": "TEXT"
+          },
+          {
+            "default": null,
+            "name": "event_id",
+            "nullable": false,
+            "primaryKey": true,
+            "type": "TEXT"
+          },
+          {
+            "default": null,
+            "name": "occurred_at_ms",
+            "nullable": false,
+            "primaryKey": false,
+            "type": "INTEGER"
+          },
+          {
+            "default": null,
+            "name": "room_id",
+            "nullable": false,
+            "primaryKey": false,
+            "type": "TEXT"
+          },
+          {
+            "default": null,
+            "name": "sequence",
+            "nullable": false,
+            "primaryKey": false,
+            "type": "INTEGER"
+          },
+          {
+            "default": null,
+            "name": "session_id",
+            "nullable": false,
+            "primaryKey": false,
+            "type": "TEXT"
+          },
+          {
+            "default": null,
+            "name": "source_id",
+            "nullable": false,
+            "primaryKey": false,
+            "type": "TEXT"
+          },
+          {
+            "default": null,
+            "name": "source_type",
+            "nullable": false,
+            "primaryKey": false,
+            "type": "TEXT"
+          }
+        ],
+        "foreignKeys": [
+          {
+            "columns": [
+              "room_id"
+            ],
+            "name": "fk_room_events_room_id_rooms",
+            "onDelete": "CASCADE",
+            "onUpdate": null,
+            "referredColumns": [
+              "room_id"
+            ],
+            "referredTable": "rooms"
+          },
+          {
+            "columns": [
+              "session_id"
+            ],
+            "name": "fk_room_events_session_id_session_records",
+            "onDelete": "CASCADE",
+            "onUpdate": null,
+            "referredColumns": [
+              "session_id"
+            ],
+            "referredTable": "session_records"
+          }
+        ],
+        "indexes": [
+          {
+            "columns": [
+              "room_id",
+              "occurred_at_ms"
+            ],
+            "name": "ix_room_events_room_occurred_at_ms",
+            "unique": false
+          }
+        ],
+        "name": "room_events",
+        "primaryKey": [
+          "event_id"
+        ],
+        "uniqueConstraints": [
+          {
+            "columns": [
+              "room_id",
+              "session_id",
+              "sequence"
+            ],
+            "name": "uq_room_events_room_session_sequence"
+          }
+        ]
+      },
+      {
+        "checkConstraints": [
+          {
+            "name": "ck_room_long_term_memories_ck_room_long_term_memories_confidence_range",
+            "sql": "confidence >= 0.0 AND confidence <= 1.0"
+          },
+          {
+            "name": "ck_room_long_term_memories_ck_room_long_term_memories_created_at_nonnegative",
+            "sql": "created_at_ms >= 0"
+          },
+          {
+            "name": "ck_room_long_term_memories_ck_room_long_term_memories_importance_range",
+            "sql": "importance >= 0.0 AND importance <= 1.0"
+          },
+          {
+            "name": "ck_room_long_term_memories_ck_room_long_term_memories_not_self_superseded",
+            "sql": "superseded_by IS NULL OR superseded_by != memory_id"
+          },
+          {
+            "name": "ck_room_long_term_memories_ck_room_long_term_memories_revision_positive",
+            "sql": "revision >= 1"
+          },
+          {
+            "name": "ck_room_long_term_memories_ck_room_long_term_memories_state_allowed",
+            "sql": "state IN ('active', 'superseded', 'revoked')"
+          },
+          {
+            "name": "ck_room_long_term_memories_ck_room_long_term_memories_updated_after_created",
+            "sql": "updated_at_ms >= created_at_ms"
+          }
+        ],
+        "columns": [
+          {
+            "default": null,
+            "name": "confidence",
+            "nullable": false,
+            "primaryKey": false,
+            "type": "FLOAT"
+          },
+          {
+            "default": null,
+            "name": "content",
+            "nullable": false,
+            "primaryKey": false,
+            "type": "TEXT"
+          },
+          {
+            "default": null,
+            "name": "created_at_ms",
+            "nullable": false,
+            "primaryKey": false,
+            "type": "INTEGER"
+          },
+          {
+            "default": null,
+            "name": "expires_at_ms",
+            "nullable": true,
+            "primaryKey": false,
+            "type": "INTEGER"
+          },
+          {
+            "default": null,
+            "name": "importance",
+            "nullable": false,
+            "primaryKey": false,
+            "type": "FLOAT"
+          },
+          {
+            "default": null,
+            "name": "last_recalled_at_ms",
+            "nullable": true,
+            "primaryKey": false,
+            "type": "INTEGER"
+          },
+          {
+            "default": null,
+            "name": "memory_id",
+            "nullable": false,
+            "primaryKey": true,
+            "type": "TEXT"
+          },
+          {
+            "default": null,
+            "name": "memory_type",
+            "nullable": false,
+            "primaryKey": false,
+            "type": "TEXT"
+          },
+          {
+            "default": null,
+            "name": "origin",
+            "nullable": false,
+            "primaryKey": false,
+            "type": "TEXT"
+          },
+          {
+            "default": null,
+            "name": "revision",
+            "nullable": false,
+            "primaryKey": false,
+            "type": "INTEGER"
+          },
+          {
+            "default": null,
+            "name": "room_id",
+            "nullable": false,
+            "primaryKey": false,
+            "type": "TEXT"
+          },
+          {
+            "default": null,
+            "name": "state",
+            "nullable": false,
+            "primaryKey": false,
+            "type": "TEXT"
+          },
+          {
+            "default": null,
+            "name": "superseded_by",
+            "nullable": true,
+            "primaryKey": false,
+            "type": "TEXT"
+          },
+          {
+            "default": null,
+            "name": "tags_json",
+            "nullable": false,
+            "primaryKey": false,
+            "type": "TEXT"
+          },
+          {
+            "default": null,
+            "name": "updated_at_ms",
+            "nullable": false,
+            "primaryKey": false,
+            "type": "INTEGER"
+          }
+        ],
+        "foreignKeys": [
+          {
+            "columns": [
+              "room_id"
+            ],
+            "name": "fk_room_long_term_memories_room_id_rooms",
+            "onDelete": "CASCADE",
+            "onUpdate": null,
+            "referredColumns": [
+              "room_id"
+            ],
+            "referredTable": "rooms"
+          },
+          {
+            "columns": [
+              "superseded_by"
+            ],
+            "name": "fk_room_long_term_memories_superseded_by_room_long_term_memories",
+            "onDelete": "SET NULL",
+            "onUpdate": null,
+            "referredColumns": [
+              "memory_id"
+            ],
+            "referredTable": "room_long_term_memories"
+          }
+        ],
+        "indexes": [
+          {
+            "columns": [
+              "room_id",
+              "state",
+              "importance",
+              "last_recalled_at_ms"
+            ],
+            "name": "ix_room_long_term_memories_retrieval",
+            "unique": false
+          },
+          {
+            "columns": [
+              "room_id",
+              "state",
+              "updated_at_ms"
+            ],
+            "name": "ix_room_long_term_memories_room_state_updated",
+            "unique": false
+          }
+        ],
+        "name": "room_long_term_memories",
+        "primaryKey": [
+          "memory_id"
+        ],
+        "uniqueConstraints": []
+      },
+      {
+        "checkConstraints": [
+          {
+            "name": "ck_room_memory_candidates_ck_room_memory_candidates_base_revision_nonnegative",
+            "sql": "base_revision >= 0"
+          },
+          {
+            "name": "ck_room_memory_candidates_ck_room_memory_candidates_created_at_nonnegative",
+            "sql": "created_at_ms >= 0"
+          },
+          {
+            "name": "ck_room_memory_candidates_ck_room_memory_candidates_outcome_allowed",
+            "sql": "outcome IN ('pending', 'created', 'merged', 'replaced', 'rejected', 'stale')"
+          },
+          {
+            "name": "ck_room_memory_candidates_ck_room_memory_candidates_updated_after_created",
+            "sql": "updated_at_ms >= created_at_ms"
+          }
+        ],
+        "columns": [
+          {
+            "default": null,
+            "name": "base_revision",
+            "nullable": false,
+            "primaryKey": false,
+            "type": "INTEGER"
+          },
+          {
+            "default": null,
+            "name": "candidate_id",
+            "nullable": false,
+            "primaryKey": true,
+            "type": "TEXT"
+          },
+          {
+            "default": null,
+            "name": "candidate_type",
+            "nullable": false,
+            "primaryKey": false,
+            "type": "TEXT"
+          },
+          {
+            "default": null,
+            "name": "content",
+            "nullable": false,
+            "primaryKey": false,
+            "type": "TEXT"
+          },
+          {
+            "default": null,
+            "name": "created_at_ms",
+            "nullable": false,
+            "primaryKey": false,
+            "type": "INTEGER"
+          },
+          {
+            "default": null,
+            "name": "decision_json",
+            "nullable": false,
+            "primaryKey": false,
+            "type": "TEXT"
+          },
+          {
+            "default": null,
+            "name": "evidence_event_ids_json",
+            "nullable": false,
+            "primaryKey": false,
+            "type": "TEXT"
+          },
+          {
+            "default": null,
+            "name": "idempotency_key",
+            "nullable": false,
+            "primaryKey": false,
+            "type": "TEXT"
+          },
+          {
+            "default": null,
+            "name": "outcome",
+            "nullable": false,
+            "primaryKey": false,
+            "type": "TEXT"
+          },
+          {
+            "default": null,
+            "name": "result_memory_id",
+            "nullable": true,
+            "primaryKey": false,
+            "type": "TEXT"
+          },
+          {
+            "default": null,
+            "name": "room_id",
+            "nullable": false,
+            "primaryKey": false,
+            "type": "TEXT"
+          },
+          {
+            "default": null,
+            "name": "tags_json",
+            "nullable": false,
+            "primaryKey": false,
+            "type": "TEXT"
+          },
+          {
+            "default": null,
+            "name": "updated_at_ms",
+            "nullable": false,
+            "primaryKey": false,
+            "type": "INTEGER"
+          }
+        ],
+        "foreignKeys": [
+          {
+            "columns": [
+              "result_memory_id"
+            ],
+            "name": "fk_room_memory_candidates_result_memory_id_room_long_term_memories",
+            "onDelete": "SET NULL",
+            "onUpdate": null,
+            "referredColumns": [
+              "memory_id"
+            ],
+            "referredTable": "room_long_term_memories"
+          },
+          {
+            "columns": [
+              "room_id"
+            ],
+            "name": "fk_room_memory_candidates_room_id_rooms",
+            "onDelete": "CASCADE",
+            "onUpdate": null,
+            "referredColumns": [
+              "room_id"
+            ],
+            "referredTable": "rooms"
+          }
+        ],
+        "indexes": [],
+        "name": "room_memory_candidates",
+        "primaryKey": [
+          "candidate_id"
+        ],
+        "uniqueConstraints": [
+          {
+            "columns": [
+              "room_id",
+              "idempotency_key"
+            ],
+            "name": "uq_room_memory_candidates_room_idempotency"
+          }
+        ]
+      },
+      {
+        "checkConstraints": [
+          {
+            "name": "ck_room_memory_evidence_ck_room_memory_evidence_occurred_at_nonnegative",
+            "sql": "occurred_at_ms >= 0"
+          }
+        ],
+        "columns": [
+          {
+            "default": null,
+            "name": "event_id",
+            "nullable": false,
+            "primaryKey": true,
+            "type": "TEXT"
+          },
+          {
+            "default": null,
+            "name": "evidence_summary",
+            "nullable": false,
+            "primaryKey": false,
+            "type": "TEXT"
+          },
+          {
+            "default": null,
+            "name": "memory_id",
+            "nullable": false,
+            "primaryKey": true,
+            "type": "TEXT"
+          },
+          {
+            "default": null,
+            "name": "occurred_at_ms",
+            "nullable": false,
+            "primaryKey": false,
+            "type": "INTEGER"
+          },
+          {
+            "default": null,
+            "name": "source_type",
+            "nullable": false,
+            "primaryKey": false,
+            "type": "TEXT"
+          }
+        ],
+        "foreignKeys": [
+          {
+            "columns": [
+              "memory_id"
+            ],
+            "name": "fk_room_memory_evidence_memory_id_room_long_term_memories",
+            "onDelete": "CASCADE",
+            "onUpdate": null,
+            "referredColumns": [
+              "memory_id"
+            ],
+            "referredTable": "room_long_term_memories"
+          }
+        ],
+        "indexes": [
+          {
+            "columns": [
+              "event_id",
+              "memory_id"
+            ],
+            "name": "ix_room_memory_evidence_event_memory",
+            "unique": false
+          }
+        ],
+        "name": "room_memory_evidence",
+        "primaryKey": [
+          "memory_id",
+          "event_id"
+        ],
+        "uniqueConstraints": []
+      },
+      {
+        "checkConstraints": [
+          {
+            "name": "ck_room_memory_heads_ck_room_memory_heads_revision_nonnegative",
+            "sql": "revision >= 0"
+          },
+          {
+            "name": "ck_room_memory_heads_ck_room_memory_heads_updated_at_nonnegative",
+            "sql": "updated_at_ms >= 0"
+          }
+        ],
+        "columns": [
+          {
+            "default": null,
+            "name": "revision",
+            "nullable": false,
+            "primaryKey": false,
+            "type": "INTEGER"
+          },
+          {
+            "default": null,
+            "name": "room_id",
+            "nullable": false,
+            "primaryKey": true,
+            "type": "TEXT"
+          },
+          {
+            "default": null,
+            "name": "updated_at_ms",
+            "nullable": false,
+            "primaryKey": false,
+            "type": "INTEGER"
+          }
+        ],
+        "foreignKeys": [
+          {
+            "columns": [
+              "room_id"
+            ],
+            "name": "fk_room_memory_heads_room_id_rooms",
+            "onDelete": "CASCADE",
+            "onUpdate": null,
+            "referredColumns": [
+              "room_id"
+            ],
+            "referredTable": "rooms"
+          }
+        ],
+        "indexes": [],
+        "name": "room_memory_heads",
+        "primaryKey": [
+          "room_id"
+        ],
+        "uniqueConstraints": []
+      },
+      {
+        "checkConstraints": [
+          {
+            "name": "ck_rooms_ck_rooms_created_at_nonnegative",
+            "sql": "created_at_ms >= 0"
+          },
+          {
+            "name": "ck_rooms_ck_rooms_revision_nonnegative",
+            "sql": "revision >= 0"
+          },
+          {
+            "name": "ck_rooms_ck_rooms_state_allowed",
+            "sql": "state IN ('active', 'cleared')"
+          },
+          {
+            "name": "ck_rooms_ck_rooms_updated_after_created",
+            "sql": "updated_at_ms >= created_at_ms"
+          }
+        ],
+        "columns": [
+          {
+            "default": null,
+            "name": "created_at_ms",
+            "nullable": false,
+            "primaryKey": false,
+            "type": "INTEGER"
+          },
+          {
+            "default": null,
+            "name": "display_name",
+            "nullable": false,
+            "primaryKey": false,
+            "type": "TEXT"
+          },
+          {
+            "default": null,
+            "name": "revision",
+            "nullable": false,
+            "primaryKey": false,
+            "type": "INTEGER"
+          },
+          {
+            "default": null,
+            "name": "room_id",
+            "nullable": false,
+            "primaryKey": true,
+            "type": "TEXT"
+          },
+          {
+            "default": null,
+            "name": "state",
+            "nullable": false,
+            "primaryKey": false,
+            "type": "TEXT"
+          },
+          {
+            "default": null,
+            "name": "updated_at_ms",
+            "nullable": false,
+            "primaryKey": false,
+            "type": "INTEGER"
+          }
+        ],
+        "foreignKeys": [],
+        "indexes": [],
+        "name": "rooms",
+        "primaryKey": [
+          "room_id"
+        ],
+        "uniqueConstraints": []
+      },
+      {
+        "checkConstraints": [
+          {
+            "name": "ck_session_audiences_ck_session_audiences_joined_at_nonnegative",
+            "sql": "joined_at_ms >= 0"
+          },
+          {
+            "name": "ck_session_audiences_ck_session_audiences_left_after_joined",
+            "sql": "left_at_ms IS NULL OR left_at_ms >= joined_at_ms"
+          },
+          {
+            "name": "ck_session_audiences_ck_session_audiences_profile_revision_positive",
+            "sql": "profile_revision >= 1"
+          }
+        ],
+        "columns": [
+          {
+            "default": null,
+            "name": "audience_id",
+            "nullable": false,
+            "primaryKey": true,
+            "type": "TEXT"
+          },
+          {
+            "default": null,
+            "name": "joined_at_ms",
+            "nullable": false,
+            "primaryKey": false,
+            "type": "INTEGER"
+          },
+          {
+            "default": null,
+            "name": "left_at_ms",
+            "nullable": true,
+            "primaryKey": false,
+            "type": "INTEGER"
+          },
+          {
+            "default": null,
+            "name": "profile_revision",
+            "nullable": false,
+            "primaryKey": false,
+            "type": "INTEGER"
+          },
+          {
+            "default": null,
+            "name": "session_id",
+            "nullable": false,
+            "primaryKey": true,
+            "type": "TEXT"
+          }
+        ],
+        "foreignKeys": [
+          {
+            "columns": [
+              "audience_id"
+            ],
+            "name": "fk_session_audiences_audience_id_audience_profiles",
+            "onDelete": "CASCADE",
+            "onUpdate": null,
+            "referredColumns": [
+              "audience_id"
+            ],
+            "referredTable": "audience_profiles"
+          },
+          {
+            "columns": [
+              "session_id"
+            ],
+            "name": "fk_session_audiences_session_id_session_records",
+            "onDelete": "CASCADE",
+            "onUpdate": null,
+            "referredColumns": [
+              "session_id"
+            ],
+            "referredTable": "session_records"
+          }
+        ],
+        "indexes": [
+          {
+            "columns": [
+              "audience_id",
+              "session_id"
+            ],
+            "name": "ix_session_audiences_audience_session",
+            "unique": false
+          }
+        ],
+        "name": "session_audiences",
+        "primaryKey": [
+          "session_id",
+          "audience_id"
+        ],
+        "uniqueConstraints": []
+      },
+      {
+        "checkConstraints": [
+          {
+            "name": "ck_session_records_ck_session_records_audience_epoch_nonnegative",
+            "sql": "audience_epoch IS NULL OR audience_epoch >= 0"
+          },
+          {
+            "name": "ck_session_records_ck_session_records_completion_consistent",
+            "sql": "(ended_at_ms IS NULL AND outcome IS NULL) OR (ended_at_ms IS NOT NULL AND outcome IS NOT NULL)"
+          },
+          {
+            "name": "ck_session_records_ck_session_records_ended_after_started",
+            "sql": "ended_at_ms IS NULL OR ended_at_ms >= started_at_ms"
+          },
+          {
+            "name": "ck_session_records_ck_session_records_outcome_allowed",
+            "sql": "outcome IS NULL OR outcome IN ('completed', 'error', 'interrupted')"
+          },
+          {
+            "name": "ck_session_records_ck_session_records_started_at_nonnegative",
+            "sql": "started_at_ms >= 0"
+          },
+          {
+            "name": "ck_session_records_ck_session_records_state_allowed",
+            "sql": "state IS NULL OR state IN ('starting', 'running', 'paused', 'stopping', 'stopped', 'failed')"
+          }
+        ],
+        "columns": [
+          {
+            "default": null,
+            "name": "active_config_hash",
+            "nullable": true,
+            "primaryKey": false,
+            "type": "TEXT"
+          },
+          {
+            "default": null,
+            "name": "app_version",
+            "nullable": false,
+            "primaryKey": false,
+            "type": "TEXT"
+          },
+          {
+            "default": null,
+            "name": "audience_epoch",
+            "nullable": true,
+            "primaryKey": false,
+            "type": "INTEGER"
+          },
+          {
+            "default": null,
+            "name": "client_request_hash",
+            "nullable": true,
+            "primaryKey": false,
+            "type": "TEXT"
+          },
+          {
+            "default": null,
+            "name": "client_request_id",
+            "nullable": true,
+            "primaryKey": false,
+            "type": "TEXT"
+          },
+          {
+            "default": "'{}'",
+            "name": "controller_state_json",
+            "nullable": false,
+            "primaryKey": false,
+            "type": "TEXT"
+          },
+          {
+            "default": null,
+            "name": "ended_at_ms",
+            "nullable": true,
+            "primaryKey": false,
+            "type": "INTEGER"
+          },
+          {
+            "default": "'1'",
+            "name": "next_creation_ordinal",
+            "nullable": false,
+            "primaryKey": false,
+            "type": "INTEGER"
+          },
+          {
+            "default": null,
+            "name": "outcome",
+            "nullable": true,
+            "primaryKey": false,
+            "type": "TEXT"
+          },
+          {
+            "default": "'1'",
+            "name": "population_revision",
+            "nullable": false,
+            "primaryKey": false,
+            "type": "INTEGER"
+          },
+          {
+            "default": null,
+            "name": "recovery_json",
+            "nullable": true,
+            "primaryKey": false,
+            "type": "TEXT"
+          },
+          {
+            "default": null,
+            "name": "room_id",
+            "nullable": true,
+            "primaryKey": false,
+            "type": "TEXT"
+          },
+          {
+            "default": null,
+            "name": "session_id",
+            "nullable": false,
+            "primaryKey": true,
+            "type": "TEXT"
+          },
+          {
+            "default": "''",
+            "name": "session_seed",
+            "nullable": false,
+            "primaryKey": false,
+            "type": "TEXT"
+          },
+          {
+            "default": null,
+            "name": "started_at_ms",
+            "nullable": false,
+            "primaryKey": false,
+            "type": "INTEGER"
+          },
+          {
+            "default": null,
+            "name": "state",
+            "nullable": true,
+            "primaryKey": false,
+            "type": "TEXT"
+          },
+          {
+            "default": "'1'",
+            "name": "target_concurrent_viewers",
+            "nullable": false,
+            "primaryKey": false,
+            "type": "INTEGER"
+          }
+        ],
+        "foreignKeys": [
+          {
+            "columns": [
+              "room_id"
+            ],
+            "name": "fk_session_records_room_id_rooms",
+            "onDelete": "CASCADE",
+            "onUpdate": null,
+            "referredColumns": [
+              "room_id"
+            ],
+            "referredTable": "rooms"
+          }
+        ],
+        "indexes": [
+          {
+            "columns": [
+              "ended_at_ms"
+            ],
+            "name": "ix_session_records_ended_at_ms",
+            "unique": false
+          },
+          {
+            "columns": [
+              "room_id",
+              "state",
+              "ended_at_ms"
+            ],
+            "name": "ix_session_records_room_state_ended_at_ms",
+            "unique": false
+          }
+        ],
+        "name": "session_records",
+        "primaryKey": [
+          "session_id"
+        ],
+        "uniqueConstraints": [
+          {
+            "columns": [
+              "client_request_id"
+            ],
+            "name": "uq_session_records_client_request_id"
+          }
+        ]
+      },
+      {
+        "checkConstraints": [
+          {
+            "name": "ck_session_runtime_revisions_ck_session_runtime_revisions_base_revision_nonnegative",
+            "sql": "base_revision >= 0"
+          },
+          {
+            "name": "ck_session_runtime_revisions_ck_session_runtime_revisions_created_at_nonnegative",
+            "sql": "created_at_ms >= 0"
+          },
+          {
+            "name": "ck_session_runtime_revisions_ck_session_runtime_revisions_revision_positive",
+            "sql": "revision >= 1"
+          },
+          {
+            "name": "ck_session_runtime_revisions_ck_session_runtime_revisions_status_allowed",
+            "sql": "status IN ('pending', 'committed', 'rejected', 'rolled_back')"
+          },
+          {
+            "name": "ck_session_runtime_revisions_ck_session_runtime_revisions_updated_after_created",
+            "sql": "updated_at_ms >= created_at_ms"
+          }
+        ],
+        "columns": [
+          {
+            "default": null,
+            "name": "apply_id",
+            "nullable": false,
+            "primaryKey": false,
+            "type": "TEXT"
+          },
+          {
+            "default": null,
+            "name": "base_revision",
+            "nullable": false,
+            "primaryKey": false,
+            "type": "INTEGER"
+          },
+          {
+            "default": null,
+            "name": "canonical_spec_json",
+            "nullable": false,
+            "primaryKey": false,
+            "type": "TEXT"
+          },
+          {
+            "default": null,
+            "name": "config_hash",
+            "nullable": false,
+            "primaryKey": false,
+            "type": "TEXT"
+          },
+          {
+            "default": null,
+            "name": "created_at_ms",
+            "nullable": false,
+            "primaryKey": false,
+            "type": "INTEGER"
+          },
+          {
+            "default": null,
+            "name": "diff_summary_json",
+            "nullable": false,
+            "primaryKey": false,
+            "type": "TEXT"
+          },
+          {
+            "default": null,
+            "name": "revision",
+            "nullable": false,
+            "primaryKey": true,
+            "type": "INTEGER"
+          },
+          {
+            "default": null,
+            "name": "session_id",
+            "nullable": false,
+            "primaryKey": true,
+            "type": "TEXT"
+          },
+          {
+            "default": null,
+            "name": "status",
+            "nullable": false,
+            "primaryKey": false,
+            "type": "TEXT"
+          },
+          {
+            "default": null,
+            "name": "updated_at_ms",
+            "nullable": false,
+            "primaryKey": false,
+            "type": "INTEGER"
+          }
+        ],
+        "foreignKeys": [
+          {
+            "columns": [
+              "session_id"
+            ],
+            "name": "fk_session_runtime_revisions_session_id_session_records",
+            "onDelete": "CASCADE",
+            "onUpdate": null,
+            "referredColumns": [
+              "session_id"
+            ],
+            "referredTable": "session_records"
+          }
+        ],
+        "indexes": [
+          {
+            "columns": [
+              "session_id",
+              "config_hash"
+            ],
+            "name": "ix_runtime_revision_session_config_hash",
+            "unique": false
+          }
+        ],
+        "name": "session_runtime_revisions",
+        "primaryKey": [
+          "session_id",
+          "revision"
+        ],
+        "uniqueConstraints": [
+          {
+            "columns": [
+              "session_id",
+              "apply_id"
+            ],
+            "name": "uq_runtime_revision_session_apply"
+          }
+        ]
+      },
+      {
+        "checkConstraints": [
+          {
+            "name": "ck_session_viewer_instances_ck_session_viewer_instances_created_epoch_nonnegative",
+            "sql": "created_epoch >= 0"
+          },
+          {
+            "name": "ck_session_viewer_instances_ck_session_viewer_instances_ordinal_nonnegative",
+            "sql": "ordinal >= 0"
+          },
+          {
+            "name": "ck_session_viewer_instances_ck_session_viewer_instances_persona_revision_positive",
+            "sql": "persona_revision >= 1"
+          },
+          {
+            "name": "ck_session_viewer_instances_ck_session_viewer_instances_removed_after_created",
+            "sql": "removed_epoch IS NULL OR removed_epoch >= created_epoch"
+          },
+          {
+            "name": "ck_session_viewer_instances_ck_session_viewer_instances_state_allowed",
+            "sql": "state IN ('active', 'removed')"
+          }
+        ],
+        "columns": [
+          {
+            "default": "''",
+            "name": "avatar_seed",
+            "nullable": false,
+            "primaryKey": false,
+            "type": "TEXT"
+          },
+          {
+            "default": "'1'",
+            "name": "behavior_revision",
+            "nullable": false,
+            "primaryKey": false,
+            "type": "INTEGER"
+          },
+          {
+            "default": "'{}'",
+            "name": "behavior_state_json",
+            "nullable": false,
+            "primaryKey": false,
+            "type": "TEXT"
+          },
+          {
+            "default": "''",
+            "name": "color_seed",
+            "nullable": false,
+            "primaryKey": false,
+            "type": "TEXT"
+          },
+          {
+            "default": "'0'",
+            "name": "created_at_ms",
+            "nullable": false,
+            "primaryKey": false,
+            "type": "INTEGER"
+          },
+          {
+            "default": null,
+            "name": "created_epoch",
+            "nullable": false,
+            "primaryKey": false,
+            "type": "INTEGER"
+          },
+          {
+            "default": null,
+            "name": "display_name",
+            "nullable": false,
+            "primaryKey": false,
+            "type": "TEXT"
+          },
+          {
+            "default": "'0'",
+            "name": "join_count",
+            "nullable": false,
+            "primaryKey": false,
+            "type": "INTEGER"
+          },
+          {
+            "default": null,
+            "name": "joined_at_ms",
+            "nullable": true,
+            "primaryKey": false,
+            "type": "INTEGER"
+          },
+          {
+            "default": null,
+            "name": "kick_reason",
+            "nullable": true,
+            "primaryKey": false,
+            "type": "TEXT"
+          },
+          {
+            "default": null,
+            "name": "kicked_at_ms",
+            "nullable": true,
+            "primaryKey": false,
+            "type": "INTEGER"
+          },
+          {
+            "default": null,
+            "name": "last_left_at_ms",
+            "nullable": true,
+            "primaryKey": false,
+            "type": "INTEGER"
+          },
+          {
+            "default": "'zh-CN'",
+            "name": "locale",
+            "nullable": false,
+            "primaryKey": false,
+            "type": "TEXT"
+          },
+          {
+            "default": null,
+            "name": "micro_variant_json",
+            "nullable": false,
+            "primaryKey": false,
+            "type": "TEXT"
+          },
+          {
+            "default": "'1'",
+            "name": "moderation_revision",
+            "nullable": false,
+            "primaryKey": false,
+            "type": "INTEGER"
+          },
+          {
+            "default": null,
+            "name": "mute_reason",
+            "nullable": true,
+            "primaryKey": false,
+            "type": "TEXT"
+          },
+          {
+            "default": null,
+            "name": "muted_until_ms",
+            "nullable": true,
+            "primaryKey": false,
+            "type": "INTEGER"
+          },
+          {
+            "default": null,
+            "name": "ordinal",
+            "nullable": false,
+            "primaryKey": false,
+            "type": "INTEGER"
+          },
+          {
+            "default": "'0000000000000000000000000000000000000000000000000000000000000000'",
+            "name": "persona_content_hash",
+            "nullable": false,
+            "primaryKey": false,
+            "type": "TEXT"
+          },
+          {
+            "default": null,
+            "name": "persona_id",
+            "nullable": false,
+            "primaryKey": false,
+            "type": "TEXT"
+          },
+          {
+            "default": null,
+            "name": "persona_revision",
+            "nullable": false,
+            "primaryKey": false,
+            "type": "INTEGER"
+          },
+          {
+            "default": "'1'",
+            "name": "presence_revision",
+            "nullable": false,
+            "primaryKey": false,
+            "type": "INTEGER"
+          },
+          {
+            "default": "'active'",
+            "name": "presence_state",
+            "nullable": false,
+            "primaryKey": false,
+            "type": "TEXT"
+          },
+          {
+            "default": null,
+            "name": "removed_epoch",
+            "nullable": true,
+            "primaryKey": false,
+            "type": "INTEGER"
+          },
+          {
+            "default": null,
+            "name": "session_id",
+            "nullable": false,
+            "primaryKey": true,
+            "type": "TEXT"
+          },
+          {
+            "default": null,
+            "name": "state",
+            "nullable": false,
+            "primaryKey": false,
+            "type": "TEXT"
+          },
+          {
+            "default": "'0'",
+            "name": "updated_at_ms",
+            "nullable": false,
+            "primaryKey": false,
+            "type": "INTEGER"
+          },
+          {
+            "default": "''",
+            "name": "username",
+            "nullable": false,
+            "primaryKey": false,
+            "type": "TEXT"
+          },
+          {
+            "default": null,
+            "name": "viewer_instance_id",
+            "nullable": false,
+            "primaryKey": true,
+            "type": "TEXT"
+          },
+          {
+            "default": "'0'",
+            "name": "viewer_sequence",
+            "nullable": false,
+            "primaryKey": false,
+            "type": "INTEGER"
+          }
+        ],
+        "foreignKeys": [
+          {
+            "columns": [
+              "session_id"
+            ],
+            "name": "fk_session_viewer_instances_session_id_session_records",
+            "onDelete": "CASCADE",
+            "onUpdate": null,
+            "referredColumns": [
+              "session_id"
+            ],
+            "referredTable": "session_records"
+          }
+        ],
+        "indexes": [
+          {
+            "columns": [
+              "session_id",
+              "persona_id",
+              "ordinal"
+            ],
+            "name": "ix_session_viewer_instances_session_persona_ordinal",
+            "unique": false
+          },
+          {
+            "columns": [
+              "session_id",
+              "state",
+              "viewer_instance_id"
+            ],
+            "name": "ix_session_viewer_instances_session_state_viewer",
+            "unique": false
+          }
+        ],
+        "name": "session_viewer_instances",
+        "primaryKey": [
+          "session_id",
+          "viewer_instance_id"
+        ],
+        "uniqueConstraints": []
+      }
+    ]
+  },
+  "schemaVersion": 1,
+  "taskId": "DAT-001"
+}

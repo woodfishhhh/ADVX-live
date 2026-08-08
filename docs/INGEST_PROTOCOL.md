@@ -2,8 +2,8 @@
 
 > 状态：Implemented
 >
-> 本文定义 Electron 与本地后端之间的实时输入合同。`IngestService` 与
-> WebSocket Handler 已按此合同接入，`/ws` 同时承载控制消息和实时输入。
+> 本文定义 Electron 与 Bun 后端之间的实时输入合同。Realtime Hub 与
+> dispatchers 已按此合同接入，`/ws` 同时承载控制消息和实时输入。
 >
 > 本文记录当前已实现的 realtime protocol v4，并保留一个发布周期的 v3 兼容路径。
 > 二进制 ingest envelope 有独立的版本空间；v4 客户端使用 `ADVX-BIN/3`。
@@ -77,8 +77,7 @@ Viewer 模型与弹幕；空转写只结束该片段，不调用模型。
 ## 3. 二进制 Envelope
 
 每个 WebSocket binary frame 恰好包含一个 envelope。当前 `ADVX-BIN/3` 使用 9 字节
-固定头和一段 UTF-8 JSON header；整数使用网络字节序（big-endian），Python 固定头格式
-为 `>4sBI`。
+固定头和一段 UTF-8 JSON header；整数使用网络字节序（big-endian）。
 
 | 偏移 | 字段 | 编码 | 说明 |
 | --- | --- | --- | --- |
@@ -115,8 +114,8 @@ JSON header 必须包含：
 | JSON header | 4,096 bytes |
 | 完整 v3 binary envelope | 4,198,409 bytes |
 
-v3 兼容连接继续接受旧的 v1 24 字节 header（`>4sBBHHQHI`）和 v2 25 字节 header
-（`>4sBBBHHQHI`）。v1 audio 统一映射为 `microphone`，v1 image 映射为无来源。
+v3 兼容连接继续接受旧的 v1 24 字节 header 和 v2 25 字节 header。v1 audio
+统一映射为 `microphone`，v1 image 映射为无来源。
 realtime v4 音频必须使用 v3 envelope；未知版本仍返回
 `unsupported_binary_version`。
 

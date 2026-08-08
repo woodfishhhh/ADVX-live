@@ -1,0 +1,538 @@
+{
+  "schema_version": 1,
+  "task": "TST-002",
+  "source_collection": {
+    "command": "uv run --project apps/backend pytest apps/backend/tests tests/e2e --collect-only -q",
+    "inventory": ".omx/artifacts/typescript-bun/TST-000/tst-000-maker-root-20260806-053/python-test-inventory.json",
+    "collected_tests": 47,
+    "collection_rule": "Every collected pytest node ID is represented separately, including parametrized cases."
+  },
+  "rows": [
+    {
+      "pythonTest": "apps/backend/tests/test_ai_call_store.py::test_capacity_eviction_appends_without_rewriting_full_log",
+      "behavior": "AI-call retention evicts over-capacity records while append-only persistence does not rewrite the full log.",
+      "risk": "medium",
+      "replacement": [
+        "apps/backend-bun/src/infrastructure/observability/ai-call-evidence-store.test.ts"
+      ],
+      "proofClass": "isolated-persistence-unit",
+      "status": "ported"
+    },
+    {
+      "pythonTest": "apps/backend/tests/test_backend_pipeline.py::test_runtime_connects_context_generation_barrage_and_room",
+      "behavior": "A fake-Provider runtime connects frozen decision context, Viewer generation, barrage publication, and room event persistence.",
+      "risk": "high",
+      "replacement": [
+        "apps/backend-bun/src/api/recorded-pipeline.integration.test.ts",
+        "apps/backend-bun/src/application/services/viewer-decision-context.test.ts",
+        "apps/backend-bun/src/application/services/barrage-pipeline.test.ts",
+        "apps/backend-bun/src/infrastructure/persistence/sqlite/room-event-repository.test.ts"
+      ],
+      "proofClass": "composed-integration",
+      "status": "superseded",
+      "rationale": "The migrated runtime separates this former monolithic pipeline assertion into recorded boundary, immutable context, publication, and SQLite proofs."
+    },
+    {
+      "pythonTest": "apps/backend/tests/test_configuration_api.py::test_provider_configuration_defaults_keep_legacy_clients_compatible",
+      "behavior": "Provider configuration defaults preserve the legacy client response shape.",
+      "risk": "critical",
+      "replacement": [
+        "apps/backend-bun/src/api/provider-configuration.integration.test.ts"
+      ],
+      "proofClass": "configuration-default-unit",
+      "status": "ported"
+    },
+    {
+      "pythonTest": "apps/backend/tests/test_configuration_api.py::test_provider_configuration_is_authenticated_idempotent_and_secret_safe",
+      "behavior": "Provider configuration writes require authentication, are idempotent, and never return stored secrets.",
+      "risk": "critical",
+      "replacement": [
+        "apps/backend-bun/src/api/provider-configuration.integration.test.ts"
+      ],
+      "proofClass": "security-api-integration",
+      "status": "ported"
+    },
+    {
+      "pythonTest": "apps/backend/tests/test_configuration_api.py::test_provider_configuration_rejects_replacement_and_active_session",
+      "behavior": "Provider configuration rejects replacement writes and mutation while a session is active.",
+      "risk": "critical",
+      "replacement": [
+        "apps/backend-bun/src/api/provider-configuration.integration.test.ts"
+      ],
+      "proofClass": "state-conflict-integration",
+      "status": "ported"
+    },
+    {
+      "pythonTest": "apps/backend/tests/test_configuration_api.py::test_provider_role_models_and_redacted_capability_endpoints",
+      "behavior": "Role-model and capability endpoints expose usable metadata while redacting credentials and private Provider detail.",
+      "risk": "critical",
+      "replacement": [
+        "apps/backend-bun/src/api/provider-configuration.integration.test.ts"
+      ],
+      "proofClass": "provider-capability-integration",
+      "status": "ported"
+    },
+    {
+      "pythonTest": "apps/backend/tests/test_health.py::test_health",
+      "behavior": "The authenticated health endpoint returns the current protocol-compatible healthy response.",
+      "risk": "critical",
+      "replacement": [
+        "apps/backend-bun/src/api/system.integration.test.ts"
+      ],
+      "proofClass": "listener-integration",
+      "status": "ported"
+    },
+    {
+      "pythonTest": "apps/backend/tests/test_health.py::test_health_reports_machine_readable_migration_failure",
+      "behavior": "Health reports a machine-readable database migration failure without leaking internals.",
+      "risk": "critical",
+      "replacement": [
+        "apps/backend-bun/src/api/system.integration.test.ts"
+      ],
+      "proofClass": "health-fault-integration",
+      "status": "ported"
+    },
+    {
+      "pythonTest": "apps/backend/tests/test_health.py::test_health_reports_corrupt_database_as_degraded",
+      "behavior": "A corrupt database produces a degraded machine-readable health result.",
+      "risk": "critical",
+      "replacement": [
+        "apps/backend-bun/src/api/system.integration.test.ts"
+      ],
+      "proofClass": "health-fault-integration",
+      "status": "ported"
+    },
+    {
+      "pythonTest": "apps/backend/tests/test_health.py::test_health_reports_startup_recovery_write_failure",
+      "behavior": "Startup recovery write failure is exposed as a safe degraded health result.",
+      "risk": "critical",
+      "replacement": [
+        "apps/backend-bun/src/api/system.integration.test.ts"
+      ],
+      "proofClass": "health-recovery-integration",
+      "status": "ported"
+    },
+    {
+      "pythonTest": "apps/backend/tests/test_openapi.py::test_openapi_includes_http_and_realtime_contracts",
+      "behavior": "Generated OpenAPI includes the retained HTTP surface and documents the realtime protocol boundary.",
+      "risk": "high",
+      "replacement": [
+        "apps/backend-bun/src/openapi/openapi.test.ts",
+        "packages/contracts/test/schema.test.ts"
+      ],
+      "proofClass": "generated-contract",
+      "status": "ported"
+    },
+    {
+      "pythonTest": "apps/backend/tests/test_persistence_inventory.py::test_dat_001_inventory_matches_models_and_migrated_database",
+      "behavior": "The DAT-001 inventory matches Python models, migrated SQLite objects, indexes, and triggers.",
+      "risk": "high",
+      "replacement": [
+        "docs/migrations/typescript-bun/dat-001-schema-inventory.json",
+        "apps/backend-bun/src/infrastructure/persistence/sqlite/repositories.test.ts",
+        "apps/backend-bun/src/infrastructure/persistence/sqlite/migration-runner.test.ts"
+      ],
+      "proofClass": "schema-inventory",
+      "status": "ported"
+    },
+    {
+      "pythonTest": "apps/backend/tests/test_realtime_api.py::test_client_hello_does_not_reveal_local_token",
+      "behavior": "Realtime client hello authentication never causes the local token to appear in a server message.",
+      "risk": "critical",
+      "replacement": [
+        "apps/backend-bun/src/api/realtime.integration.test.ts",
+        "packages/contracts/test/schema.test.ts"
+      ],
+      "proofClass": "security-protocol-integration",
+      "status": "ported"
+    },
+    {
+      "pythonTest": "apps/backend/tests/test_realtime_api.py::test_realtime_handshake_stays_open_and_answers_ping",
+      "behavior": "An authenticated realtime handshake stays open and answers client ping with pong.",
+      "risk": "critical",
+      "replacement": [
+        "apps/backend-bun/src/api/realtime.integration.test.ts"
+      ],
+      "proofClass": "listener-protocol-integration",
+      "status": "ported"
+    },
+    {
+      "pythonTest": "apps/backend/tests/test_realtime_api.py::test_realtime_broadcasts_ordered_session_changes",
+      "behavior": "Realtime publishes session changes in accepted order with canonical session snapshots.",
+      "risk": "critical",
+      "replacement": [
+        "apps/backend-bun/src/api/realtime.integration.test.ts",
+        "apps/desktop/src/main/backend/backend-realtime-adapter.test.ts"
+      ],
+      "proofClass": "ordered-protocol-integration",
+      "status": "ported"
+    },
+    {
+      "pythonTest": "apps/backend/tests/test_realtime_api.py::test_realtime_rejects_invalid_handshakes[payload0-authentication_failed-4401]",
+      "behavior": "A handshake with invalid authentication fails with authentication_failed and close code 4401.",
+      "risk": "critical",
+      "replacement": [
+        "apps/backend-bun/src/api/realtime.integration.test.ts",
+        "packages/contracts/test/protocol-compatibility.test.ts"
+      ],
+      "proofClass": "parameterized-protocol-rejection",
+      "status": "ported"
+    },
+    {
+      "pythonTest": "apps/backend/tests/test_realtime_api.py::test_realtime_rejects_invalid_handshakes[payload1-version_mismatch-4406]",
+      "behavior": "A handshake with an unsupported protocol fails with version_mismatch and close code 4406.",
+      "risk": "critical",
+      "replacement": [
+        "apps/backend-bun/src/api/realtime.integration.test.ts",
+        "packages/contracts/test/protocol-compatibility.test.ts"
+      ],
+      "proofClass": "parameterized-protocol-rejection",
+      "status": "ported"
+    },
+    {
+      "pythonTest": "apps/backend/tests/test_realtime_api.py::test_realtime_forwards_validated_barrage_events",
+      "behavior": "Only validated barrage events cross the realtime publication boundary.",
+      "risk": "critical",
+      "replacement": [
+        "apps/backend-bun/src/application/services/barrage-pipeline.test.ts",
+        "apps/backend-bun/src/api/realtime.integration.test.ts"
+      ],
+      "proofClass": "publication-integration",
+      "status": "ported"
+    },
+    {
+      "pythonTest": "apps/backend/tests/test_realtime_api.py::test_realtime_forwards_asr_transcripts",
+      "behavior": "Normalized ASR partial and final transcripts are forwarded through the realtime contract.",
+      "risk": "high",
+      "replacement": [
+        "apps/backend-bun/src/providers/asr/stepfun-asr.test.ts",
+        "packages/contracts/test/schema.test.ts"
+      ],
+      "proofClass": "provider-protocol-integration",
+      "status": "ported"
+    },
+    {
+      "pythonTest": "apps/backend/tests/test_realtime_api.py::test_transcript_queue_never_evicts_final_for_partial",
+      "behavior": "Realtime backpressure never evicts a final transcript to admit a partial transcript.",
+      "risk": "critical",
+      "replacement": [
+        "apps/backend-bun/src/api/realtime.integration.test.ts"
+      ],
+      "proofClass": "queue-priority-integration",
+      "status": "ported"
+    },
+    {
+      "pythonTest": "apps/backend/tests/test_realtime_api.py::test_asr_transcript_text_matches_realtime_input_limit",
+      "behavior": "ASR transcript text uses the same bounded text limit as the realtime input contract.",
+      "risk": "high",
+      "replacement": [
+        "packages/contracts/test/schema.test.ts",
+        "apps/backend-bun/src/providers/asr/stepfun-asr.test.ts"
+      ],
+      "proofClass": "shared-contract-bound",
+      "status": "ported"
+    },
+    {
+      "pythonTest": "apps/backend/tests/test_realtime_api.py::test_realtime_cancellation_completes_connection_cleanup",
+      "behavior": "Cancelling realtime work completes connection cleanup and leaves no live connection or timer.",
+      "risk": "critical",
+      "replacement": [
+        "apps/backend-bun/src/api/realtime.integration.test.ts"
+      ],
+      "proofClass": "resource-lifecycle-integration",
+      "status": "ported"
+    },
+    {
+      "pythonTest": "apps/backend/tests/test_realtime_ingest_api.py::test_realtime_dispatches_binary_audio_frame_and_audio_commit",
+      "behavior": "Realtime dispatches binary frame, microphone audio, system audio, and commit commands with the retained identities.",
+      "risk": "critical",
+      "replacement": [
+        "apps/backend-bun/src/api/binary-ingest.integration.test.ts"
+      ],
+      "proofClass": "binary-listener-integration",
+      "status": "ported"
+    },
+    {
+      "pythonTest": "apps/backend/tests/test_realtime_ingest_api.py::test_realtime_v4_negotiates_and_atomically_commits_audio",
+      "behavior": "Realtime v4 negotiates the current binary version and atomically commits paired audio input.",
+      "risk": "critical",
+      "replacement": [
+        "apps/backend-bun/src/api/binary-ingest.integration.test.ts",
+        "packages/contracts/test/binary.test.ts"
+      ],
+      "proofClass": "binary-transaction-integration",
+      "status": "ported"
+    },
+    {
+      "pythonTest": "apps/backend/tests/test_realtime_ingest_api.py::test_realtime_v4_accepts_standalone_system_audio_without_turn",
+      "behavior": "Realtime v4 accepts standalone system audio without manufacturing a microphone turn.",
+      "risk": "high",
+      "replacement": [
+        "apps/backend-bun/src/api/binary-ingest.integration.test.ts",
+        "apps/backend-bun/src/providers/asr/stepfun-asr.test.ts"
+      ],
+      "proofClass": "binary-asr-integration",
+      "status": "ported"
+    },
+    {
+      "pythonTest": "apps/backend/tests/test_realtime_ingest_api.py::test_binary_v2_source_and_v1_compatibility",
+      "behavior": "Binary v2 preserves source identity while negotiated legacy v1 remains compatible.",
+      "risk": "critical",
+      "replacement": [
+        "apps/backend-bun/src/api/binary-ingest.integration.test.ts",
+        "packages/contracts/test/binary.test.ts",
+        "packages/contracts/test/protocol-compatibility.test.ts"
+      ],
+      "proofClass": "binary-compatibility",
+      "status": "ported"
+    },
+    {
+      "pythonTest": "apps/backend/tests/test_realtime_ingest_api.py::test_realtime_rejects_unavailable_and_inactive_ingest",
+      "behavior": "Realtime rejects ingest when the application boundary is unavailable or the referenced session is inactive.",
+      "risk": "critical",
+      "replacement": [
+        "apps/backend-bun/src/api/binary-ingest.integration.test.ts",
+        "apps/backend-bun/src/api/realtime.integration.test.ts"
+      ],
+      "proofClass": "ingest-state-rejection",
+      "status": "ported"
+    },
+    {
+      "pythonTest": "apps/backend/tests/test_realtime_ingest_api.py::test_realtime_rejects_malformed_binary_without_closing_connection",
+      "behavior": "Malformed binary input receives a canonical rejection while the authenticated realtime connection remains usable.",
+      "risk": "critical",
+      "replacement": [
+        "apps/backend-bun/src/api/binary-ingest.integration.test.ts",
+        "apps/backend-bun/src/api/realtime.integration.test.ts"
+      ],
+      "proofClass": "binary-negative-integration",
+      "status": "ported"
+    },
+    {
+      "pythonTest": "apps/backend/tests/test_runtime_session_api.py::test_runtime_start_is_idempotent_for_same_request_id_and_canonical_hash",
+      "behavior": "Runtime start is idempotent when request identity and canonical configuration hash are reused exactly.",
+      "risk": "critical",
+      "replacement": [
+        "apps/backend-bun/src/application/services/room-session-lifecycle.test.ts",
+        "apps/backend-bun/src/api/control.integration.test.ts"
+      ],
+      "proofClass": "lifecycle-idempotency",
+      "status": "ported"
+    },
+    {
+      "pythonTest": "apps/backend/tests/test_runtime_session_api.py::test_runtime_start_rejects_request_id_reuse_with_different_hash",
+      "behavior": "Runtime start rejects request identity reuse with a different canonical configuration hash.",
+      "risk": "critical",
+      "replacement": [
+        "apps/backend-bun/src/application/services/room-session-lifecycle.test.ts",
+        "apps/backend-bun/src/api/control.integration.test.ts"
+      ],
+      "proofClass": "lifecycle-conflict",
+      "status": "ported"
+    },
+    {
+      "pythonTest": "apps/backend/tests/test_runtime_session_api.py::test_runtime_current_apply_and_rollback_are_explicit_session_operations",
+      "behavior": "Current runtime, apply, and rollback remain explicit authenticated session operations with monotonic revisions.",
+      "risk": "critical",
+      "replacement": [
+        "apps/backend-bun/src/application/services/runtime-spec-coordinator.test.ts",
+        "apps/backend-bun/src/api/control.integration.test.ts"
+      ],
+      "proofClass": "runtime-control-integration",
+      "status": "ported"
+    },
+    {
+      "pythonTest": "apps/backend/tests/test_runtime_session_api.py::test_failed_apply_preserves_previous_committed_runtime",
+      "behavior": "A failed runtime apply leaves the previous committed runtime and epoch intact.",
+      "risk": "critical",
+      "replacement": [
+        "apps/backend-bun/src/application/services/runtime-spec-coordinator.test.ts",
+        "apps/backend-bun/src/infrastructure/persistence/sqlite/repositories.test.ts"
+      ],
+      "proofClass": "transaction-rollback",
+      "status": "ported"
+    },
+    {
+      "pythonTest": "apps/backend/tests/test_runtime_session_api.py::test_runtime_apply_rejects_a_legacy_inner_audience_contract",
+      "behavior": "Runtime apply rejects a legacy nested audience contract instead of silently coercing it.",
+      "risk": "critical",
+      "replacement": [
+        "apps/backend-bun/src/application/services/runtime-spec-coordinator.test.ts",
+        "packages/contracts/test/schema.test.ts"
+      ],
+      "proofClass": "strict-contract-rejection",
+      "status": "ported"
+    },
+    {
+      "pythonTest": "apps/backend/tests/test_runtime_session_api.py::test_explicit_recovery_keeps_session_id_and_advances_epoch",
+      "behavior": "Explicit recovery preserves session identity while advancing the runtime epoch.",
+      "risk": "critical",
+      "replacement": [
+        "apps/backend-bun/src/application/services/room-session-lifecycle.test.ts"
+      ],
+      "proofClass": "lifecycle-recovery",
+      "status": "ported"
+    },
+    {
+      "pythonTest": "apps/backend/tests/test_sessions_api.py::test_session_api_requires_local_token_and_protocol_version",
+      "behavior": "Session control rejects missing or invalid local authentication and protocol version.",
+      "risk": "critical",
+      "replacement": [
+        "apps/backend-bun/src/api/control.integration.test.ts",
+        "apps/backend-bun/src/api/system.integration.test.ts"
+      ],
+      "proofClass": "canonical-control-security",
+      "status": "superseded",
+      "rationale": "The legacy session route is replaced by the canonical authenticated protocol-v3 runtime control surface."
+    },
+    {
+      "pythonTest": "apps/backend/tests/test_sessions_api.py::test_session_api_requires_canonical_runtime_start",
+      "behavior": "Session creation requires the canonical runtime specification and matching client hash.",
+      "risk": "high",
+      "replacement": [
+        "apps/backend-bun/src/api/control.integration.test.ts",
+        "packages/contracts/test/schema.test.ts"
+      ],
+      "proofClass": "canonical-control-contract",
+      "status": "superseded",
+      "rationale": "The Bun control API accepts only the canonical runtime start contract and no longer exposes the legacy session-start shape."
+    },
+    {
+      "pythonTest": "apps/backend/tests/test_sessions_api.py::test_session_api_distinguishes_conflicts_and_unknown_sessions",
+      "behavior": "Session control distinguishes request conflicts, illegal state, and unknown session identity.",
+      "risk": "high",
+      "replacement": [
+        "apps/backend-bun/src/api/control.integration.test.ts",
+        "apps/backend-bun/src/application/services/room-session-lifecycle.test.ts"
+      ],
+      "proofClass": "canonical-control-errors",
+      "status": "superseded",
+      "rationale": "The canonical runtime control surface retains the distinctions through normalized Bun error codes rather than the legacy response envelope."
+    },
+    {
+      "pythonTest": "apps/backend/tests/test_viewer_reaction_retention.py::test_user_observations_run_concurrently_without_supersession",
+      "behavior": "Same-priority user observation work may run concurrently without cancelling already-dispatched requests.",
+      "risk": "critical",
+      "replacement": [
+        "apps/backend-bun/src/application/services/model-request-scheduler.test.ts"
+      ],
+      "proofClass": "scheduler-concurrency",
+      "status": "ported"
+    },
+    {
+      "pythonTest": "apps/backend/tests/test_viewer_reaction_retention.py::test_new_wave_does_not_block_or_discard_late_old_output",
+      "behavior": "A newer wave does not block already-published old output while stale unpublished remainder is handled deterministically.",
+      "risk": "critical",
+      "replacement": [
+        "apps/backend-bun/src/application/services/model-request-scheduler.test.ts",
+        "apps/backend-bun/src/application/services/viewer-generation.test.ts"
+      ],
+      "proofClass": "generation-fence",
+      "status": "superseded",
+      "rationale": "The migrated policy preserves published output but deliberately drops stale unpublicized remainder after the final fence."
+    },
+    {
+      "pythonTest": "apps/backend/tests/test_viewer_reaction_retention.py::test_runtime_state_accepts_all_issued_sequences_until_session_stop",
+      "behavior": "Issued Viewer sequences remain governed by the active-session ordering policy until stop.",
+      "risk": "critical",
+      "replacement": [
+        "apps/backend-bun/src/application/services/session-audience.test.ts",
+        "apps/backend-bun/src/application/services/runtime-spec-coordinator.test.ts"
+      ],
+      "proofClass": "sequence-fence",
+      "status": "superseded",
+      "rationale": "The accepted TypeScript invariant is latest-wins sequence fencing plus epoch invalidation, replacing the Python accept-all-issued policy."
+    },
+    {
+      "pythonTest": "apps/backend/tests/test_viewer_reaction_retention.py::test_session_stop_still_cancels_unfinished_output",
+      "behavior": "Stopping a session cancels unfinished Viewer generation and prevents late publication side effects.",
+      "risk": "critical",
+      "replacement": [
+        "apps/backend-bun/src/application/services/viewer-generation.test.ts",
+        "apps/backend-bun/src/application/services/room-session-lifecycle.test.ts",
+        "apps/backend-bun/src/application/services/model-request-scheduler.test.ts"
+      ],
+      "proofClass": "cancellation-lifecycle",
+      "status": "ported"
+    },
+    {
+      "pythonTest": "apps/backend/tests/test_viewer_runtime_contract.py::test_viewer_generation_response_accepts_six_barrages",
+      "behavior": "The Viewer generation response contract accepts the maximum six barrage texts without truncating the response array.",
+      "risk": "medium",
+      "replacement": [
+        "packages/contracts/test/schema.test.ts",
+        "apps/backend-bun/src/application/services/model-output-validation.test.ts"
+      ],
+      "proofClass": "model-output-contract",
+      "status": "ported"
+    },
+    {
+      "pythonTest": "apps/backend/tests/test_viewer_runtime_prompts.py::test_barrage_only_viewer_prompt_does_not_offer_silence",
+      "behavior": "A barrage-only Viewer prompt does not advertise silence as an allowed action.",
+      "risk": "medium",
+      "replacement": [
+        "apps/backend-bun/src/application/services/viewer-generation.test.ts",
+        "apps/backend-bun/src/application/services/viewer-decision-context.test.ts"
+      ],
+      "proofClass": "accepted-product-invariant",
+      "status": "superseded",
+      "rationale": "The accepted per-Viewer product invariant makes silence always legal; legacy barrage-only prompt flags cannot remove it."
+    },
+    {
+      "pythonTest": "apps/backend/tests/test_viewer_runtime_prompts.py::test_viewer_prompt_offers_silence_only_when_enabled",
+      "behavior": "A Viewer prompt offers silence only when the runtime mode explicitly enables it.",
+      "risk": "medium",
+      "replacement": [
+        "apps/backend-bun/src/application/services/viewer-generation.test.ts",
+        "apps/backend-bun/src/application/services/viewer-decision-context.test.ts"
+      ],
+      "proofClass": "accepted-product-invariant",
+      "status": "superseded",
+      "rationale": "The accepted independent Viewer policy always permits silence, including direct mentions, and intentionally replaces the legacy conditional flag."
+    },
+    {
+      "pythonTest": "apps/backend/tests/test_viewer_runtime_prompts.py::test_barrage_only_window_batch_requires_all_selected_viewers",
+      "behavior": "A barrage-only batch prompt requires output for every selected Viewer.",
+      "risk": "medium",
+      "replacement": [
+        "apps/backend-bun/src/application/services/viewer-generation.test.ts",
+        "apps/backend-bun/src/application/services/viewer-decision-context.test.ts"
+      ],
+      "proofClass": "accepted-product-invariant",
+      "status": "superseded",
+      "rationale": "The accepted runtime performs one independent request per selected Viewer and has no legacy window-batch completeness prompt."
+    },
+    {
+      "pythonTest": "apps/backend/tests/test_viewer_runtime_prompts.py::test_window_batch_prompt_can_omit_silent_viewers_when_enabled",
+      "behavior": "A silence-enabled batch prompt may omit selected Viewers that choose silence.",
+      "risk": "medium",
+      "replacement": [
+        "apps/backend-bun/src/application/services/viewer-generation.test.ts",
+        "apps/backend-bun/src/application/services/viewer-decision-context.test.ts"
+      ],
+      "proofClass": "accepted-product-invariant",
+      "status": "superseded",
+      "rationale": "Independent per-Viewer decisions publish barrage output and naturally retain silence without a batch omission protocol."
+    },
+    {
+      "pythonTest": "tests/e2e/test_viewer_runtime_recorded.py::test_cs2_recorded_replay_hot_update_and_call_identity",
+      "behavior": "The recorded CS2 flow proves replay, runtime hot update, stable call identity, and no external Provider fallback.",
+      "risk": "high",
+      "replacement": [
+        "apps/backend-bun/src/api/recorded-pipeline.integration.test.ts",
+        "apps/desktop/scripts/bun-recorded-pipeline-smoke.ts",
+        "apps/backend-bun/src/application/services/replay-service.test.ts"
+      ],
+      "proofClass": "recorded-bun-e2e",
+      "status": "superseded",
+      "rationale": "The Bun recorded pipeline and replay service replace the Python-only harness while the Python recording remains the parity oracle."
+    }
+  ],
+  "summary": {
+    "total": 47,
+    "unmapped": 0,
+    "ported": 36,
+    "superseded": 11,
+    "approved-delete": 0
+  }
+}

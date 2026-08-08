@@ -1,0 +1,27 @@
+{
+  "compilerOptions": {
+    "target": "ES2022",
+    "module": "ESNext",
+    "moduleResolution": "Bundler",
+    "strict": true,
+    "skipLibCheck": true,
+    "noEmit": true,
+    "allowImportingTsExtensions": true,
+    "types": ["node", "bun"],
+    "typeRoots": [
+      "../node_modules/@types",
+      "../apps/backend-bun/node_modules/@types",
+      "../apps/desktop/node_modules/@types"
+    ]
+  },
+  "include": [
+    "./sb6657-corpus-common.ts",
+    "./fetch-sb6657-corpus.ts",
+    "./profile-sb6657-corpus.ts",
+    "./sync-room-6657-skill.ts",
+    "./run-room-6657-skillopt.ts",
+    "./verify-viewer-runtime-evidence.ts",
+    "./viewer-runtime-evidence.ts",
+    "./evidence-script-runtime.ts"
+  ]
+}

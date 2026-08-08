@@ -117,9 +117,12 @@ export type BackendSessionSnapshot = {
   revision: number
 }
 
+export type BackendRuntime = 'python-oracle' | 'bun-source' | 'bun-compiled'
+
 export type SessionLifecycleLogEvent = {
   reason:
     | 'backend-start-failed'
+    | 'backend-loss'
     | 'backend-stop-failed'
     | 'backend-stop-requested'
     | 'emergency-stop'
@@ -129,6 +132,7 @@ export type SessionLifecycleLogEvent = {
 }
 
 export type BackendRuntimeStatus = {
+  backendRuntime: BackendRuntime
   connection: BackendConnectionState
   providersConfigured: boolean
   startupError: string | null

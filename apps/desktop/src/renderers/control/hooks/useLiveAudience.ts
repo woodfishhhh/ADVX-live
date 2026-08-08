@@ -5,9 +5,7 @@ import type {
   BackendViewerSnapshot
 } from '../../../shared/contracts'
 
-export type LiveAudienceRequestResult<T> =
-  | { ok: true; value: T }
-  | { ok: false; error: string }
+export type LiveAudienceRequestResult<T> = { ok: true; value: T } | { ok: false; error: string }
 
 export async function resolveLiveAudienceRequest<T>(
   request: () => Promise<T>,
@@ -56,10 +54,7 @@ export function useLiveAudience(
           () => window.advx.queryLiveAudience(sessionId),
           '无法读取直播观众数据。'
         )
-        if (
-          scopeRef.current !== sessionId ||
-          refreshTokenRef.current !== refreshToken
-        ) {
+        if (scopeRef.current !== sessionId || refreshTokenRef.current !== refreshToken) {
           return
         }
         if (!result.ok) {
@@ -78,14 +73,16 @@ export function useLiveAudience(
         }
         refreshAgainForRevision = revisionRef.current < requiredRevisionRef.current
       } finally {
-        if (refreshTokenRef.current !== refreshToken) return
-        refreshTokenRef.current = null
-        refreshPromiseRef.current = null
-        if (scopeRef.current !== sessionId) return
-        if (refreshAgainForRevision) {
-          void refresh()
-        } else {
-          setAudienceLoading(false)
+        if (refreshTokenRef.current === refreshToken) {
+          refreshTokenRef.current = null
+          refreshPromiseRef.current = null
+          if (scopeRef.current === sessionId) {
+            if (refreshAgainForRevision) {
+              void refresh()
+            } else {
+              setAudienceLoading(false)
+            }
+          }
         }
       }
     })()
@@ -124,21 +121,14 @@ export function useLiveAudience(
     const unsubscribe = window.advx.onBackendViewerEvent((event: BackendViewerEvent) => {
       if (scopeRef.current !== sessionId || event.session_id !== sessionId) return
       if (event.population_revision <= revisionRef.current) return
-      requiredRevisionRef.current = Math.max(
-        requiredRevisionRef.current,
-        event.population_revision
-      )
+      requiredRevisionRef.current = Math.max(requiredRevisionRef.current, event.population_revision)
       const current = audienceRef.current
       if (!current || event.population_revision > revisionRef.current + 1) {
         void refresh()
         return
       }
       revisionRef.current = event.population_revision
-      const next = mergeViewerSnapshot(
-        current,
-        event.viewer,
-        event.population_revision
-      )
+      const next = mergeViewerSnapshot(current, event.viewer, event.population_revision)
       audienceRef.current = next
       setAudience(next)
       setAudienceLoading(false)
@@ -176,10 +166,7 @@ export function useLiveAudience(
       setPendingViewerId(viewerId)
       setOperationError(null)
       try {
-        const result = await resolveLiveAudienceRequest(
-          operation,
-          `${operationLabel}请求未完成。`
-        )
+        const result = await resolveLiveAudienceRequest(operation, `${operationLabel}请求未完成。`)
         if (
           scopeRef.current !== expectedSessionId ||
           pendingOperationRef.current !== operationToken
@@ -192,19 +179,17 @@ export function useLiveAudience(
         }
         const viewer = result.value
         const current = audienceRef.current
-        if (
-          scopeRef.current !== expectedSessionId ||
-          current?.session_id !== expectedSessionId
-        ) {
+        if (scopeRef.current !== expectedSessionId || current?.session_id !== expectedSessionId) {
           return
         }
         const next = mergeViewerSnapshot(current, viewer)
         audienceRef.current = next
         setAudience(next)
       } finally {
-        if (pendingOperationRef.current !== operationToken) return
-        pendingOperationRef.current = null
-        setPendingViewerId(null)
+        if (pendingOperationRef.current === operationToken) {
+          pendingOperationRef.current = null
+          setPendingViewerId(null)
+        }
       }
     },
     []
@@ -226,18 +211,11 @@ export function useLiveAudience(
         : Promise.resolve(),
     unmute: (viewerId: string) =>
       sessionId
-        ? run(sessionId, viewerId, '解除禁言', () =>
-            window.advx.unmuteViewer(sessionId, viewerId)
-          )
+        ? run(sessionId, viewerId, '解除禁言', () => window.advx.unmuteViewer(sessionId, viewerId))
         : Promise.resolve(),
     kick: (viewerId: string) =>
       sessionId
-        ? run(
-            sessionId,
-            viewerId,
-            '踢出观众',
-            () => window.advx.kickViewer(sessionId, viewerId)
-          )
+        ? run(sessionId, viewerId, '踢出观众', () => window.advx.kickViewer(sessionId, viewerId))
         : Promise.resolve()
   }
 }

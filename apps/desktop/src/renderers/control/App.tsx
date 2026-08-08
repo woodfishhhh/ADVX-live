@@ -115,11 +115,22 @@ export function App({ initialColorTheme }: AppProps): React.JSX.Element {
   const appliedFramePolicy = appliedFrameBundle
     ? {
         ...activeAudienceMode.visualSettings,
-        frameBundleSize: appliedFrameBundle.frame_bundle_size,
-        frameWindowMs: appliedFrameBundle.frame_window_ms,
-        frameSelectionStrategy: appliedFrameBundle.frame_selection_strategy,
-        frameMaxDimension: appliedFrameBundle.frame_max_dimension,
-        frameQuality: appliedFrameBundle.frame_quality / 100
+        frameBundleSize:
+          appliedFrameBundle.frame_bundle_size ??
+          activeAudienceMode.visualSettings.frameBundleSize,
+        frameWindowMs:
+          appliedFrameBundle.frame_window_ms ??
+          activeAudienceMode.visualSettings.frameWindowMs,
+        frameSelectionStrategy:
+          appliedFrameBundle.frame_selection_strategy ??
+          activeAudienceMode.visualSettings.frameSelectionStrategy,
+        frameMaxDimension:
+          appliedFrameBundle.frame_max_dimension ??
+          activeAudienceMode.visualSettings.frameMaxDimension,
+        frameQuality:
+          appliedFrameBundle.frame_quality === undefined
+            ? activeAudienceMode.visualSettings.frameQuality
+            : appliedFrameBundle.frame_quality / 100
       }
     : activeAudienceMode.visualSettings
   const visualPipeline = useVisualPipeline({

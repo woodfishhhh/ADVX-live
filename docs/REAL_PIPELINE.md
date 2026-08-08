@@ -1,82 +1,96 @@
 # 真实管线联调
 
-桌面端已通过 Electron Main 与本地 FastAPI 后端连接。Renderer 不持有本地后端令牌、模型密钥或 StepFun 密钥；它只通过受限 IPC 提交采集结果。
+> 当前支持环境：Windows x64、Bun 1.3.14
 
-## 准备
+本流程启动真实 Electron、受监督 Bun 后端、StepFun ASR 和用户配置的
+OpenAI-compatible model。它不是 mock、静态页面或 Python oracle 流程。
 
-需要以下可用凭据：
+## 1. 准备
 
-- 一个 OpenAI-compatible 多模态模型的服务地址、模型名称和 API Key。
-- 一个 StepFun API Key，用于 `stepaudio-2.5-asr` 实时语音识别。
-
-麦克风音频和用户开启的 Windows 系统声音会分别发送给 StepFun。两路音频不混音；最终转写携带 `microphone` 或 `system_audio` 来源，近期画面和房间上下文会按生成策略发送给用户配置的模型服务。
-
-## 启动
-
-首次准备依赖：
-
-```bash
-pnpm install
-uv sync --project apps/backend --group dev
-pnpm contracts
+```powershell
+bun --version
+bun install --frozen-lockfile --ignore-scripts
+bun run contracts:bun-openapi:check
 ```
 
-从仓库根目录启动完整开发环境：
+确认 Bun 输出 `1.3.14`。不要把 Provider key 写入 `.env`、命令行、普通
+配置、截图或日志；凭据应在桌面端“设置”中保存到 Electron `safeStorage`。
 
-```bash
-pnpm dev
+## 2. 启动
+
+```powershell
+bun run dev
 ```
 
-这个命令会先启动后端并等待健康检查通过，再打开桌面端：
+`bun run dev` 启动 Electron，Electron 生成一次性本地 token 并监督 Bun
+backend child。后端只监听 `127.0.0.1:8765`，认证 `/health` 和版本握手通过
+后界面才显示已连接。
 
-- 动态分配的回环端口上的 FastAPI 后端，实际地址会打印在终端中。
-- Electron 桌面应用。
-- 两个进程共享的单次启动本地令牌。
+不要并行运行另一个占用 8765 的开发实例。若只调试一侧：
 
-不要分别运行 `pnpm dev:backend` 和 `pnpm dev:desktop` 进行真实联调；分别启动时必须自行给两个进程传入完全相同的 `ADVX_LOCAL_TOKEN`。
-
-## 首次配置
-
-1. 打开桌面端“设置”。
-2. 填写模型服务地址、模型名称、模型 API Key 和 StepFun ASR API Key。
-3. 点击“保存连接”，等待“已安全保存并接入后端”的提示。
-4. 回到“直播控制台”，确认底部显示“后端 · 已连接”。
-
-密钥由 Electron `safeStorage` 加密保存。操作系统不提供安全存储时，配置只对本次运行生效，密钥不会明文落盘。
-
-同一后端进程不会热切换 Provider。若保存了与当前运行不同的配置，界面会提示重启；退出并重新执行 `pnpm dev` 后，桌面端会加载已加密配置并注入新后端。
-
-## 端到端验证
-
-1. 选择屏幕或窗口，授权并检测麦克风；摄像头可选。确认“系统声音”开关符合预期，首次默认开启并标记为推荐。
-2. 点击“开始直播”。
-3. 等待状态变为“直播中”，并确认“云端 ASR · 已就绪”和“图像适配器 · 已就绪”。
-4. 对麦克风连续说一段完整的话，同时播放一段系统语音，或在输入框发送文字。
-5. 确认最终转写在“房间互动”中分别标为“麦克风（主播）”和“系统声音”，并观察 Overlay 中出现由后端生成的 AI 弹幕。
-6. 关闭系统声音后继续播放语音，确认不再产生系统声音转写，而麦克风仍可识别。
-7. 测试暂停、恢复和结束直播，确认两路音频及视觉采集随 Session 状态释放和恢复。
-
-运行时数据路径如下：
-
-```text
-麦克风（主播） -----> 16 kHz 单声道 PCM -> 独立 StepFun ASR ─┐
-Windows 系统声音 ---> 16 kHz 单声道 PCM -> 独立 StepFun ASR ─┤
-屏幕/摄像头 --------> JPEG 代表帧 --------------------------> 房间上下文
-文字输入 ----------------------------------------------------> 房间上下文
-带来源最终转写 ----------------------------------------------> 房间上下文
-房间上下文 -> OpenAI-compatible 模型 -> 弹幕校验 -> 桌面端与 Overlay
+```powershell
+bun run dev:desktop
+bun run dev:backend
 ```
 
-音频约每 2 秒提交一个片段；画面使用控制台中配置的采样与压缩参数，并按批次选择代表帧上送。
+独立启动后端只适用于后端调试；完整产品链路必须由 Electron 持有 token、
+进程和 shutdown 生命周期。
 
-## 常见问题
+## 3. 首次配置
 
-- “正在启动本地服务”：这是正常启动状态，健康检查通过后会自动消失。
-- “本地服务启动失败”：点击“重试”；若仍失败，检查终端中的后端文件、Python 环境或端口错误。
-- “本地服务连接中断”：桌面端正在自动恢复，恢复前新的音频和画面不会发往后端。
-- “等待配置”：四项 Provider 配置尚未成功注入后端，回到设置页重新保存。
-- 保存后提示重启：当前进程已有另一组 Provider 配置，这是预期保护行为。
-- 没有麦克风回应：确认 StepFun Key 可用、麦克风有输入，并查看启动终端中的 ASR 请求错误。
-- 没有系统声音回应：系统回环首期仅支持 Windows；确认“系统声音”已开启、状态不是“不可用”，并检查所播放内容确实经过当前系统输出设备。
-- 画面状态长期等待后端：确认 Session 仍为“直播中”，并查看终端是否出现 ingest 拒绝或 WebSocket 断开。
-- macOS 无法采集：在“系统设置 -> 隐私与安全性”中允许麦克风、摄像头和屏幕录制权限，然后重启应用。
+在“设置”中配置：
+
+- OpenAI-compatible base URL、model 和 API key；
+- StepFun ASR API key 与当前支持模型；
+- 画面来源、麦克风；
+- Windows 系统声音开关。
+
+保存后按界面提示重启后端。凭据不会出现在 public contract、SQLite、诊断
+bundle 或 trace 中。
+
+## 4. 端到端验证
+
+1. 选择一个真实窗口或屏幕和麦克风。
+2. 点击开始，确认 Session 进入 running，Bun backend 状态为 connected。
+3. 发送一条文字，确认出现与内容相关的 AI 弹幕。
+4. 说一段话，确认麦克风 final transcript 影响随后弹幕。
+5. 播放一段系统声音，确认它使用独立 ASR source，不与麦克风混音。
+6. 改变画面，确认后续 Viewer request 的 frame evidence/hash 更新。
+7. 打开 Overlay，确认真实 barrage 可见且窗口保持点击穿透。
+8. 暂停并恢复，确认媒体轨道和输入状态同步变化。
+9. 停止 Session，确认不再采集、不再补发旧结果。
+10. 退出应用，确认端口 8765 释放且无 Electron/Bun orphan。
+
+观众可能合法返回 silence。验收要求是输入、Viewer decision、Provider
+request、最终围栏和公开输出可追踪，不是每个输入都强制生成固定数量弹幕。
+
+## 5. Recorded Windows 验证
+
+无需外部 Provider 的决定性产品链路：
+
+```powershell
+bun run test:tst-008
+```
+
+它验证 Bun source full pipeline 和 compiled Bun lifecycle，包括文字、帧、
+麦克风、系统声音、真实 Overlay、清理、端口释放和无孤儿进程。Recorded
+证据不能替代 credentialed live Provider 证据。
+
+## 6. 常见问题
+
+- **一直显示“正在启动本地服务”**：检查 8765 是否被其他实例占用，查看
+  Electron Main 脱敏日志和 backend ready/version failure。
+- **401 或协议错误**：不要手工复用 token；由 Electron 重新启动 backend。
+  确认桌面端与后端都使用 HTTP v3、realtime v4/v3 compatibility。
+- **保存 Provider 后仍使用旧配置**：按界面提示重启受监督 backend；当前
+  进程不会用不同 credential profile 无保护热切换。
+- **没有麦克风结果**：检查 Windows 权限、输入电平、StepFun credential 和
+  ASR normalized error。
+- **没有系统声音结果**：确认 Windows 系统声音开关启用且内容经过当前输出
+  设备。macOS 当前不在支持范围。
+- **画面不更新**：确认 Session running、capture track active，并查看
+  `ingest.rejected`、WebSocket 连接和 frame evidence。
+- **停止后仍有端口或进程**：这是生命周期失败，不是正常现象。保存脱敏
+  diagnostics，停止重复启动，并运行 TST-008 定位 cleanup 边界。
+
+打包、诊断和发布前检查见[运维与发布](./OPERATIONS.md)。

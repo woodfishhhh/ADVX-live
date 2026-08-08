@@ -1,0 +1,7 @@
+{
+  "extends": "./tsconfig.pkg-005.json",
+  "compilerOptions": {
+    "noEmit": true
+  },
+  "include": ["./check-pkg-006.ts", "./evidence-script-runtime.ts"]
+}

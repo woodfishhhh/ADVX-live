@@ -140,7 +140,11 @@ export function compileCanonicalRuntimeSpec(
     (mode) => mode.id === workspace.modeState.activeModeId
   )
   if (!activeMode) throw new Error('The active audience mode is missing')
-  const personas = workspace.personas.map((persona) =>
+  // The runtime contract carries the active audience only. Keeping inactive
+  // built-in modes here can exceed the canonical 32-persona boundary even
+  // though they are not part of this session.
+  const activePersonaIds = new Set(Object.keys(activeMode.personaCounts))
+  const personas = workspace.personas.filter((persona) => activePersonaIds.has(persona.id)).map((persona) =>
     'documentVersion' in persona ? persona : createPersonaTemplate(persona)
   )
   const visual = activeMode.visualSettings
@@ -159,7 +163,7 @@ export function compileCanonicalRuntimeSpec(
     },
     active_mode_id: activeMode.id,
     personas: personas.map(compilePersona),
-    modes: workspace.modeState.modes.map(compileMode),
+    modes: [compileMode(activeMode)],
     provider: {
       provider_profile_id: provider.providerProfileId,
       viewer_model: provider.viewerModel,

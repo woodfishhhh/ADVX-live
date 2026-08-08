@@ -2575,6 +2575,7 @@
         "window_batch_max_frames": 4,
         "viewer_visual_input_mode": "direct_frames",
         "max_in_flight_viewer_requests": 12,
+        "viewer_request_start_interval_ms": 200,
         "viewer_request_ttl_ms": 0,
         "viewer_queue_capacity": 64,
         "observation_merge_window_ms": 1000,
@@ -2592,7 +2593,7 @@
         "max_consecutive_ambient_waves": 1
       }
     },
-    "config_hash": "898397fe7a953b1e1c024faf772a43a507bab385cd800840509b736084a32a09",
+    "config_hash": "e0c988ee4e0b015e5c5f02244a7cfbb4e29f4bedab3921be973b30cda534573e",
     "created_at_ms": 2000,
     "events": [
       {
@@ -5340,6 +5341,7 @@
       "window_batch_max_frames": 4,
       "viewer_visual_input_mode": "direct_frames",
       "max_in_flight_viewer_requests": 12,
+      "viewer_request_start_interval_ms": 200,
       "viewer_request_ttl_ms": 0,
       "viewer_queue_capacity": 64,
       "observation_merge_window_ms": 1000,

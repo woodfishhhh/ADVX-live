@@ -1,0 +1,42 @@
+{
+  "$schema": "./node_modules/oxlint/configuration_schema.json",
+  "plugins": ["eslint", "typescript", "unicorn", "oxc", "import", "promise", "react"],
+  "categories": {
+    "correctness": "off",
+    "suspicious": "off"
+  },
+  "rules": {
+    "eslint/no-constant-binary-expression": "error",
+    "eslint/no-constructor-return": "error",
+    "eslint/no-dupe-keys": "error",
+    "eslint/no-unsafe-finally": "error",
+    "eslint/no-unexpected-multiline": "error",
+    "import/no-duplicates": "warn",
+    "import/no-self-import": "error",
+    "promise/no-new-statics": "error",
+    "promise/no-return-wrap": "error",
+    "promise/valid-params": "error",
+    "react/exhaustive-deps": "warn",
+    "react/jsx-key": "error",
+    "react/no-children-prop": "error",
+    "react/no-direct-mutation-state": "error",
+    "react/react-in-jsx-scope": "off",
+    "react/rules-of-hooks": "error"
+  },
+  "ignorePatterns": [
+    ".codex/**",
+    ".omx/**",
+    "output/**",
+    "promo/**",
+    "node_modules/**",
+    "apps/backend/**",
+    "apps/backend-bun/dist/**",
+    "apps/desktop/artifacts/**",
+    "apps/desktop/out/**",
+    "packages/contracts/src/generated/**",
+    "coverage/**",
+    "dist/**",
+    "out/**",
+    "release/**"
+  ]
+}

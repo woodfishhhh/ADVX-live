@@ -1,5 +1,4 @@
 import { app, BrowserWindow, globalShortcut, screen } from "electron";
-import { randomBytes } from "node:crypto";
 import { createServer, type Server } from "node:net";
 import { join, resolve } from "node:path";
 import type { BackendRuntimeStatus } from "../shared/contracts";
@@ -9,6 +8,8 @@ import {
   registerDesktopIpc
 } from "./ipc/register-desktop-ipc";
 import { BackendClient } from "./backend/backend-client";
+import { resolveBackendRuntime } from "./backend/backend-runtime";
+import { createLocalBackendToken } from "./backend/backend-auth";
 import { loadRuntimeSessionId } from "./backend/runtime-session-state";
 import {
   ExternalBackendProcess,
@@ -16,6 +17,8 @@ import {
   type BackendProcessController,
   type BackendProcessExit
 } from "./backend/backend-process";
+import { createBunBackendProcessOptions } from "./backend/backend-process-bun";
+import { createBunCompiledBackendProcessOptions } from "./backend/backend-process-bun-compiled";
 import {
   createApplicationTray,
   TRAY_MENU_ITEM_IDS,
@@ -34,6 +37,10 @@ import {
 import { restoreMacApplicationActivation } from "./mac-application-activation";
 import { createControlWindow } from "./windows/control";
 import { hideBarrageOutputs } from "./windows/barrage-outputs";
+import {
+  startContentTrace,
+  type ContentTraceHandle
+} from "./observability/content-tracing";
 
 let controlWindow: BrowserWindow | null = null;
 let applicationTray: ApplicationTray | null = null;
@@ -50,11 +57,16 @@ let backendRestartAttempts = 0;
 let appShutdownPromise: Promise<void> | null = null;
 let appShutdownComplete = false;
 let developmentShutdownServer: Server | null = null;
+let contentTraceHandle: ContentTraceHandle | null = null;
 const backendBaseUrl = process.env.ADVX_BACKEND_URL ?? "http://127.0.0.1:8765";
-const localToken = process.env.ADVX_LOCAL_TOKEN ?? randomBytes(32).toString("base64url");
+const backendRuntime = resolveBackendRuntime(process.env.ADVX_BACKEND_RUNTIME, {
+  packaged: app.isPackaged
+});
+const localToken = createLocalBackendToken();
 const backendClient = new BackendClient({
   baseUrl: backendBaseUrl,
-  localToken
+  localToken,
+  backendRuntime
 });
 
 function requestApplicationQuitFromSignal(signal: NodeJS.Signals): void {
@@ -121,57 +133,95 @@ function createBackendProcessController(): BackendProcessController {
   const externallyManaged =
     externalOverride === "1" ||
     (externalOverride !== "0" && process.env.ADVX_BACKEND_URL !== undefined);
+  const backendPort = new URL(backendBaseUrl).port || "8765";
+  const configuredDataDirectory = process.env.ADVX_BACKEND_DATA_DIR?.trim();
+  const dataDirectory = configuredDataDirectory
+    ? resolve(configuredDataDirectory)
+    : backendRuntime === "bun-source"
+      ? join(app.getPath("userData"), "backend", "bun-source")
+      : backendRuntime === "bun-compiled"
+        ? join(app.getPath("userData"), "backend", "bun-compiled")
+        : app.isPackaged
+          ? join(app.getPath("userData"), "data")
+          : resolve(app.getAppPath(), "../..", ".advx-data");
+  const processIdentity = {
+    version:
+      backendRuntime === "python-oracle"
+        ? "python-oracle"
+        : `${backendRuntime}@${app.getVersion()}`,
+    port: Number(backendPort),
+    token: localToken,
+    dataDirectory,
+    logLocation: join(app.getPath("userData"), "logs", "advx.log")
+  } as const;
+  logger.info("backend.mode.selected", {
+    runtime: backendRuntime,
+    packaged: app.isPackaged,
+    dataDirectory
+  });
   if (externallyManaged) {
     logger.info("backend.mode.external", { baseUrl: backendBaseUrl });
-    return new ExternalBackendProcess({ baseUrl: backendBaseUrl });
-  }
-
-  const environment: NodeJS.ProcessEnv = {
-    ...process.env,
-    ADVX_BACKEND_URL: backendBaseUrl,
-    ADVX_LOCAL_TOKEN: localToken,
-    ADVX_DATA_DIR: app.isPackaged
-      ? join(app.getPath("userData"), "data")
-      : resolve(app.getAppPath(), "../..", ".advx-data")
-  };
-  if (app.isPackaged) {
-    return new SpawnedBackendProcess({
-      command:
-        process.env.ADVX_BACKEND_EXECUTABLE ??
-        join(
-          process.resourcesPath,
-          "backend",
-          process.platform === "win32" ? "advx-backend.exe" : "advx-backend"
-        ),
-      cwd: process.resourcesPath,
-      env: environment,
+    return new ExternalBackendProcess({
       baseUrl: backendBaseUrl,
-      logger: backendLogger
+      identity: processIdentity
     });
   }
 
-  const repositoryRoot = resolve(app.getAppPath(), "../..");
-  const backendPort = new URL(backendBaseUrl).port || "8765";
-  return new SpawnedBackendProcess({
-    command: "uv",
-    args: [
-      "run",
-      "--project",
-      "apps/backend",
-      "uvicorn",
-      "advx_backend.main:app",
-      "--app-dir",
-      "apps/backend/src",
-      "--host",
-      "127.0.0.1",
-      "--port",
-      backendPort
-    ],
-    cwd: repositoryRoot,
-    env: environment,
-    baseUrl: backendBaseUrl,
-    logger: backendLogger
-  });
+  if (backendRuntime === "bun-source") {
+    const bunIdentity = {
+      ...processIdentity,
+      dataDirectory
+    } as const;
+    const repositoryRoot = resolve(app.getAppPath(), "../..");
+    logger.info("backend.mode.bun-source", {
+      port: bunIdentity.port,
+      dataDirectory
+    });
+    return new SpawnedBackendProcess(
+      createBunBackendProcessOptions({
+        repositoryRoot,
+        backendPort,
+        backendBaseUrl,
+        dataDirectory,
+        startupToken: localToken,
+        expectedBackendVersion: app.getVersion(),
+        bunExecutable: process.env.ADVX_BUN_EXECUTABLE,
+        identity: bunIdentity,
+        logger: backendLogger
+      })
+    );
+  }
+
+  if (backendRuntime === "bun-compiled") {
+    const compiledIdentity = {
+      ...processIdentity,
+      dataDirectory
+    } as const;
+    const repositoryRoot = resolve(app.getAppPath(), "../..");
+    logger.info("backend.mode.bun-compiled", {
+      port: compiledIdentity.port,
+      dataDirectory,
+      packaged: app.isPackaged
+    });
+    return new SpawnedBackendProcess(
+      createBunCompiledBackendProcessOptions({
+        packaged: app.isPackaged,
+        resourcesPath: process.resourcesPath,
+        repositoryRoot,
+        backendExecutable: process.env.ADVX_BACKEND_COMPILED_EXECUTABLE,
+        workingDirectory: app.isPackaged ? process.resourcesPath : repositoryRoot,
+        backendPort,
+        backendBaseUrl,
+        dataDirectory,
+        startupToken: localToken,
+        expectedBackendVersion: app.getVersion(),
+        identity: compiledIdentity,
+        logger: backendLogger
+      })
+    );
+  }
+
+  throw new Error("Python parity oracle 已移除；请选择 Bun 后端运行时。");
 }
 
 async function initializeBackend(restart = false): Promise<BackendRuntimeStatus> {
@@ -190,6 +240,7 @@ async function initializeBackend(restart = false): Promise<BackendRuntimeStatus>
     try {
       if (restart) await controller.restart();
       else await controller.start();
+      backendClient.setBackendStartId(controller.status().identity.id);
       await backendClient.start();
       backendRestartAttempts = 0;
       logger.info("backend.initialize.completed", { restart });
@@ -294,11 +345,16 @@ function prepareApplicationShutdown(): void {
 }
 
 async function stopApplicationResources(): Promise<void> {
+  const trace = contentTraceHandle;
+  contentTraceHandle = null;
+  await trace?.stop("application_shutdown").catch((error: unknown) =>
+    console.error("Failed to stop Electron content trace", error)
+  );
   await backendClient.stop().catch((error: unknown) =>
     console.error("Failed to stop the backend client", error)
   );
-  await backendProcess?.stop().catch((error: unknown) =>
-    console.error("Failed to stop the backend process", error)
+  await backendProcess?.dispose().catch((error: unknown) =>
+    console.error("Failed to dispose the backend process", error)
   );
 }
 
@@ -372,6 +428,7 @@ async function initializeApplication(): Promise<void> {
     console.error("Failed to register the Overlay emergency shortcut");
   }
   logger.info("app.initialize.completed");
+  void startOptionalContentTrace();
 
   app.on("activate", () => {
     if (quitRequested || appShutdownPromise) return;
@@ -436,3 +493,29 @@ app.on("before-quit", (event) => {
     app.quit();
   });
 });
+
+function parseBoundedDuration(value: string | undefined): number {
+  const duration = value === undefined ? 10_000 : Number(value);
+  return Number.isSafeInteger(duration) && duration >= 100 && duration <= 5 * 60 * 1000
+    ? duration
+    : 10_000;
+}
+
+async function startOptionalContentTrace(): Promise<void> {
+  if (process.env.ADVX_ELECTRON_CONTENT_TRACE !== "1") return;
+  const traceDirectory = process.env.ADVX_CONTENT_TRACE_DIR ??
+    join(app.getPath("userData"), "diagnostics", "content-traces");
+  try {
+    contentTraceHandle = await startContentTrace({
+      outputDirectory: resolve(traceDirectory),
+      durationMs: parseBoundedDuration(process.env.ADVX_CONTENT_TRACE_DURATION_MS),
+      traceName: process.env.ADVX_CONTENT_TRACE_NAME
+    });
+    logger.info("observability.content-trace.started", {
+      outputDirectory: traceDirectory,
+      durationMs: parseBoundedDuration(process.env.ADVX_CONTENT_TRACE_DURATION_MS)
+    });
+  } catch (error) {
+    logger.warn("observability.content-trace.unavailable", { error });
+  }
+}

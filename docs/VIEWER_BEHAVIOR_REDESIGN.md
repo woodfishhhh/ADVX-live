@@ -1,14 +1,14 @@
 # Session 级 AI 观众与拟人化弹幕重构设计
 
-> 状态：`Implemented baseline`，核心模型、生命周期、行为选择、管理接口和控制端已落地
+> 状态：`Historical / Superseded`。本文保留 2026-07-24 的 Viewer 重构设计过程，不描述当前 Bun 后端实现。
 >
 > 日期：2026-07-24
 >
-> 范围：Electron 控制端、FastAPI Viewer Runtime、实时合同、SQLite 恢复、测试与调试
+> 历史范围：Electron 控制端、旧后端 Viewer Runtime、实时合同、SQLite 恢复、测试与调试
 >
 > 相关文档：[PRODUCT.md](./PRODUCT.md)、[ARCHITECTURE.md](./ARCHITECTURE.md)、[BACKEND_DESIGN.md](./BACKEND_DESIGN.md)、[VIEWER_RUNTIME_INTEGRATION_PLAN.md](./VIEWER_RUNTIME_INTEGRATION_PLAN.md)
 >
-> 发言机制说明：本文中关于 Director、候选观众筛选、发言数量限制和观众接话的旧设计，已由 [AI 观众发言产品规格](./AUDIENCE_SPEAKING_PRODUCT_SPEC.md) 覆盖；该规格具有更高优先级。
+> 当前替代文档：[AI 观众发言产品规格](./AUDIENCE_SPEAKING_PRODUCT_SPEC.md)、[系统架构](./ARCHITECTURE.md) 和 [Bun 后端详细设计](./BACKEND_DESIGN.md)。本文中的 Director、FastAPI、旧运行状态和“当前实现”措辞均只代表历史快照。
 
 ## 1. 文档目的
 

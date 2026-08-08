@@ -1,5 +1,12 @@
 # 6657 风格调优
 
+> 状态：Historical / retained language-neutral assets
+>
+> 当前 Bun 产品后端不加载本文的 `style_profile` 或
+> `room_6657_generation_skill.json`。本文只保留迁移前的可审查调优流程和
+> 历史资产；任何重新接入当前产品的工作都必须以 `apps/backend-bun` 为
+> 目标并经过独立任务与验收。
+
 ## 目标
 
 `room-6657` 使用 sb6657 的公开弹幕数据学习表达结构和节奏，但不把外部弹幕当作可直接播放的语料池。运行时仍然必须先回应当前画面、主播话语或公开房间上下文，再按 6657 模式的 Persona 生成新文本。
@@ -16,7 +23,7 @@
 
 sb6657 后端不开源，也没有公开 SLA、版本兼容或限流承诺。抓取结果只能作为可刷新、可降级的外部风格证据。
 
-## 当前画像
+## 历史画像
 
 2026-07-24 完整分页抓取报告：
 
@@ -26,14 +33,17 @@ sb6657 后端不开源，也没有公开 SLA、版本兼容或限流承诺。抓
 - 热门切片问号出现率约 12.8%，感叹号约 14.7%，受控重复结构约 40.4%。
 - 热门切片括号旁白约 9.2%，命令或建议口吻约 11.6%。
 
-画像文件是 `apps/backend/src/advx_backend/providers/model/room_6657_style_profile.json`。它只包含统计、来源和哈希，不包含 `barrage` 字段。
+画像文件作为语言无关资产保留在
+`resources/audience-presets/room-6657/room_6657_style_profile.json`。
+它只包含统计、来源和哈希，不包含 `barrage` 字段，也不是当前 Bun 产品运行时输入。
 
 ## 生成链路
 
 桌面端为 `room-6657` 的 13 个 Persona 提供模式内覆盖，分别约束问号、嘴硬、拱火、节目效果、梗结构重写、抽象联想、受控复读、反向预测和本场回扣。
 旧工作区中未编辑的 revision 1 内置模式会自动升级到 revision 2；用户已编辑的更高 revision 保持不变。
 
-后端模型适配器仅在 `mode_id == "room-6657"` 时注入紧凑 `style_profile`：
+迁移前的 Python 模型适配器仅在 `mode_id == "room-6657"` 时注入紧凑
+`style_profile`：
 
 - 长度范围来自高复制量语料切片。
 - 标点、复读、括号和命令语气使用聚合频率，而不是固定套话。
@@ -46,7 +56,9 @@ sb6657 后端不开源，也没有公开 SLA、版本兼容或限流承诺。抓
 ## SkillOpt 持续优化
 
 项目内的 6657 生成规则以 `.codex/skills/room-6657-style/SKILL.md` 为唯一人工维护源。
-`scripts/sync_room_6657_skill.py` 将其中的运行指令和 13 个 Persona 镜头编译成后端使用的确定性 JSON；运行时不读取 SkillOpt 状态，也不连接外部弹幕数据库。
+`scripts/sync-room-6657-skill.ts` 将其中的运行指令和 14 个 Persona 镜头编译成
+语言无关的确定性 JSON；当前 Bun 运行时不读取该 JSON、SkillOpt
+状态或外部弹幕数据库。
 
 微软开源的 [SkillOpt](https://github.com/microsoft/SkillOpt) 固定在
 `resources/skillopt/skillopt.lock.json` 记录的提交。源码下载到 Git 忽略的
@@ -62,17 +74,17 @@ SkillOpt 上游提交。
 首次安装与校验：
 
 ```powershell
-python scripts/run_room_6657_skillopt.py bootstrap
-python scripts/run_room_6657_skillopt.py validate
-python scripts/run_room_6657_skillopt.py dry-run --backend mock
+bun scripts/run-room-6657-skillopt.ts bootstrap
+bun scripts/run-room-6657-skillopt.ts validate
+bun scripts/run-room-6657-skillopt.ts dry-run --backend mock
 ```
 
 真实优化使用项目内已经人工审核的 5 个训练任务、4 个验证任务和 3 个最终保留任务：
 
 ```powershell
-python scripts/run_room_6657_skillopt.py run --backend codex
-python scripts/run_room_6657_skillopt.py status
-python scripts/run_room_6657_skillopt.py evaluate --backend codex `
+bun scripts/run-room-6657-skillopt.ts run --backend codex
+bun scripts/run-room-6657-skillopt.ts status
+bun scripts/run-room-6657-skillopt.ts evaluate --backend codex `
   --skill .skillopt-sleep/staging/<timestamp>/proposed_SKILL.md
 ```
 
@@ -81,7 +93,7 @@ python scripts/run_room_6657_skillopt.py evaluate --backend codex `
 `proposed_SKILL.md`，并通过 3 个最终任务后，先记录显式审批：
 
 ```powershell
-python scripts/run_room_6657_skillopt.py approve `
+bun scripts/run-room-6657-skillopt.ts approve `
   --staging .skillopt-sleep/staging/<timestamp> `
   --reason "candidate preserves Persona and safety contracts"
 ```
@@ -89,14 +101,14 @@ python scripts/run_room_6657_skillopt.py approve `
 然后使用同一个 staging 路径采用：
 
 ```powershell
-python scripts/run_room_6657_skillopt.py adopt `
+bun scripts/run-room-6657-skillopt.ts adopt `
   --staging .skillopt-sleep/staging/<timestamp>
 ```
 
 如果候选虽然通过模型门禁，但破坏 Persona 区分、短句节奏或其他产品合同，应记录拒绝而不是追求分数：
 
 ```powershell
-python scripts/run_room_6657_skillopt.py reject `
+bun scripts/run-room-6657-skillopt.ts reject `
   --staging .skillopt-sleep/staging/<timestamp> `
   --reason "candidate overrides a Persona-specific contract"
 ```
@@ -110,7 +122,7 @@ python scripts/run_room_6657_skillopt.py reject `
 可显式回滚：
 
 ```powershell
-python scripts/run_room_6657_skillopt.py rollback `
+bun scripts/run-room-6657-skillopt.ts rollback `
   --staging .skillopt-sleep/staging/<timestamp>
 ```
 
@@ -135,16 +147,15 @@ SkillOpt 优化的是可审查的生成规则，不是模型权重，也不是�
 在仓库根目录执行：
 
 ```powershell
-python scripts/fetch_sb6657_corpus.py --page-size 500 --delay 0.35
-python scripts/profile_sb6657_corpus.py `
-  --output apps/backend/src/advx_backend/providers/model/room_6657_style_profile.json
-python scripts/sync_room_6657_skill.py
+bun scripts/fetch-sb6657-corpus.ts --page-size 500 --delay 0.35
+bun scripts/profile-sb6657-corpus.ts `
+  --output resources/audience-presets/room-6657/room_6657_style_profile.json
+bun scripts/sync-room-6657-skill.ts
 ```
 
 刷新后必须审查 metadata 的 `complete`、`reported_total`、`unique_count` 和 SHA，再运行：
 
 ```powershell
-python scripts/run_room_6657_skillopt.py validate
-pnpm test
-uv run --project apps/backend ruff check apps/backend scripts
+bun scripts/run-room-6657-skillopt.ts validate
+bun run test:tst-014
 ```

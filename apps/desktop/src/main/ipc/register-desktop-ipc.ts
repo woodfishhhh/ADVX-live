@@ -42,7 +42,7 @@ import {
   type RoomMemoryEdit,
   type TextSubmitTarget
 } from "../../shared/backend-client";
-import { BackendClient } from "../backend/backend-client";
+import type { BackendControlClient } from "../backend/backend-client";
 import { formatImageMimeType } from "../backend/realtime-binary";
 import {
   clearRuntimeSessionId,
@@ -130,7 +130,7 @@ async function listDesktopSources(controlWindow: BrowserWindow | null): Promise<
 
 async function saveModelConfig(
   config: ModelConfig,
-  backendClient: BackendClient
+  backendClient: BackendControlClient
 ): Promise<SaveModelConfigResult> {
   const configStore = await loadStoredModelConfigStore();
   const stored = configStore?.current ?? null;
@@ -341,7 +341,7 @@ async function getStoredModelConfigStatus(): Promise<ModelConfigStatus> {
 }
 
 export async function configureCurrentProviderForSession(
-  backendClient: BackendClient,
+  backendClient: BackendControlClient,
   restartBackend: () => Promise<BackendRuntimeStatus>
 ): Promise<boolean> {
   const config = await loadStoredModelConfig();
@@ -760,7 +760,7 @@ export function broadcastOverlaySettings(
 export function registerDesktopIpc(
   getControlWindow: () => BrowserWindow | null,
   confirmControlWindowClose: () => void,
-  backendClient: BackendClient,
+  backendClient: BackendControlClient,
   restartBackend: () => Promise<BackendRuntimeStatus>
 ): void {
   const assertControlSender = (event: Electron.IpcMainInvokeEvent): void => {
