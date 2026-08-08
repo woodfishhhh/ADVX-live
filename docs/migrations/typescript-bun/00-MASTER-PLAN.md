@@ -1246,8 +1246,8 @@ Checker. Candidate evidence:
 | `CUT-011` | `DONE` | Run repository-wide no-Python/no-pnpm/no-uv scan with allowlisted history only | `CUT-009`, `CUT-010` | Scan artifact |
 | `CUT-012` | `DONE` | Run clean-clone install, lint, typecheck, tests, build, and installed E2E | `CUT-011` | Clean-clone evidence |
 | `CUT-013` | `DONE` | Independent architecture, security, data, and test review | `CUT-012` | Review verdict |
-| `CUT-014` | `VERIFY` | Close or explicitly retain rollback window and archive migration state | `CUT-013` | Closure record |
-| `GATE-09` | `TODO` | Final proof-or-stop verification | `CUT-001..014` | Final accepted evidence |
+| `CUT-014` | `DONE` | Close or explicitly retain rollback window and archive migration state | `CUT-013` | Closure record |
+| `GATE-09` | `READY` | Final proof-or-stop verification | `CUT-001..014` | Final accepted evidence |
 
 Maker `cut-002-maker-root-20260808-125` completed only the bounded Windows x64
 Bun-default soak. Four Electron cycles cover the required media combinations,
@@ -1734,6 +1734,21 @@ Maker evidence is at
 `.omx/artifacts/typescript-bun/CUT-014/cut-014-maker-root-20260808-161/result.json`
 with SHA-256
 `b2b5ebc0adb9db18da5f53f02b49ce2c459e4d763421a1ffc9b3eed23e264687`.
+
+Independent exact-commit Checker
+`cut-014-commit-checker-root-20260808-162`, in distinct context
+`cut-014-commit-checker-root-context-20260808-162`, accepted candidate commit
+`60c6e768d59362d21ea206741a0afa6f58c48f5d` and tree
+`493d9ce7c8d0540e0ee7198bf503944ee25c53a9` after confirming identical
+`origin/TS_backend_refactor`, a tracked-clean worktree, the exact five-document
+task scope, the closure contract, retained evidence hashes, 50 plan-check
+tests, live plan-check, and whitespace. Automatic CI remains disabled and was
+not triggered. `CUT-014` is `DONE`; Phase 09 and only `GATE-09` are `READY`;
+`current_task=null`, `next_task=GATE-09`, and `same_blocker_attempts=0`.
+Checker evidence is at
+`.omx/artifacts/typescript-bun/CUT-014/cut-014-commit-checker-root-20260808-162/result.json`
+with SHA-256
+`2ff50fdf8aff6a4e025bfd4b302b62dddd086a353fdd5fc1ba39a4674262b1b3`.
 
 ## Gate External Conditions
 

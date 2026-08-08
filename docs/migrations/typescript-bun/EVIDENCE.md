@@ -7952,3 +7952,66 @@ accepted task/gate record and does not satisfy PKG-011 or any dependency.
   matrix; rollback does not preserve Bun-only writes made after the backup.
 - Related run log: `cut-013-commit-checker-root-20260808-160`
 - Decision: `CUT-013` `VERIFY` -> `DONE`; only `CUT-014` is promoted.
+
+### CUT-014 / cut-014-commit-checker-root-20260808-162
+
+- Claim: the dormant source/data recovery window and durable migration archive
+  are explicitly retained with exact runtime, oracle, backup/restore,
+  ownership, duration, removal-condition, limitation, superseded-work, and
+  evidence identities.
+- Status: `DONE`
+- Accepted commit: `60c6e768d59362d21ea206741a0afa6f58c48f5d`
+- Accepted tree: `493d9ce7c8d0540e0ee7198bf503944ee25c53a9`
+- Date: 2026-08-08
+- Environment: Windows x64; Bun `1.3.14`; branch `TS_backend_refactor`
+- Evidence class: `closure`, `rollback`, `static`, `review`
+- Maker: root
+- Maker run/context ID: `cut-014-maker-root-20260808-161` /
+  `cut-014-maker-root-context-20260808-161`
+- Checker: root independent run/context
+- Checker run/context ID:
+  `cut-014-commit-checker-root-20260808-162` /
+  `cut-014-commit-checker-root-context-20260808-162`
+- Checker parent run ID: `cut-014-maker-root-20260808-161`
+- Checker participated in implementation: `false`
+- Checker participated in staging: `false`
+- Reviewed source-state hash: `60c6e768d59362d21ea206741a0afa6f58c48f5d`
+- Upstream identity: `origin/TS_backend_refactor` resolved to the accepted
+  commit before verification.
+- Commands/procedure:
+  - exact commit/tree/upstream, ownership, prohibited-path, tracked-Python,
+    closure-contract, artifact-hash, CI-trigger, and whitespace audits -> exit
+    `0`
+  - `bun test scripts/migration-plan-check.test.ts` -> exit `0`; 50 passed,
+    197 expectations
+  - `bun run migration:plan-check` -> exit `0`; 133 tasks, 82 links, 131
+    pre-acceptance evidence records, zero errors
+- Accepted assertions:
+  - ADVX Live `0.1.0` defaults to Bun `1.3.14`; development uses `bun-source`
+    and packaged Windows x64 uses `bun-compiled`;
+  - the last complete tracked Python oracle is commit `41665a96`, whose child
+    `97c81436` is the accepted deletion checkpoint;
+  - rollback is restore-from-backup into a new path and cannot retain Bun-only
+    migration/outbox state or writes after the selected backup;
+  - no release exists, so the recovery window is dormant with no pre-release
+    expiry; after a first authorized signed Windows x64 release reaches full
+    promotion, retention is at least 30 calendar days;
+  - tracked documentation/history remains durable while local `.omx` evidence
+    stays untracked, hash-bound, and outside release packages;
+  - no canonical task is superseded, and no automatic CI trigger is enabled or
+    executed.
+- Maker artifact:
+  `.omx/artifacts/typescript-bun/CUT-014/cut-014-maker-root-20260808-161/result.json`
+  (`sha256:b2b5ebc0adb9db18da5f53f02b49ce2c459e4d763421a1ffc9b3eed23e264687`,
+  2539 bytes)
+- Checker artifact:
+  `.omx/artifacts/typescript-bun/CUT-014/cut-014-commit-checker-root-20260808-162/result.json`
+  (`sha256:2ff50fdf8aff6a4e025bfd4b302b62dddd086a353fdd5fc1ba39a4674262b1b3`,
+  2165 bytes)
+- Limitations: Windows x64 only; unsigned, unpublished, undeployed; macOS and
+  Windows arm64 unproven; a real release/update still requires a fresh user
+  backup and separately authorized signing, publishing, deployment, updater,
+  and CI/CD work.
+- Related run log: `cut-014-commit-checker-root-20260808-162`
+- Decision: `CUT-014` `VERIFY` -> `DONE`; only `GATE-09` is promoted to
+  `READY` and remains unexecuted.

@@ -12112,3 +12112,37 @@ Rules:
 - CI remained `workflow_dispatch`-only and was not triggered
 - Next single action: run focused closure verification, create/push the
   candidate, and request a distinct exact-commit Checker
+
+## `cut-014-commit-checker-root-20260808-162` - 2026-08-08 - `CUT-014`
+
+- Role: `checker`
+- Context ID: `cut-014-commit-checker-root-context-20260808-162`
+- Parent run ID: `cut-014-maker-root-20260808-161`
+- Checker participated in implementation or staging: `false`
+- Exact commit/tree: `60c6e768d59362d21ea206741a0afa6f58c48f5d` /
+  `493d9ce7c8d0540e0ee7198bf503944ee25c53a9`
+- Upstream identity: `origin/TS_backend_refactor` resolved to the exact commit
+- Source audit: tracked status clean; exactly five owned CUT-014 document
+  paths; zero prohibited paths; zero tracked Python runtime/toolchain inputs;
+  commit whitespace passed
+- Commands:
+  - focused exact-commit closure audit -> exit `0`; version/runtime/oracle,
+    archive, retention, ownership, rollback, task-scope, and manual-CI
+    assertions passed
+  - migration plan-check tests -> exit `0`; 50 passed, 197 expectations
+  - live plan-check -> exit `0`; 133 tasks, 82 links, 131 pre-acceptance
+    evidence records, zero errors
+- Reused accepted immutable artifacts: CUT-003, CUT-008, CUT-012, and CUT-013;
+  all four SHA-256 identities passed; CUT-014 Maker artifact also matched
+- Accepted evidence:
+  `.omx/artifacts/typescript-bun/CUT-014/cut-014-commit-checker-root-20260808-162/result.json`
+  (`sha256:2ff50fdf8aff6a4e025bfd4b302b62dddd086a353fdd5fc1ba39a4674262b1b3`,
+  2165 bytes)
+- Decision: `CUT-014` `VERIFY` -> `DONE`; Phase 09 `READY`;
+  `current_task=null`, `next_task=GATE-09`, `same_blocker_attempts=0`
+- Blocker: none
+- Limitations: Windows x64 only; unsigned, unpublished, undeployed; macOS and
+  Windows arm64 unproven; post-backup Bun writes remain outside rollback state
+- Decisions/plan drift: none; automatic CI remains disabled,
+  `workflow_dispatch`-only, and was not triggered
+- Next single task: `GATE-09`; it was not started in this run

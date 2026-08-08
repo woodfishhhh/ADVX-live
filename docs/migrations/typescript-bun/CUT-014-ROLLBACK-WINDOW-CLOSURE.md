@@ -1,9 +1,9 @@
 # CUT-014 Rollback Window And Archive Record
 
-> Status: Maker candidate for `VERIFY`
+> Status: accepted for `DONE`
 >
-> Branch/base HEAD: `TS_backend_refactor` /
-> `7b43ea0a338309403b613df1a1591eb7e9dc9923`
+> Reviewed commit/tree: `60c6e768d59362d21ea206741a0afa6f58c48f5d` /
+> `493d9ce7c8d0540e0ee7198bf503944ee25c53a9`
 >
 > Recorded: 2026-08-08
 
@@ -184,8 +184,8 @@ links, 131 accepted evidence records, and zero errors.
 | Legacy backup/restore rehearsal | CUT-003 artifact SHA-256 `c0ce607700d689ae10b47f4991f6b7c1e83395d2bb6e4ad955c6f2b71432eb9a` |
 | Clean-clone/package/installed proof | `78d74e94be61b5a358daee158cf79977dce6b500`; artifact SHA-256 `c9531a34c6237c7f68c28e5bb840e172cdb3a8320c82c6ee2998bda8cb9f1cb9` |
 | Independent final review | `6a433e7970f48f5ddd2fec631f9986746af39ecb`; artifact SHA-256 `44822baed182a9b02302ac5ba0527f98b46b609997ccafb8eff8c38dc72136f7` |
-| CUT-014 closure | Pending exact-commit Checker |
-| Final migration gate | `GATE-09` pending; no completion promise is authorized |
+| CUT-014 closure | `60c6e768d59362d21ea206741a0afa6f58c48f5d`; Checker artifact SHA-256 `2ff50fdf8aff6a4e025bfd4b302b62dddd086a353fdd5fc1ba39a4674262b1b3` |
+| Final migration gate | `GATE-09` `READY`; no completion promise is authorized |
 
 ## Documentation Archive Location
 
@@ -194,11 +194,17 @@ The durable archive remains `docs/migrations/typescript-bun/` on
 snapshot; detailed history remains in Git, `RUN-LOG.md`, and `EVIDENCE.md`.
 The plan and records are not deleted after success.
 
-Maker verdict: the rollback-window and archive contract is complete enough to
-advance `CUT-014` to `VERIFY`. Only a distinct exact-commit Checker may accept
-`DONE` and promote `GATE-09`.
+Independent Checker `cut-014-commit-checker-root-20260808-162` accepted the
+rollback-window and archive contract against exact commit
+`60c6e768d59362d21ea206741a0afa6f58c48f5d`. `CUT-014` is `DONE`; only
+`GATE-09` is promoted to `READY` and remains unexecuted.
 
 Maker evidence is at
 `.omx/artifacts/typescript-bun/CUT-014/cut-014-maker-root-20260808-161/result.json`
 with SHA-256
 `b2b5ebc0adb9db18da5f53f02b49ce2c459e4d763421a1ffc9b3eed23e264687`.
+
+Checker evidence is at
+`.omx/artifacts/typescript-bun/CUT-014/cut-014-commit-checker-root-20260808-162/result.json`
+with SHA-256
+`2ff50fdf8aff6a4e025bfd4b302b62dddd086a353fdd5fc1ba39a4674262b1b3`.

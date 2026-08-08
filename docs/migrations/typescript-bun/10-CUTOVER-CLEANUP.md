@@ -290,8 +290,9 @@ history. Do not delete the migration plan immediately after success.
 
 Maker closure record:
 [CUT-014-ROLLBACK-WINDOW-CLOSURE.md](./CUT-014-ROLLBACK-WINDOW-CLOSURE.md).
-The record is a candidate only until a distinct exact-commit Checker accepts
-it.
+Independent Checker `cut-014-commit-checker-root-20260808-162` accepted the
+record against exact commit `60c6e768d59362d21ea206741a0afa6f58c48f5d`.
+`GATE-09` is the only promoted task and remains separately unexecuted.
 
 ## Final Definition Of Done
 
