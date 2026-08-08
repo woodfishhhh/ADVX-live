@@ -14,16 +14,16 @@ current_task: "GATE-09"
 next_task: null
 baseline_commit: "41665a96cf67eb82cbe02f83abbbe2b79b100e48"
 last_verified_commit: "60c6e768d59362d21ea206741a0afa6f58c48f5d"
-current_head: "1614fafc700ed4d53bda811c9758b391e7aaccf4"
+current_head: "1b6265cd6120950796668fc000d81773c4864e04"
 current_branch: "TS_backend_refactor"
 worktree_root: "D:/Coding/ADVX-live"
 worktree_dirty: true
-last_run_id: "gate-09-maker-root-20260809-163"
-last_context_id: "gate-09-maker-root-context-20260809-163"
-maker_run_id: "gate-09-maker-root-20260809-163"
-maker_context_id: "gate-09-maker-root-context-20260809-163"
-checker_run_id: "cut-014-commit-checker-root-20260808-162"
-checker_context_id: "cut-014-commit-checker-root-context-20260808-162"
+last_run_id: "gate-09-recovery-maker-root-20260809-165"
+last_context_id: "gate-09-recovery-maker-root-context-20260809-165"
+maker_run_id: "gate-09-recovery-maker-root-20260809-165"
+maker_context_id: "gate-09-recovery-maker-root-context-20260809-165"
+checker_run_id: "gate-09-commit-checker-root-20260809-164"
+checker_context_id: "gate-09-commit-checker-root-context-20260809-164"
 same_blocker_attempts: 0
 ---
 
@@ -41,7 +41,7 @@ same_blocker_attempts: 0
 | Independent verifier | Distinct exact-commit Checker required for `GATE-09` |
 | Active blocker | None |
 
-## Current GATE-09 Maker Record
+## Current GATE-09 Recovery Maker Record
 
 Maker `gate-09-maker-root-20260809-163` used distinct context
 `gate-09-maker-root-context-20260809-163` on branch `TS_backend_refactor` at
@@ -75,6 +75,19 @@ with SHA-256
 `83618b4ae8e9656d08ec0141bd6572a0432e620cd7268fe712d64bce9f14d605`.
 `GATE-09` and Phase 09 are `VERIFY`; `current_task=GATE-09`, `next_task=null`,
 and `same_blocker_attempts=0`. CI was not triggered.
+
+The initial exact candidate audit passed, but the provisional terminal cursor
+made two negative plan-check fixtures fail because they depended on the live
+Phase 09/gate status. No accepted `GATE-09` evidence was added. Recovery Maker
+`gate-09-recovery-maker-root-20260809-165` changed only the two synthetic
+fixtures; the production checker and product runtime are unchanged. All 50
+tests, 197 expectations, live plan-check, and whitespace pass. A new exact
+candidate Checker is required; the initial verdict is not reused.
+
+Recovery Maker evidence is at
+`.omx/artifacts/typescript-bun/GATE-09/gate-09-recovery-maker-root-20260809-165/result.json`
+with SHA-256
+`d819cb32c5fde4ce0b8fb7f128e8bf048808a7767db4988835df7bd88e6f88ba`.
 
 ## Closure Snapshot
 

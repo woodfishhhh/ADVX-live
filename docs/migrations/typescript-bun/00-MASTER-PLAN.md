@@ -1771,6 +1771,22 @@ Maker evidence is at
 with SHA-256
 `83618b4ae8e9656d08ec0141bd6572a0432e620cd7268fe712d64bce9f14d605`.
 
+Recovery Maker `gate-09-recovery-maker-root-20260809-165`, in distinct context
+`gate-09-recovery-maker-root-context-20260809-165`, kept `GATE-09` at `VERIFY`
+after the provisional acceptance transition exposed two negative plan-check
+fixtures that depended on the live Phase 09/gate status. The initial exact
+candidate audit passed, but no accepted `GATE-09` evidence was added and its
+verdict is not reused. The recovery changes only
+`scripts/migration-plan-check.test.ts`: one fixture now corrupts the current
+phase row explicitly, and the phase-before-gate fixture uses terminal Phase 08.
+The production checker and product runtime are unchanged. All 50 plan-check
+tests, 197 expectations, live plan-check, and whitespace pass; CI remains
+disabled and untriggered. A new exact-commit Checker is required. Recovery
+Maker evidence is at
+`.omx/artifacts/typescript-bun/GATE-09/gate-09-recovery-maker-root-20260809-165/result.json`
+with SHA-256
+`d819cb32c5fde4ce0b8fb7f128e8bf048808a7767db4988835df7bd88e6f88ba`.
+
 ## Gate External Conditions
 
 These rows are machine-checkable required terminal conditions, not optional

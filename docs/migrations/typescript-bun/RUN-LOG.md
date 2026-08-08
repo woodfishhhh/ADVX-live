@@ -12195,3 +12195,34 @@ Rules:
   disabled and unauthorized
 - Next single action: create and push the candidate, then require a distinct
   exact-commit Checker
+
+## `gate-09-recovery-maker-root-20260809-165` - 2026-08-09 - `GATE-09`
+
+- Role: `maker`
+- Context ID: `gate-09-recovery-maker-root-context-20260809-165`
+- Parent run ID: `gate-09-commit-checker-root-20260809-164`
+- Branch/base HEAD: `TS_backend_refactor` /
+  `1b6265cd6120950796668fc000d81773c4864e04`
+- Trigger: the initial exact candidate audit passed, but the provisional
+  terminal acceptance cursor made two negative plan-check fixtures fail; 48
+  passed and two failed
+- Evidence decision: no accepted `GATE-09` record was added; the initial
+  candidate verdict is not reused
+- Repair: changed only `scripts/migration-plan-check.test.ts`; one fixture now
+  corrupts the current-phase row explicitly, and the phase-before-gate fixture
+  mutates terminal `GATE-08`
+- Boundary: production plan checker and product runtime unchanged
+- Focused plan-check tests: exit `0`; 50 passed, 197 expectations
+- Live plan-check: exit `0`; 133 tasks, 83 links, 132 accepted records, zero
+  errors
+- Whitespace: pass
+- Recovery Maker evidence:
+  `.omx/artifacts/typescript-bun/GATE-09/gate-09-recovery-maker-root-20260809-165/result.json`
+  (`sha256:d819cb32c5fde4ce0b8fb7f128e8bf048808a7767db4988835df7bd88e6f88ba`,
+  1698 bytes)
+- State: `GATE-09` and Phase 09 remain `VERIFY`;
+  `current_task=GATE-09`, `next_task=null`, `same_blocker_attempts=0`
+- Blocker: none after recovery
+- CI remains `workflow_dispatch`-only and was not triggered
+- Next action: create and push a new candidate, then require a new exact-commit
+  Checker

@@ -106,3 +106,20 @@ Maker evidence is at
 `.omx/artifacts/typescript-bun/GATE-09/gate-09-maker-root-20260809-163/result.json`
 with SHA-256
 `83618b4ae8e9656d08ec0141bd6572a0432e620cd7268fe712d64bce9f14d605`.
+
+## Recovery Candidate
+
+The initial exact candidate audit passed, but applying the terminal acceptance
+cursor exposed two stale negative plan-check fixtures: 48 tests passed and two
+failed because they depended on Phase 09 not yet being terminal. No accepted
+`GATE-09` record was added, and the initial verdict is not final evidence.
+
+Recovery Maker `gate-09-recovery-maker-root-20260809-165` changed only those
+two synthetic fixtures. The production checker and product runtime are
+unchanged. All 50 tests, 197 expectations, live plan-check, and whitespace now
+pass. `GATE-09` remains `VERIFY` pending a new exact-commit Checker.
+
+Recovery Maker evidence is at
+`.omx/artifacts/typescript-bun/GATE-09/gate-09-recovery-maker-root-20260809-165/result.json`
+with SHA-256
+`d819cb32c5fde4ce0b8fb7f128e8bf048808a7767db4988835df7bd88e6f88ba`.

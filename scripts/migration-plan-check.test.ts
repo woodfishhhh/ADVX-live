@@ -386,6 +386,10 @@ describe('migration plan drift checker', () => {
       (contents) => contents
         .replace(/^current_task:.*$/m, 'current_task: "FND-011"')
         .replace(/^next_task:.*$/m, 'next_task: null')
+        .replace(
+          /^(\| Current phase \| Phase 09: )`[^`]+`/m,
+          '$1`BROKEN`'
+        )
     )
     await expectCodes(root, [
       'STATE_CONTROL_TABLE_MISMATCH',
@@ -565,11 +569,8 @@ describe('migration plan drift checker', () => {
 
   test('rejects a phase marked DONE before its gate', async () => {
     const root = await mutate(
-      'STATE.md',
-      (contents) => contents.replace(
-        /^(\| 09 Cutover and Python removal \| )`[^`]+`/m,
-        '$1`DONE`'
-      )
+      '00-MASTER-PLAN.md',
+      (contents) => replaceTaskStatus(contents, 'GATE-08', 'VERIFY')
     )
     await expectHasCodes(root, ['PHASE_DONE_GATE_NOT_DONE'])
   })
