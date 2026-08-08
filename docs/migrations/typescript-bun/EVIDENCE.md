@@ -7654,3 +7654,60 @@ accepted task/gate record and does not satisfy PKG-011 or any dependency.
 - Related run logs:
   - `cut-008-checkpoint-maker-root-20260808-142`
   - `cut-008-commit-checker-root-20260808-143`
+
+### CUT-009 / cut-009-commit-checker-root-20260808-145
+
+- Claim: remove the active Python packaging/test/lint lock boundary, Alembic
+  runtime and revisions, Python-specific ignores, CI setup/caches, and stale
+  developer instructions while preserving represented schema/rollback history
+  and the later CUT-010 shim boundary.
+- Status: `DONE`
+- Accepted commit: `3ff566d6fe8eb3eb6d025da3e08fd8d08e7cdec0`
+- Accepted tree: `ee8d7a8b877675d345191ab34c483a83a1d9de5f`
+- Date: 2026-08-08
+- Environment: Windows x64; Bun `1.3.14`; branch `TS_backend_refactor`
+- Evidence class: `static`, `unit`, `review`
+- Maker: root
+- Maker run/context ID: `cut-009-maker-root-20260808-144` /
+  `cut-009-maker-root-context-20260808-144`
+- Checker: root independent run/context
+- Checker run/context ID:
+  `cut-009-commit-checker-root-20260808-145` /
+  `cut-009-commit-checker-root-context-20260808-145`
+- Checker parent run ID: `cut-009-maker-root-20260808-144`
+- Checker participated in implementation: `false`
+- Checker participated in staging: `false`
+- Reviewed source-state hash: `3ff566d6fe8eb3eb6d025da3e08fd8d08e7cdec0`
+- Upstream identity: `origin/TS_backend_refactor` resolved to the accepted
+  commit before verification.
+- Source identity:
+  `2844cd1a124ed49c39f1463965ae679341211301574aa6af345489d915f4612c`
+  across 26 files; Maker/Checker mismatch count: zero.
+- Commands/procedure:
+  - `bun run typecheck` -> exit `0`
+  - strict CUT-009 TypeScript and focused checker -> exit `0`
+  - targeted Oxfmt check -> exit `0`
+  - `bun test .../migration-runner.test.ts` -> exit `0`; five tests passed
+  - commit whitespace and ownership checks -> exit `0`; 26 changed paths,
+    zero prohibited/cache paths, zero tracked worktree diff
+  - `bun run migration:plan-check` -> exit `0`; 133 tasks, 72 links,
+    126 pre-acceptance evidence records, zero errors
+- Accepted assertions:
+  - all 11 accepted Python toolchain/Alembic paths are absent;
+  - `apps/backend/README.md` is the only tracked file under `apps/backend`;
+  - Python-specific root ignores, active package commands, CI setup/caches,
+    tracked editor tasks, and stale active developer instructions are absent;
+  - 10 Bun/schema/rollback history paths and four CUT-010 shims remain;
+  - automatic CI triggers are disabled; the workflow is manual-only until
+    migration completion under explicit human direction.
+- Artifact:
+  `.omx/artifacts/typescript-bun/CUT-009/cut-009-commit-checker-root-20260808-145/result.json`
+  (`sha256:4ce778c9f7257cc9c73f38839c4d94efdc0eadc05dbb8b41356c4061fc8248bd`,
+  7900 bytes)
+- Adjacent finding: the legacy migration suite still has three failures because
+  its CUT-010-owned compatibility shim invokes Python removed by CUT-008. The
+  failure is recorded for the now-READY CUT-010 task and is not used as CUT-009
+  proof.
+- Limitations: Windows x64 only; unsigned, unpublished, undeployed; macOS
+  unproven; CUT-012 clean-clone verification pending.
+- Next task: `CUT-010`

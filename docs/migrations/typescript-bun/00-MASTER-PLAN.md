@@ -1241,8 +1241,8 @@ Checker. Candidate evidence:
 | `CUT-006` | `DONE` | Switch CI, contracts, headless, replay, and evidence scripts | `CUT-005` | CI and script gate |
 | `CUT-007` | `DONE` | Update architecture, backend, protocol, setup, and product-status docs | `CUT-005`, `CUT-006` | Documentation audit |
 | `CUT-008` | `DONE` | Remove Python backend source and Python-only tests after human gate | `CUT-004..007` | Tracked-file audit |
-| `CUT-009` | `VERIFY` | Remove `pyproject.toml`, `uv.lock`, Alembic runtime, and Python ignores | `CUT-008` | Toolchain audit |
-| `CUT-010` | `TODO` | Remove temporary dual-runtime adapters and migration-only shims | `CUT-008`, `CUT-009` | Dead-code audit |
+| `CUT-009` | `DONE` | Remove `pyproject.toml`, `uv.lock`, Alembic runtime, and Python ignores | `CUT-008` | Toolchain audit |
+| `CUT-010` | `READY` | Remove temporary dual-runtime adapters and migration-only shims | `CUT-008`, `CUT-009` | Dead-code audit |
 | `CUT-011` | `TODO` | Run repository-wide no-Python/no-pnpm/no-uv scan with allowlisted history only | `CUT-009`, `CUT-010` | Scan artifact |
 | `CUT-012` | `TODO` | Run clean-clone install, lint, typecheck, tests, build, and installed E2E | `CUT-011` | Clean-clone evidence |
 | `CUT-013` | `TODO` | Independent architecture, security, data, and test review | `CUT-012` | Review verdict |
@@ -1525,6 +1525,21 @@ known failures because its CUT-010 shim still invokes Python removed by CUT-008;
 CUT-009 does not repair or delete that later-task boundary. `CUT-009` and Phase
 09 are `VERIFY`; `current_task=CUT-009`, `next_task=null`, and no later task was
 started.
+
+Independent exact-commit Checker
+`cut-009-commit-checker-root-20260808-145`, in distinct context
+`cut-009-commit-checker-root-context-20260808-145`, verified commit
+`3ff566d6fe8eb3eb6d025da3e08fd8d08e7cdec0` and its identical
+`origin/TS_backend_refactor` ref. The 26-path commit contains no prohibited or
+cache paths. Repository TypeScript, the focused CUT-009 gate, five Bun migration
+runner tests, formatting, commit validation, and live plan-check pass with the
+same 26-file aggregate as Maker.
+
+`CUT-009` is `DONE`; Phase 09 returns to `READY`; `current_task=null`,
+`next_task=CUT-010`, and `same_blocker_attempts=0`. Only CUT-010 is promoted,
+including the already recorded legacy Python shim finding. Automatic CI remains
+manual-only until migration completion under explicit human direction. No
+CUT-010 implementation or later task was started.
 
 ## Gate External Conditions
 

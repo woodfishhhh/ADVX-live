@@ -11654,3 +11654,44 @@ Rules:
   completion by explicit human direction; task order unchanged
 - Next single action: create the CUT-009 candidate commit, push only to
   `origin/TS_backend_refactor`, then run a distinct exact-commit Checker
+
+## `cut-009-commit-checker-root-20260808-145` - 2026-08-08 - `CUT-009`
+
+- Role: `checker`
+- Context ID: `cut-009-commit-checker-root-context-20260808-145`
+- Parent run ID: `cut-009-maker-root-20260808-144`
+- Checker participated in implementation or staging: `false`
+- Exact commit: `3ff566d6fe8eb3eb6d025da3e08fd8d08e7cdec0`
+- Exact tree: `ee8d7a8b877675d345191ab34c483a83a1d9de5f`
+- Upstream identity: `origin/TS_backend_refactor` resolved to the exact commit
+- Source-state checks:
+  - tracked worktree diff from exact commit: zero;
+  - commit changed paths: 26;
+  - `.omx`, `output`, `promo`, cache, or generated Python-contract paths: zero;
+  - commit whitespace validation -> exit `0`.
+- Commands:
+  - `bun run typecheck` -> exit `0`
+  - strict CUT-009 TypeScript and focused checker -> exit `0`; all 11 removals,
+    one backend tombstone, 10 represented history paths, four CUT-010 shims,
+    manual-only CI, and zero active toolchain violations confirmed
+  - targeted Oxfmt -> exit `0`
+  - `bun test .../migration-runner.test.ts` -> exit `0`; five tests passed
+  - `bun run migration:plan-check` -> exit `0`; 133 tasks, 72 links,
+    126 pre-acceptance evidence records, zero errors
+- Accepted evidence:
+  `.omx/artifacts/typescript-bun/CUT-009/cut-009-commit-checker-root-20260808-145/result.json`
+  (`sha256:4ce778c9f7257cc9c73f38839c4d94efdc0eadc05dbb8b41356c4061fc8248bd`,
+  7900 bytes)
+- Final aggregate:
+  `2844cd1a124ed49c39f1463965ae679341211301574aa6af345489d915f4612c`
+- Decision: `CUT-009` `VERIFY` -> `DONE`; Phase 09 `READY`;
+  `current_task=null`, `next_task=CUT-010`, `same_blocker_attempts=0`
+- Adjacent finding: three legacy migration tests remain failed because their
+  CUT-010 compatibility shim invokes the CUT-008-removed Python fixture/backup
+  path; no CUT-010 implementation occurred in this run
+- Blocker: none
+- Limitations: Windows x64 only; unsigned, unpublished, undeployed; macOS
+  unproven; CUT-012 clean-clone verification pending
+- Decisions/plan drift: automatic CI remains manual-only until migration
+  completion by explicit human direction; task order unchanged
+- Next single task: `CUT-010`
