@@ -11785,3 +11785,49 @@ Rules:
 - Decisions/plan drift: automatic CI remains manual-only until migration
   completion by explicit human direction; task order unchanged
 - Next single task: `CUT-011`
+
+## `cut-011-maker-root-20260808-148` - 2026-08-08 - `CUT-011`
+
+- Role: `maker`
+- Context ID: `cut-011-maker-root-context-20260808-148`
+- Parent run ID: `cut-010-commit-checker-root-20260808-147`
+- Branch/parent HEAD: `TS_backend_refactor` /
+  `8d3de82766c3d908acb127b50337a5a99fbea5d1`
+- Dirty tree before/after: `true`; unrelated local Codex configuration,
+  `.omx`, `output`, `promo`, untracked historical backend files, and caches
+  preserved
+- State transition: `CUT-011` `READY` -> `IN_PROGRESS` -> `VERIFY`; Phase 09
+  `VERIFY`; `current_task=CUT-011`, `next_task=null`,
+  `same_blocker_attempts=0`
+- Changes:
+  - added a strict tracked-repository and package-script scanner with one
+    machine-readable result covering every required CUT-011 term;
+  - removed root pnpm lock/workspace/ignore inputs and five accepted but
+    obsolete migration checkers that could invoke or require removed
+    toolchains;
+  - removed pnpm diagnostics telemetry, renamed the durable realtime wire
+    family to `legacy-v3-v4`, and made active source comments language-neutral;
+  - retained and explicitly classified historical/superseded documentation,
+    detector/test literals, generated artifacts, and the optional non-product
+    room-6657 optimizer wrapper;
+  - reported but did not scan, modify, stage, or delete untracked owner files.
+- Commands:
+  - `bun run typecheck` -> exit `0`
+  - `bun run check:cut-011` -> exit `0`; 563 tracked/task files, 2,572
+    classified matches, zero active toolchain paths, package-script invocations,
+    or active violations
+  - focused CUT-011 script/config Oxfmt check -> exit `0`; four matched files
+  - targeted realtime/diagnostics Bun tests -> exit `0`; 12 tests passed
+- Evidence candidate:
+  `.omx/artifacts/typescript-bun/CUT-011/cut-011-maker-root-20260808-148/result.json`
+  (`sha256:38f2f81d547b0acd027e32f2c693a54c66b55ecffb19b911ba8a9811b1288598`,
+  556055 bytes)
+- Candidate active-surface aggregate:
+  `376487996ac187fb1f8b91377f23bc274e9370d0fec796d59c35dfacd336b82e`
+- Blocker: none
+- Limitations: Windows x64 only; unsigned, unpublished, undeployed; macOS
+  unproven; CUT-012 clean-clone verification pending
+- Decisions/plan drift: automatic CI remains manual-only until migration
+  completion by explicit human direction; task order unchanged
+- Next single action: create the CUT-011 candidate commit, push only to
+  `origin/TS_backend_refactor`, then run a distinct exact-commit Checker

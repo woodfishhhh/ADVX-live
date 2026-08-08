@@ -1243,7 +1243,7 @@ Checker. Candidate evidence:
 | `CUT-008` | `DONE` | Remove Python backend source and Python-only tests after human gate | `CUT-004..007` | Tracked-file audit |
 | `CUT-009` | `DONE` | Remove `pyproject.toml`, `uv.lock`, Alembic runtime, and Python ignores | `CUT-008` | Toolchain audit |
 | `CUT-010` | `DONE` | Remove temporary dual-runtime adapters and migration-only shims | `CUT-008`, `CUT-009` | Dead-code audit |
-| `CUT-011` | `READY` | Run repository-wide no-Python/no-pnpm/no-uv scan with allowlisted history only | `CUT-009`, `CUT-010` | Scan artifact |
+| `CUT-011` | `VERIFY` | Run repository-wide no-Python/no-pnpm/no-uv scan with allowlisted history only | `CUT-009`, `CUT-010` | Scan artifact |
 | `CUT-012` | `TODO` | Run clean-clone install, lint, typecheck, tests, build, and installed E2E | `CUT-011` | Clean-clone evidence |
 | `CUT-013` | `TODO` | Independent architecture, security, data, and test review | `CUT-012` | Review verdict |
 | `CUT-014` | `TODO` | Close or explicitly retain rollback window and archive migration state | `CUT-013` | Closure record |
@@ -1579,6 +1579,28 @@ Maker source aggregate
 `next_task=CUT-011`, and `same_blocker_attempts=0`. Only CUT-011 is promoted.
 Automatic CI remains `workflow_dispatch`-only until migration completion. No
 later task was started.
+
+Maker `cut-011-maker-root-20260808-148`, in distinct context
+`cut-011-maker-root-context-20260808-148`, added the machine-readable tracked
+repository and package-script scan required by CUT-011. It removed the root
+pnpm lock/workspace and ignore, retired five accepted but obsolete migration
+checkers that could invoke or require removed toolchains, removed pnpm
+diagnostics telemetry, renamed the durable realtime wire family to
+`legacy-v3-v4`, and reworded active source comments.
+
+Repository TypeScript, strict CUT-011 TypeScript, the focused scan, targeted
+formatting, and 12 realtime/diagnostics tests pass. Across 563 tracked/task
+files, all 2,572 term matches are classified: 2,465 historical migration
+documentation, 103 fixture/test strings, zero generated matches, and four
+explicitly retained non-product example matches. Active toolchain paths,
+package-script invocations, and active violations are zero. Active-surface
+aggregate is
+`376487996ac187fb1f8b91377f23bc274e9370d0fec796d59c35dfacd336b82e`.
+CI remains manual-only.
+
+`CUT-011` and Phase 09 are `VERIFY`; `current_task=CUT-011`, `next_task=null`,
+and `same_blocker_attempts=0`. CUT-012 remains `TODO` pending a distinct
+exact-commit Checker. No clean checkout or later task was started.
 
 ## Gate External Conditions
 

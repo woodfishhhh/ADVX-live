@@ -14,7 +14,7 @@ export const MAX_BINARY_IMAGE_BODY_BYTES = 4_194_304
 export const MAX_BINARY_ENVELOPE_BYTES = 9 + MAX_BINARY_JSON_HEADER_BYTES + MAX_BINARY_IMAGE_BODY_BYTES
 export const MAX_BINARY_CAPTURED_AT_MS = (1n << 64n) - 1n
 
-/** Python struct `>4sBBHHQHI`, all integer fields unsigned and big-endian. */
+/** Layout `>4sBBHHQHI`, with unsigned big-endian integer fields. */
 export const ADVX_BINARY_V1_LAYOUT = {
   byteLength: 24,
   magic: 0,
@@ -27,7 +27,7 @@ export const ADVX_BINARY_V1_LAYOUT = {
   bodyLength: 20
 } as const
 
-/** Python struct `>4sBBBHHQHI`, all integer fields unsigned and big-endian. */
+/** Layout `>4sBBBHHQHI`, with unsigned big-endian integer fields. */
 export const ADVX_BINARY_V2_LAYOUT = {
   byteLength: 25,
   magic: 0,
@@ -41,7 +41,7 @@ export const ADVX_BINARY_V2_LAYOUT = {
   bodyLength: 21
 } as const
 
-/** Python struct `>4sBI`; JSON starts at byte 9 and the opaque body follows it. */
+/** Layout `>4sBI`; JSON starts at byte 9 and the opaque body follows it. */
 export const ADVX_BINARY_V3_LAYOUT = {
   byteLength: 9,
   magic: 0,

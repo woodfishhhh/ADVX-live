@@ -1,6 +1,5 @@
 # Node / Electron
 node_modules/
-.pnpm-store/
 dist/
 out/
 release/

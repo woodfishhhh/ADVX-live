@@ -248,7 +248,7 @@ export class RealtimeHub implements RealtimePublisher {
       pendingAuthorization: input.authorization,
       authenticated: false,
       phase: 'awaiting-hello',
-      wireFamily: 'python-v3-v4',
+      wireFamily: 'legacy-v3-v4',
       context: null,
       traceContext: null,
       lastSessionRevision: 0,
@@ -442,7 +442,7 @@ export class RealtimeHub implements RealtimePublisher {
 
     const wireHint = isRecord(decoded) && 'message_type' in decoded
       ? 'canonical-envelope'
-      : 'python-v3-v4'
+      : 'legacy-v3-v4'
     if (connection.phase === 'awaiting-hello') {
       await this.#handleHello(connection, decoded, wireHint)
       return

@@ -1,4 +1,4 @@
-// Generated from Python Unicode case folding; do not hand-edit.
+// Generated from the Unicode CaseFolding data; do not hand-edit.
 export const PYTHON_CASEFOLD_UNICODE_VERSION = '14.0.0'
 
 const CASE_FOLD_MAP = new Map<number, string>([

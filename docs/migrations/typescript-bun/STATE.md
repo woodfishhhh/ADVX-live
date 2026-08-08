@@ -10,18 +10,18 @@ wall_clock_budget_minutes: null
 token_budget: null
 cost_budget_usd: null
 current_phase: "09"
-current_task: null
-next_task: "CUT-011"
+current_task: "CUT-011"
+next_task: null
 baseline_commit: "41665a96cf67eb82cbe02f83abbbe2b79b100e48"
 last_verified_commit: "48896ea63719857b699021d4b8b543ae311ec19a"
-current_head: "48896ea63719857b699021d4b8b543ae311ec19a"
+current_head: "8d3de82766c3d908acb127b50337a5a99fbea5d1"
 current_branch: "TS_backend_refactor"
 worktree_root: "D:/Coding/ADVX-live"
 worktree_dirty: true
-last_run_id: "cut-010-commit-checker-root-20260808-147"
-last_context_id: "cut-010-commit-checker-root-context-20260808-147"
-maker_run_id: "cut-010-maker-root-20260808-146"
-maker_context_id: "cut-010-maker-root-context-20260808-146"
+last_run_id: "cut-011-maker-root-20260808-148"
+last_context_id: "cut-011-maker-root-context-20260808-148"
+maker_run_id: "cut-011-maker-root-20260808-148"
+maker_context_id: "cut-011-maker-root-context-20260808-148"
 checker_run_id: "cut-010-commit-checker-root-20260808-147"
 checker_context_id: "cut-010-commit-checker-root-context-20260808-147"
 same_blocker_attempts: 0
@@ -34,12 +34,50 @@ same_blocker_attempts: 0
 | Field | Value |
 | --- | --- |
 | Mode | Assisted implementation |
-| Current phase | Phase 09: `READY` |
-| Current task | None |
-| Next task | `CUT-011` (`READY`) |
+| Current phase | Phase 09: `VERIFY` |
+| Current task | `CUT-011` (`VERIFY`) |
+| Next task | None |
 | Implementation authorization | Active |
 | Independent verifier | Distinct Checker required after Maker reaches `VERIFY` |
 | Active blocker | None |
+
+## Current CUT-011 Maker Record
+
+Maker `cut-011-maker-root-20260808-148` used distinct context
+`cut-011-maker-root-context-20260808-148` on branch `TS_backend_refactor` at
+parent HEAD `8d3de82766c3d908acb127b50337a5a99fbea5d1`.
+
+It added a strict machine-readable scan over tracked repository files and all
+package scripts for the CUT-011 legacy runtime/toolchain terms. The cleanup
+removed the root pnpm lock/workspace and ignore, retired five accepted but now
+obsolete migration checkers that could invoke or require the removed
+toolchains, removed pnpm diagnostics telemetry, renamed the durable realtime
+wire family to `legacy-v3-v4`, and reworded remaining active source comments.
+Historical and superseded documents, detector/test literals, generated
+artifacts, and the explicitly retained optional room-6657 optimizer wrapper are
+classified separately rather than silently ignored. Untracked owner files are
+reported by the artifact but excluded from the tracked release claim and left
+untouched.
+
+Repository TypeScript, strict CUT-011 TypeScript, the focused repository scan,
+targeted formatting, and 12 realtime/diagnostics tests pass. The scan covers 563
+tracked/task files and classifies all 2,572 term matches: 2,465 historical
+migration documentation, 103 fixture/test strings, zero generated matches, and
+four explicitly retained non-product example matches. Active toolchain paths,
+package-script invocations, and active violations are all zero. Active-surface
+aggregate SHA-256 is
+`376487996ac187fb1f8b91377f23bc274e9370d0fec796d59c35dfacd336b82e`.
+CI remains `workflow_dispatch`-only.
+
+Maker evidence is at
+`.omx/artifacts/typescript-bun/CUT-011/cut-011-maker-root-20260808-148/result.json`
+with SHA-256
+`38f2f81d547b0acd027e32f2c693a54c66b55ecffb19b911ba8a9811b1288598`.
+
+`CUT-011` and Phase 09 are `VERIFY`; `current_task=CUT-011`,
+`next_task=null`, and `same_blocker_attempts=0`. A distinct Checker must verify
+the exact candidate commit. No CUT-012 clean checkout, merge, rebase, tag, PR,
+release, signing, deployment, or automatic CI execution occurred.
 
 ## Current CUT-010 Exact-Commit Checker Record
 

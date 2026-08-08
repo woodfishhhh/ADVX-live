@@ -459,7 +459,7 @@ function runtimeSnapshot(runtime: ManagedRuntime): RuntimeSessionSnapshot {
     canonical_runtime_spec: record.spec,
     apply_id: record.applyId,
     diff: {
-      // Viewer reconciliation owns public response diffs in the Python oracle.
+      // Viewer reconciliation owns public response diffs in recorded parity evidence.
       // Phase 02 has no Viewer pool yet, so the control shell reports no Viewer
       // changes instead of leaking its internal runtime-spec section summary.
       changed_paths: []

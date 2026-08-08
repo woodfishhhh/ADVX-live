@@ -98,4 +98,4 @@ bun run package:desktop
 
 Python backend、测试和工具链已经过人工门禁由 CUT-008/CUT-009 移除。
 当前开发、测试、打包和产品启动均以 Bun 路径为准；回滚依赖 Git checkpoint
-与已验证的 CUT-003 数据备份恢复证据，而不是产品内 Python fallback。
+与已验证的 CUT-003 数据备份恢复证据，而不是产品内旧后端 fallback。

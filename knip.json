@@ -46,7 +46,7 @@
       "project": ["src/**/*.ts", "test/**/*.ts"]
     }
   },
-  "ignoreBinaries": ["taskkill.exe", "uv"],
+  "ignoreBinaries": ["taskkill.exe"],
   "ignoreIssues": {
     "packages/contracts/src/generated/**": ["exports", "types", "enumMembers", "namespaceMembers"],
     "apps/desktop/src/**/*.d.ts": ["exports", "types"]

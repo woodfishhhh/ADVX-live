@@ -108,7 +108,6 @@ export type RuntimeVersionSnapshotInput = Readonly<{
   dependencyVersions?: Readonly<Record<string, string>>
   bunVersion?: string
   nodeVersion?: string
-  pnpmVersion?: string
   platform?: string
   arch?: string
 }>
@@ -293,7 +292,6 @@ export function createRuntimeVersionSnapshot(
       platform: boundedText(input.platform ?? process.platform, 'platform'),
       arch: boundedText(input.arch ?? process.arch, 'arch')
     },
-    ...(input.pnpmVersion === undefined ? {} : { package_manager: { pnpm: boundedText(input.pnpmVersion, 'pnpmVersion') } }),
     dependencies
   })
 }

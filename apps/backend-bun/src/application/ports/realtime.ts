@@ -3,7 +3,7 @@ import type {
   SessionSnapshot
 } from '@advx/contracts'
 
-export type RealtimeWireFamily = 'canonical-envelope' | 'python-v3-v4'
+export type RealtimeWireFamily = 'canonical-envelope' | 'legacy-v3-v4'
 
 export interface RealtimeSocketPort {
   readonly transportId: string

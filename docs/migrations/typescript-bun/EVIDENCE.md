@@ -7772,3 +7772,48 @@ accepted task/gate record and does not satisfy PKG-011 or any dependency.
 - Limitations: Windows x64 only; unsigned, unpublished, undeployed; macOS
   unproven; CUT-012 clean-clone verification pending.
 - Next task: `CUT-011`.
+
+#### CUT-011 candidate / cut-011-maker-root-20260808-148
+
+- Claim: the tracked repository and release surface has no active project
+  dependency on Python/Python3, pytest, Ruff, uv, FastAPI, Pydantic, Alembic
+  runtime, pnpm, package-lock, or yarn lock inputs; retained byte matches are
+  explicitly classified rather than silently ignored.
+- Status: `VERIFY`
+- Candidate parent HEAD: `8d3de82766c3d908acb127b50337a5a99fbea5d1`
+- Date: 2026-08-08
+- Environment: Windows x64; Bun `1.3.14`; branch `TS_backend_refactor`
+- Evidence class: `static`, `unit`, `review`
+- Maker: root
+- Maker run/context ID: `cut-011-maker-root-20260808-148` /
+  `cut-011-maker-root-context-20260808-148`
+- Checker: pending distinct exact-commit Checker
+- Checker run/context ID: pending
+- Reviewed source-state hash: pending candidate commit
+- Active-surface identity:
+  `376487996ac187fb1f8b91377f23bc274e9370d0fec796d59c35dfacd336b82e`
+- Commands/procedure:
+  - `bun run typecheck` -> exit `0`
+  - strict CUT-011 TypeScript and focused scan -> exit `0`
+  - focused CUT-011 script/config Oxfmt check -> exit `0`; four matched files
+  - targeted realtime/diagnostics Bun tests -> exit `0`; 12 tests passed
+- Candidate assertions:
+  - 563 tracked/task files were scanned and all 2,572 term matches classified;
+  - 2,465 matches are historical migration documentation, 103 are
+    fixture/test strings, zero are generated matches, and four belong to one
+    explicitly retained optional non-product optimizer wrapper;
+  - active toolchain path count, active package-script invocation count, and
+    active violation count are all zero;
+  - root pnpm lock/workspace inputs are absent and no package-lock/yarn lock or
+    tracked `.py` path remains;
+  - untracked owner files are reported in the artifact but excluded from the
+    tracked release claim and preserved unchanged;
+  - CI remains `workflow_dispatch`-only until migration completion.
+- Artifact:
+  `.omx/artifacts/typescript-bun/CUT-011/cut-011-maker-root-20260808-148/result.json`
+  (`sha256:38f2f81d547b0acd027e32f2c693a54c66b55ecffb19b911ba8a9811b1288598`,
+  556055 bytes)
+- Limitations: Windows x64 only; unsigned, unpublished, undeployed; macOS
+  unproven; CUT-012 clean-clone verification pending.
+- Next action: create and push the candidate commit, then run the distinct
+  exact-commit Checker before accepting `DONE`.

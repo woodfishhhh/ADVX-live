@@ -42,7 +42,7 @@ afterEach(async () => {
 })
 
 describe('BCK-008 authenticated realtime hub', () => {
-  test('serves the current Python v3/v4 wire on the real Bun listener and publishes canonical events', async () => {
+  test('serves the retained legacy v3/v4 wire on the real Bun listener and publishes canonical events', async () => {
     const port = availablePort()
     const app = await startApp(port, TOKEN_A, 'backend-start-live-1')
     const client = await connect(port)
