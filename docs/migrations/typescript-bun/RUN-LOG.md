@@ -11532,3 +11532,75 @@ Rules:
 - Blocker: none
 - Decisions/plan drift: none
 - Next single task: `CUT-009`
+
+## `cut-008-checkpoint-maker-root-20260808-142` - 2026-08-08 - `CUT-008`
+
+- Role: `maker` for the newly authorized Git checkpoint only
+- Context ID: `cut-008-checkpoint-maker-root-context-20260808-142`
+- Parent run ID: `cut-008-checker-root-20260808-141`
+- Branch before commit/push: `TS_backend_refactor`; both required branch checks
+  returned exactly `TS_backend_refactor`
+- Parent HEAD: `41665a96cf67eb82cbe02f83abbbe2b79b100e48`
+- State transition: none; `CUT-008` remained `DONE`, Phase 09 remained `READY`,
+  `current_task=null`, and `next_task=CUT-009`
+- Ownership audit:
+  - explicitly staged 608 cumulative migration paths;
+  - excluded local `.codex/agents`, `.codex/config.toml`, and
+    `.codex/skills/sol-luna` changes;
+  - excluded `.omx`, `output`, and `promo`;
+  - staged prohibited paths: zero;
+  - sensitive path names and common credential signatures: zero;
+  - `git diff --cached --check` -> exit `0`.
+- Pre-commit commands:
+  - `bun run typecheck` -> exit `0`
+  - `bun run check:cut-008` -> exit `0`
+  - supported desktop process Vitest -> exit `0`; 17 tests passed
+  - `bun run migration:plan-check` -> exit `0`; 133 tasks, 72 links,
+    126 accepted evidence records, zero errors
+- Candidate commit:
+  `97c81436dcb6df3b30709f6380ddad35b46ac892`
+  (`refactor(backend): checkpoint TypeScript Bun migration [CUT-008]`)
+- Push: `git push -u origin HEAD:TS_backend_refactor` -> exit `0`; upstream
+  established at `origin/TS_backend_refactor`
+- Blocker: none
+- Limitations: Windows x64 only; unsigned, unpublished, undeployed; macOS
+  unproven; CUT-012 clean-clone verification pending
+- Decisions/plan drift: none; no CUT-009 source was changed
+- Next single action: independent exact-commit verification
+
+## `cut-008-commit-checker-root-20260808-143` - 2026-08-08 - `CUT-008`
+
+- Role: `checker`
+- Context ID: `cut-008-commit-checker-root-context-20260808-143`
+- Parent run ID: `cut-008-checkpoint-maker-root-20260808-142`
+- Checker participated in implementation or staging: `false`
+- Exact commit: `97c81436dcb6df3b30709f6380ddad35b46ac892`
+- Exact tree: `a89c123bb3bb8d3a1c8906fe6b971d3e2815b901`
+- Upstream identity: `origin/TS_backend_refactor` resolved to the exact commit
+- Source-state checks:
+  - tracked worktree diff from exact commit: zero;
+  - commit changed paths: 608;
+  - `.omx`, `output`, or `promo` changed paths: zero;
+  - commit whitespace validation -> exit `0`.
+- Commands:
+  - `bun run typecheck` -> exit `0`
+  - `bun run check:cut-008` -> exit `0`; 149 tracked and six
+    worktree-only candidates absent, 11 CUT-009 holds present
+  - supported desktop process Vitest -> exit `0`; 17 tests passed
+  - `bun run migration:plan-check` -> exit `0`; 133 tasks, 72 links,
+    126 accepted evidence records, zero errors
+  - post-test audit -> zero port 8765 listeners and zero repository
+    Bun/Electron processes
+- Accepted evidence:
+  `.omx/artifacts/typescript-bun/CUT-008/cut-008-commit-checker-root-20260808-143/result.json`
+  (`sha256:df77152f0dc522d01c6aad392992fb9b5fbc31a68fa10a29bb24eaf6362286f6`,
+  1733 bytes)
+- Decision: `CUT-008` remains `DONE`; acceptance is bound to exact pushed
+  commit `97c81436dcb6df3b30709f6380ddad35b46ac892`
+- State: Phase 09 `READY`; `current_task=null`, `next_task=CUT-009`,
+  `same_blocker_attempts=0`
+- Blocker: none
+- Limitations: Windows x64 only; unsigned, unpublished, undeployed; macOS
+  unproven; CUT-012 clean-clone verification pending
+- Decisions/plan drift: none
+- Next single task: `CUT-009`

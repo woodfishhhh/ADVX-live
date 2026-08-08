@@ -1495,6 +1495,21 @@ Maker/Checker identity mismatches at aggregate
 `next_task=CUT-009`, and `same_blocker_attempts=0`. Only dependency-satisfied
 CUT-009 is promoted. No later task was started.
 
+Checkpoint Maker `cut-008-checkpoint-maker-root-20260808-142` performed an
+ownership audit, explicitly staged the cumulative accepted migration work, and
+created commit `97c81436dcb6df3b30709f6380ddad35b46ac892`. Its 608 changed paths contain
+zero `.omx`, `output`, or `promo` paths. After the branch check returned exactly
+`TS_backend_refactor`, the commit was pushed only to
+`origin/TS_backend_refactor` with an explicit refspec.
+
+Independent exact-commit Checker
+`cut-008-commit-checker-root-20260808-143`, in distinct context
+`cut-008-commit-checker-root-context-20260808-143`, verified that exact commit
+and upstream ref. Repository TypeScript, the focused CUT-008 gate, 17 desktop
+process tests, commit whitespace validation, live plan-check, and the final
+port/process audit pass. `CUT-008` remains `DONE`, CUT-009 remains the sole
+`READY` next task, and no later task was started.
+
 ## Gate External Conditions
 
 These rows are machine-checkable required terminal conditions, not optional

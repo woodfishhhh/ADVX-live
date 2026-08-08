@@ -13,17 +13,17 @@ current_phase: "09"
 current_task: null
 next_task: "CUT-009"
 baseline_commit: "41665a96cf67eb82cbe02f83abbbe2b79b100e48"
-last_verified_commit: "41665a96cf67eb82cbe02f83abbbe2b79b100e48"
-current_head: "41665a96cf67eb82cbe02f83abbbe2b79b100e48"
+last_verified_commit: "97c81436dcb6df3b30709f6380ddad35b46ac892"
+current_head: "97c81436dcb6df3b30709f6380ddad35b46ac892"
 current_branch: "TS_backend_refactor"
 worktree_root: "D:/Coding/ADVX-live"
 worktree_dirty: true
-last_run_id: "cut-008-checker-root-20260808-141"
-last_context_id: "cut-008-checker-root-context-20260808-141"
-maker_run_id: "cut-008-maker-root-20260808-140"
-maker_context_id: "cut-008-maker-root-context-20260808-140"
-checker_run_id: "cut-008-checker-root-20260808-141"
-checker_context_id: "cut-008-checker-root-context-20260808-141"
+last_run_id: "cut-008-commit-checker-root-20260808-143"
+last_context_id: "cut-008-commit-checker-root-context-20260808-143"
+maker_run_id: "cut-008-checkpoint-maker-root-20260808-142"
+maker_context_id: "cut-008-checkpoint-maker-root-context-20260808-142"
+checker_run_id: "cut-008-commit-checker-root-20260808-143"
+checker_context_id: "cut-008-commit-checker-root-context-20260808-143"
 same_blocker_attempts: 0
 ---
 
@@ -41,31 +41,35 @@ same_blocker_attempts: 0
 | Independent verifier | Distinct Checker required after Maker reaches `VERIFY` |
 | Active blocker | None |
 
-## Current CUT-008 Checker Record
+## Current CUT-008 Exact-Commit Checker Record
 
-Independent Checker `cut-008-checker-root-20260808-141` used distinct context
-`cut-008-checker-root-context-20260808-141`, did not participate in
-implementation, and reviewed Maker `cut-008-maker-root-20260808-140`.
+Independent Checker `cut-008-commit-checker-root-20260808-143` used distinct
+context `cut-008-commit-checker-root-context-20260808-143`, did not participate
+in implementation or checkpoint staging, and reviewed checkpoint Maker
+`cut-008-checkpoint-maker-root-20260808-142`.
 
-The Checker reran strict CUT-008 and repository TypeScript, the focused
-deletion gate, and the supported 17-test desktop process suite. All exit `0`.
-It independently confirms that all 149 hash-bound tracked candidates and all
-six authorized worktree-only candidates are absent; all 11 CUT-009 holds,
-accepted TST-002 coverage, CUT-003 rollback evidence, recorded Viewer evidence,
-and language-neutral room-6657 assets remain. The Maker and Checker 12-file
-source identities match with zero mismatches at aggregate
-`f4a5e94e69b144c0d4be55dda15f574a2b03cb961b860678cedfafaaf8ee4f65`.
-There are zero port 8765 listeners and zero repository Electron/Bun backend
-process candidates after verification.
+The Checker verified exact commit
+`97c81436dcb6df3b30709f6380ddad35b46ac892` and tree
+`a89c123bb3bb8d3a1c8906fe6b971d3e2815b901`. The pushed upstream ref
+`origin/TS_backend_refactor` resolved to the same commit, the tracked worktree
+had zero diff from that commit, its 608 changed paths included zero `.omx`,
+`output`, or `promo` paths, and commit whitespace validation passed.
 
-Accepted evidence is at
-`.omx/artifacts/typescript-bun/CUT-008/cut-008-checker-root-20260808-141/result.json`
+Repository TypeScript, the focused CUT-008 deletion checker, the supported
+17-test desktop process suite, and live plan-check all exited `0`. The checker
+again confirmed 149 tracked and six authorized worktree-only deletion
+candidates absent, all 11 CUT-009 holds present, source aggregate
+`f4a5e94e69b144c0d4be55dda15f574a2b03cb961b860678cedfafaaf8ee4f65`,
+and zero port 8765 listeners or repository Bun/Electron processes afterward.
+
+Accepted exact-commit evidence is at
+`.omx/artifacts/typescript-bun/CUT-008/cut-008-commit-checker-root-20260808-143/result.json`
 with SHA-256
-`88dee1d957670ff382922c7cdd8896527cdfde1708381174b2a8691295b75285`.
-`CUT-008` is accepted as `DONE`; Phase 09 returns to `READY`;
-`current_task=null`, `next_task=CUT-009`, and `same_blocker_attempts=0`. Only
-dependency-satisfied CUT-009 is promoted. No CUT-009 removal, CUT-010 cleanup,
-commit, push, publish, sign, or deploy occurred.
+`df77152f0dc522d01c6aad392992fb9b5fbc31a68fa10a29bb24eaf6362286f6`.
+`CUT-008` remains `DONE`; Phase 09 remains `READY`;
+`current_task=null`, `next_task=CUT-009`, and `same_blocker_attempts=0`. No
+CUT-009 implementation, CUT-010 cleanup, merge, rebase, tag, PR, release,
+signing, or deployment occurred.
 
 ## Current CUT-008 Maker Record
 

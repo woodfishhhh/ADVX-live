@@ -122,7 +122,8 @@ This record does not prove the missing capability. It prevents a permanent
   security reports, and the deterministic product matrix, with macOS explicitly
   removed from current release scope by the authorized limitation.
 - Status: `DONE`
-- Commit: `41665a96cf67eb82cbe02f83abbbe2b79b100e48`
+- Original authorization baseline:
+  `41665a96cf67eb82cbe02f83abbbe2b79b100e48`
 - Dirty diff identity: seven-file aggregate
   `56117a916df347af15809355e33e39cb435907352c050ccfdd6743338f3e1524`
 - Date: `2026-08-08`
@@ -203,7 +204,8 @@ This record does not prove the missing capability. It prevents a permanent
   `cut-003-checker-root-context-20260808-128`
 - Checker parent run ID: `cut-003-maker-root-20260808-127`
 - Checker participated in implementation: `false`
-- Reviewed source-state hash: `41665a96cf67eb82cbe02f83abbbe2b79b100e48`
+- Original reviewed source-state baseline:
+  `41665a96cf67eb82cbe02f83abbbe2b79b100e48`
 - Commands/procedure:
   - `pnpm typecheck:cut-003` -> exit `0`
   - `pnpm check:cut-003` -> exit `0`; 11.427 seconds
@@ -7610,3 +7612,45 @@ accepted task/gate record and does not satisfy PKG-011 or any dependency.
   - CUT-009 toolchain removal and CUT-010 shim cleanup remain separate tasks.
 - Related run log:
   - `cut-008-checker-root-20260808-141`
+
+#### Exact commit binding / cut-008-commit-checker-root-20260808-143
+
+- Status: `DONE`; exact-commit acceptance revalidated
+- Accepted checkpoint commit:
+  `97c81436dcb6df3b30709f6380ddad35b46ac892`
+- Accepted tree: `a89c123bb3bb8d3a1c8906fe6b971d3e2815b901`
+- Upstream ref: `origin/TS_backend_refactor` at the same commit
+- Checkpoint Maker run/context ID:
+  `cut-008-checkpoint-maker-root-20260808-142` /
+  `cut-008-checkpoint-maker-root-context-20260808-142`
+- Independent Checker run/context ID:
+  `cut-008-commit-checker-root-20260808-143` /
+  `cut-008-commit-checker-root-context-20260808-143`
+- Checker participated in implementation or staging: `false`
+- Commit ownership audit:
+  - 608 changed paths;
+  - zero `.omx`, `output`, or `promo` paths;
+  - zero sensitive path names and zero common credential signatures;
+  - tracked worktree diff from the checked commit: zero.
+- Commands/procedure:
+  - `bun run typecheck` -> exit `0`
+  - `bun run check:cut-008` -> exit `0`; 149 tracked and six
+    worktree-only candidates absent, 11 CUT-009 holds present
+  - supported desktop process Vitest -> exit `0`; 17 tests passed
+  - commit whitespace validation -> exit `0`
+  - `bun run migration:plan-check` -> exit `0`; 133 tasks, 72 links,
+    126 accepted evidence records, zero errors
+  - port/process audit -> zero port 8765 listeners and zero repository
+    Bun/Electron processes
+- Artifact:
+  `.omx/artifacts/typescript-bun/CUT-008/cut-008-commit-checker-root-20260808-143/result.json`
+  (`sha256:df77152f0dc522d01c6aad392992fb9b5fbc31a68fa10a29bb24eaf6362286f6`,
+  1733 bytes)
+- Decision: the prior dirty-diff acceptance is now bound to the exact pushed
+  checkpoint commit. `CUT-008` remains `DONE`; `CUT-009` remains the sole next
+  task.
+- Limitations: Windows x64 only; unsigned, unpublished, undeployed; macOS
+  unproven; CUT-012 clean-clone verification pending.
+- Related run logs:
+  - `cut-008-checkpoint-maker-root-20260808-142`
+  - `cut-008-commit-checker-root-20260808-143`
