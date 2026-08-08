@@ -1241,7 +1241,7 @@ Checker. Candidate evidence:
 | `CUT-006` | `DONE` | Switch CI, contracts, headless, replay, and evidence scripts | `CUT-005` | CI and script gate |
 | `CUT-007` | `DONE` | Update architecture, backend, protocol, setup, and product-status docs | `CUT-005`, `CUT-006` | Documentation audit |
 | `CUT-008` | `DONE` | Remove Python backend source and Python-only tests after human gate | `CUT-004..007` | Tracked-file audit |
-| `CUT-009` | `READY` | Remove `pyproject.toml`, `uv.lock`, Alembic runtime, and Python ignores | `CUT-008` | Toolchain audit |
+| `CUT-009` | `VERIFY` | Remove `pyproject.toml`, `uv.lock`, Alembic runtime, and Python ignores | `CUT-008` | Toolchain audit |
 | `CUT-010` | `TODO` | Remove temporary dual-runtime adapters and migration-only shims | `CUT-008`, `CUT-009` | Dead-code audit |
 | `CUT-011` | `TODO` | Run repository-wide no-Python/no-pnpm/no-uv scan with allowlisted history only | `CUT-009`, `CUT-010` | Scan artifact |
 | `CUT-012` | `TODO` | Run clean-clone install, lint, typecheck, tests, build, and installed E2E | `CUT-011` | Clean-clone evidence |
@@ -1509,6 +1509,22 @@ and upstream ref. Repository TypeScript, the focused CUT-008 gate, 17 desktop
 process tests, commit whitespace validation, live plan-check, and the final
 port/process audit pass. `CUT-008` remains `DONE`, CUT-009 remains the sole
 `READY` next task, and no later task was started.
+
+Maker `cut-009-maker-root-20260808-144`, in distinct context
+`cut-009-maker-root-context-20260808-144`, removed the 11 accepted Python
+toolchain/Alembic holds, removed Python-specific root ignores, and aligned the
+current developer documentation with the completed cutover. `apps/backend`
+retains only its documentation tombstone. Per the new human direction, Bun CI
+is manual-only until migration completion; no remote CI was triggered.
+
+The Bun SQL migration chain, accepted schema inventory and rollback evidence,
+and four CUT-010 migration shims remain. Repository TypeScript, strict CUT-009
+TypeScript, the focused toolchain audit, formatting, and five Bun migration
+runner tests pass. A one-time adjacent legacy migration suite run found three
+known failures because its CUT-010 shim still invokes Python removed by CUT-008;
+CUT-009 does not repair or delete that later-task boundary. `CUT-009` and Phase
+09 are `VERIFY`; `current_task=CUT-009`, `next_task=null`, and no later task was
+started.
 
 ## Gate External Conditions
 

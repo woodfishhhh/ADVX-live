@@ -1,11 +1,6 @@
 name: Bun CI Gates
 
 on:
-  push:
-    branches:
-      - main
-      - TS_backend_refactor
-  pull_request:
   workflow_dispatch:
 
 permissions:

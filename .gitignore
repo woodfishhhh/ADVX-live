@@ -7,19 +7,6 @@ release/
 artifacts/
 *.tsbuildinfo
 
-# Python
-.venv/
-__pycache__/
-*.py[cod]
-.pytest_cache/
-.ruff_cache/
-.coverage
-htmlcov/
-*.egg-info/
-
-# Generated contracts
-apps/backend/openapi.json
-
 # Local runtime data
 .advx-data/
 .skillopt-sleep/

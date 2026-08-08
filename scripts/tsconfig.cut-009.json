@@ -1,0 +1,15 @@
+{
+  "compilerOptions": {
+    "target": "ES2022",
+    "module": "ESNext",
+    "moduleResolution": "Bundler",
+    "strict": true,
+    "noEmit": true,
+    "allowImportingTsExtensions": true,
+    "resolveJsonModule": true,
+    "skipLibCheck": true,
+    "typeRoots": ["../apps/backend-bun/node_modules/@types", "../node_modules/@types"],
+    "types": ["bun", "node"]
+  },
+  "include": ["check-cut-009.ts", "evidence-script-runtime.ts"]
+}

@@ -152,9 +152,10 @@ headless harness、profile 和 diagnostics bundle 使用同一组 ID 与 redacti
 macOS 是未来架构目标而非当前产品声明。恢复 macOS 支持前必须在真实目标
 环境完成安装生命周期、原生媒体、签名和公证验证。
 
-## 11. Python oracle
+## 11. Historical Python boundary
 
-`apps/backend` 仅保留为迁移 parity oracle 和本地回滚证据。它不在当前
-workspace、正常开发命令、CI workflow、Electron 默认 supervisor 或 package
-artifact 中。删除由后续人工门禁任务单独负责；当前架构不新增 Python 产品
-依赖。
+Python backend、测试、toolchain 与 Alembic runtime 已经过人工门禁移除。
+`apps/backend` 只保留一份文档型删除记录，不在 workspace、正常开发命令、
+CI workflow、Electron supervisor 或 package artifact 中。历史 parity 与 schema
+证据保留在 Git 和迁移证据中；数据 rollback 使用已验证 backup，而不是 Python
+产品 fallback。

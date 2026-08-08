@@ -128,6 +128,7 @@ Developer ID、签名、公证和 installed lifecycle 证据，不能由 cross-b
 ## 9. Rollback 与历史 oracle
 
 当前支持的数据 rollback 是：停止 Bun、从未被修改的 backup 恢复、再启动
-明确选择的 runtime。历史 Python oracle 仅用于 parity 和受控 rollback rehearsal，
-不是自动产品 fallback 或发布 artifact。删除 oracle、其测试和 toolchain 需要
-后续人工门禁，不能在普通文档或清理改动中提前执行。
+已验证的 Bun runtime。Python oracle、测试和 toolchain 已经过人工门禁移除，
+不再是可启动的 fallback 或发布 artifact。代码回退使用
+`TS_backend_refactor` 的 Git checkpoint，数据回退继续使用 CUT-003
+restore-from-backup 证据。

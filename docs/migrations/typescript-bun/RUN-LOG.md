@@ -11604,3 +11604,53 @@ Rules:
   unproven; CUT-012 clean-clone verification pending
 - Decisions/plan drift: none
 - Next single task: `CUT-009`
+
+## `cut-009-maker-root-20260808-144` - 2026-08-08 - `CUT-009`
+
+- Role: `maker`
+- Context ID: `cut-009-maker-root-context-20260808-144`
+- Parent run ID: `cut-008-commit-checker-root-20260808-143`
+- Branch/parent HEAD: `TS_backend_refactor` /
+  `98e929f50ed00cac3576220d4e6225dfd1a3e226`
+- Dirty tree before/after: `true`; unrelated local Codex configuration,
+  `.omx`, `output`, `promo`, and local Python caches preserved
+- Baseline: live plan-check -> exit `0`; 133 tasks, 72 links, 126 accepted
+  evidence records, zero errors; `CUT-009` was the only `READY` task
+- State transition: `CUT-009` `READY` -> `IN_PROGRESS` -> `VERIFY`; Phase 09
+  `VERIFY`; `current_task=CUT-009`, `next_task=null`,
+  `same_blocker_attempts=0`
+- Changes:
+  - removed 11 accepted CUT-009 holds: `pyproject.toml`, `uv.lock`, and nine
+    Alembic runtime/revision files;
+  - retained `apps/backend/README.md` as the only tracked file in that path and
+    converted it to a documentation-only tombstone;
+  - removed Python-specific root ignores and stale current developer guidance;
+  - added strict CUT-009 TypeScript plus one focused machine-readable checker;
+  - made Bun CI manual-only per the new human direction; automatic CI remains
+    deferred until migration completion;
+  - preserved the Bun SQL migration chain, accepted DAT-001/CUT-003 evidence,
+    generic `.py` compatibility fixtures, and four CUT-010 migration shims.
+- Commands:
+  - `bun run typecheck` -> exit `0`
+  - `bun run check:cut-009` -> exit `0`; 11 removed paths, one backend
+    tombstone, 10 represented history paths, zero active toolchain/CI/editor
+    violations
+  - targeted Oxfmt -> exit `0`
+  - `bun test .../migration-runner.test.ts` -> exit `0`; five tests passed
+  - one-time combined migration-runner/legacy-migration diagnostic -> exit `1`;
+    five migration-runner tests passed and three legacy tests failed because
+    CUT-010 shims still call the CUT-008-removed Python fixture/backup path
+- Evidence candidate:
+  `.omx/artifacts/typescript-bun/CUT-009/cut-009-maker-root-20260808-144/result.json`
+  (`sha256:4ce778c9f7257cc9c73f38839c4d94efdc0eadc05dbb8b41356c4061fc8248bd`,
+  7900 bytes)
+- Candidate aggregate:
+  `2844cd1a124ed49c39f1463965ae679341211301574aa6af345489d915f4612c`
+- Blocker: none; the legacy diagnostic is an adjacent CUT-010 finding, not a
+  CUT-009 acceptance failure
+- Limitations: Windows x64 only; unsigned, unpublished, undeployed; macOS
+  unproven; CUT-012 clean-clone verification pending
+- Decisions/plan drift: automatic CI enablement deferred until migration
+  completion by explicit human direction; task order unchanged
+- Next single action: create the CUT-009 candidate commit, push only to
+  `origin/TS_backend_refactor`, then run a distinct exact-commit Checker

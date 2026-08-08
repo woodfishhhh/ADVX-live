@@ -6,8 +6,9 @@
 
 ADVX Live（AI Audience / 众声）是 Windows x64 本地 AI 虚拟观众桌面
 应用。当前系统由 Electron/React 桌面端和 Electron 监督的 Bun/Elysia
-后端组成。Python 实现只作为迁移 parity oracle 和本地回滚证据保留，
-不是当前开发、CI、打包或发布运行时。
+后端组成。Python backend、测试和工具链已经过人工门禁移除；历史 parity、
+schema 与回滚证据保留在 Git 和迁移证据中，不是当前开发、CI、打包或发布
+运行时。
 
 ## 当前事实来源
 
@@ -63,7 +64,7 @@ selected screen / text / microphone / Windows system audio
 - [VIEWER_RUNTIME_REQUIREMENTS_LOG.md](./VIEWER_RUNTIME_REQUIREMENTS_LOG.md)
 - [VIEWER_BEHAVIOR_REDESIGN.md](./VIEWER_BEHAVIOR_REDESIGN.md)
 - [SB6657_STYLE_TUNING.md](./SB6657_STYLE_TUNING.md)（Python parity 调优资产）
-- [`apps/backend`](../apps/backend/README.md) Python parity oracle
+- [`apps/backend`](../apps/backend/README.md) Python 删除记录
 
 历史记录中的 FastAPI、Python 生产运行时、Pydantic 合同权威、Director、
 旧包管理器命令或跨平台发布声明均不覆盖当前文档。

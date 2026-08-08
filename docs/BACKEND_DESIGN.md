@@ -162,11 +162,12 @@ artifact 先 redaction，再写入有界 user-data 路径。Remote telemetry 默
 - recorded integration：真实 Elysia、SQLite 和 deterministic Providers。
 - TST-008：真实 Electron 监督 Bun source/compiled backend，验证 Overlay 和
   cleanup。
-- parity：仅在迁移任务要求时与历史 Python oracle 比较。
+- parity：复用已经接受并绑定 commit 的历史比较证据，不再启动 Python oracle。
 - credentialed live：独立 opt-in 证据，不能混入普通测试。
 
 ## 11. Historical boundary
 
-`apps/backend` 的 Python service 和 Alembic history 只为 parity/rollback
-保留。当前后端不得 import、启动、打包或生成合同自该目录。删除必须等待
-后续人工门禁，而不是在普通重构中顺手移除。
+Python service、测试、toolchain 与 Alembic runtime 已经过人工门禁移除。
+当前后端不得从 `apps/backend` import、启动、打包或生成合同。持久化历史由
+Bun SQL migrations、legacy database migration 和已接受的 schema/rollback
+证据承接。

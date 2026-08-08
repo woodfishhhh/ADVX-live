@@ -2,7 +2,7 @@
 
 ## Project Structure & Module Organization
 
-`apps/desktop` contains the Electron and React client. Keep process-specific code under `src/main`, `src/preload`, and `src/renderers`; reusable client logic belongs in `src/shared`. `apps/backend-bun` is the current Elysia/Bun service, organized into `api`, `application`, `domain`, `infrastructure`, and `providers`. `apps/backend` is a retained historical Python parity oracle, not the supported product runtime. Framework-neutral runtime schemas and generated Bun OpenAPI types live in `packages/contracts`. Put distributable audience presets in `resources`, cross-process scenarios in `tests/e2e`, synthetic fixtures in `tests/fixtures`, and current product or architecture decisions in `docs`.
+`apps/desktop` contains the Electron and React client. Keep process-specific code under `src/main`, `src/preload`, and `src/renderers`; reusable client logic belongs in `src/shared`. `apps/backend-bun` is the current Elysia/Bun service, organized into `api`, `application`, `domain`, `infrastructure`, and `providers`. `apps/backend` is a documentation-only tombstone after the authorized Python cutover; it contains no supported runtime or toolchain. Framework-neutral runtime schemas and generated Bun OpenAPI types live in `packages/contracts`. Put distributable audience presets in `resources`, cross-process scenarios in `tests/e2e`, synthetic fixtures in `tests/fixtures`, and current product or architecture decisions in `docs`.
 
 ## Build, Test, and Development Commands
 
@@ -22,7 +22,7 @@ Follow `.editorconfig`: UTF-8, LF endings, final newlines, and two-space indenta
 
 ## Testing Guidelines
 
-Backend tests use `bun test`; desktop tests use Vitest and are colocated as `*.test.ts`. Add focused regression tests for changed behavior, then run `bun run test` and `bun run typecheck`. End-to-end tests should exercise the real Electron-supervised Bun lifecycle and prove port and process cleanup. Retained Python tests are parity-oracle evidence only. Keep fixtures small, synthetic, and free of private recordings or screenshots. No minimum coverage threshold is currently configured.
+Backend tests use `bun test`; desktop tests use Vitest and are colocated as `*.test.ts`. Add focused regression tests for changed behavior, then run `bun run test` and `bun run typecheck`. End-to-end tests should exercise the real Electron-supervised Bun lifecycle and prove port and process cleanup. Any retained `.py` compatibility fixtures outside active product tooling are historical evidence and must not become a development, runtime, CI, or packaging dependency. Keep fixtures small, synthetic, and free of private recordings or screenshots. No minimum coverage threshold is currently configured.
 
 ## Sol-Terra Delegation
 

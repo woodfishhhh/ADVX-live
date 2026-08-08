@@ -70,6 +70,8 @@
     "check:cut-007": "bun run typecheck:cut-007 && bun scripts/check-cut-007.ts --artifact-root .omx/artifacts/test-results/cut-007",
     "typecheck:cut-008": "bun apps/backend-bun/node_modules/typescript/bin/tsc -p scripts/tsconfig.cut-008.json",
     "check:cut-008": "bun run typecheck:cut-008 && bun scripts/check-cut-008.ts --artifact-root .omx/artifacts/test-results/cut-008",
+    "typecheck:cut-009": "bun apps/backend-bun/node_modules/typescript/bin/tsc -p scripts/tsconfig.cut-009.json",
+    "check:cut-009": "bun run typecheck:cut-009 && bun scripts/check-cut-009.ts --artifact-root .omx/artifacts/test-results/cut-009",
     "lint": "oxlint --config .oxlintrc.json apps/backend-bun apps/desktop/src apps/desktop/scripts packages/contracts/src packages/contracts/test scripts tests vitest.config.ts --format stylish",
     "knip": "knip-bun --config knip.json",
     "knip:baseline": "knip-bun --config knip.json --reporter json --no-progress --no-exit-code",

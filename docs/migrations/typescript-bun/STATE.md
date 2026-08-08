@@ -10,20 +10,20 @@ wall_clock_budget_minutes: null
 token_budget: null
 cost_budget_usd: null
 current_phase: "09"
-current_task: null
-next_task: "CUT-009"
+current_task: "CUT-009"
+next_task: null
 baseline_commit: "41665a96cf67eb82cbe02f83abbbe2b79b100e48"
 last_verified_commit: "97c81436dcb6df3b30709f6380ddad35b46ac892"
-current_head: "97c81436dcb6df3b30709f6380ddad35b46ac892"
+current_head: "98e929f50ed00cac3576220d4e6225dfd1a3e226"
 current_branch: "TS_backend_refactor"
 worktree_root: "D:/Coding/ADVX-live"
 worktree_dirty: true
-last_run_id: "cut-008-commit-checker-root-20260808-143"
-last_context_id: "cut-008-commit-checker-root-context-20260808-143"
-maker_run_id: "cut-008-checkpoint-maker-root-20260808-142"
-maker_context_id: "cut-008-checkpoint-maker-root-context-20260808-142"
-checker_run_id: "cut-008-commit-checker-root-20260808-143"
-checker_context_id: "cut-008-commit-checker-root-context-20260808-143"
+last_run_id: "cut-009-maker-root-20260808-144"
+last_context_id: "cut-009-maker-root-context-20260808-144"
+maker_run_id: "cut-009-maker-root-20260808-144"
+maker_context_id: "cut-009-maker-root-context-20260808-144"
+checker_run_id: null
+checker_context_id: null
 same_blocker_attempts: 0
 ---
 
@@ -34,12 +34,46 @@ same_blocker_attempts: 0
 | Field | Value |
 | --- | --- |
 | Mode | Assisted implementation |
-| Current phase | Phase 09: `READY` |
-| Current task | None |
-| Next task | `CUT-009` (`READY`) |
+| Current phase | Phase 09: `VERIFY` |
+| Current task | `CUT-009` (`VERIFY`) |
+| Next task | None |
 | Implementation authorization | Active |
 | Independent verifier | Distinct Checker required after Maker reaches `VERIFY` |
 | Active blocker | None |
+
+## Current CUT-009 Maker Record
+
+Maker `cut-009-maker-root-20260808-144` used distinct context
+`cut-009-maker-root-context-20260808-144` on branch `TS_backend_refactor` at
+parent HEAD `98e929f50ed00cac3576220d4e6225dfd1a3e226`.
+
+It removed the 11 accepted CUT-009 holds: `pyproject.toml`, `uv.lock`, and the
+nine Alembic runtime/revision files. `apps/backend/README.md` remains as the only
+tracked file under that path and now identifies a documentation-only tombstone.
+Python-specific root ignores and stale active developer instructions were
+removed. Under the new human direction, `.github/workflows/bun-ci.yml` is
+manual-only; automatic push/PR CI remains disabled until migration completion.
+
+The Bun SQL migration chain, immutable migration runner, accepted DAT-001 schema
+inventory, CUT-003 restore-from-backup evidence, and four CUT-010 migration shims
+remain. Repository TypeScript, strict CUT-009 TypeScript, the focused toolchain
+audit, targeted formatting, and the five-test Bun migration-runner suite pass.
+The broader legacy migration suite ran once and reported five passes plus three
+failures because its CUT-010-owned compatibility shim still calls the Python
+fixture/backup path removed by CUT-008. That adjacent failure is recorded for
+CUT-010 and was not repaired or retried in this task.
+
+Maker evidence is at
+`.omx/artifacts/typescript-bun/CUT-009/cut-009-maker-root-20260808-144/result.json`
+with SHA-256
+`4ce778c9f7257cc9c73f38839c4d94efdc0eadc05dbb8b41356c4061fc8248bd`.
+The 26-file source aggregate is
+`2844cd1a124ed49c39f1463965ae679341211301574aa6af345489d915f4612c`.
+
+`CUT-009` and Phase 09 are `VERIFY`; `current_task=CUT-009`,
+`next_task=null`, and `same_blocker_attempts=0`. A distinct Checker must verify
+the exact candidate commit. No CUT-010 source, merge, rebase, tag, PR, release,
+signing, or deployment occurred.
 
 ## Current CUT-008 Exact-Commit Checker Record
 

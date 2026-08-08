@@ -43,7 +43,7 @@ Control / Capture / Overlay Renderer
 ```text
 apps/desktop         Electron + React 桌面端
 apps/backend-bun     当前 Bun/Elysia 本地后端
-apps/backend         历史 Python parity oracle，不是支持的产品运行时
+apps/backend         Python 删除记录，不包含支持的产品运行时或工具链
 packages/contracts   runtime schemas、协议注册表和生成的 Bun OpenAPI 类型
 resources            随应用分发的观众预设
 tests                跨进程、录制场景和 parity 夹具
@@ -96,5 +96,6 @@ bun run package:desktop
 - [运维、安全与发布](./docs/OPERATIONS.md)
 - [决策与开放问题](./docs/DECISIONS.md)
 
-TypeScript + Bun 迁移仍保留 Python parity oracle，直到后续人工删除门禁
-明确允许移除；当前开发、测试、打包和产品启动均以 Bun 路径为准。
+Python backend、测试和工具链已经过人工门禁由 CUT-008/CUT-009 移除。
+当前开发、测试、打包和产品启动均以 Bun 路径为准；回滚依赖 Git checkpoint
+与已验证的 CUT-003 数据备份恢复证据，而不是产品内 Python fallback。
