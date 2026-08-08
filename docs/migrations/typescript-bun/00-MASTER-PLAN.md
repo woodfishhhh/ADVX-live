@@ -1246,7 +1246,7 @@ Checker. Candidate evidence:
 | `CUT-011` | `DONE` | Run repository-wide no-Python/no-pnpm/no-uv scan with allowlisted history only | `CUT-009`, `CUT-010` | Scan artifact |
 | `CUT-012` | `DONE` | Run clean-clone install, lint, typecheck, tests, build, and installed E2E | `CUT-011` | Clean-clone evidence |
 | `CUT-013` | `DONE` | Independent architecture, security, data, and test review | `CUT-012` | Review verdict |
-| `CUT-014` | `READY` | Close or explicitly retain rollback window and archive migration state | `CUT-013` | Closure record |
+| `CUT-014` | `VERIFY` | Close or explicitly retain rollback window and archive migration state | `CUT-013` | Closure record |
 | `GATE-09` | `TODO` | Final proof-or-stop verification | `CUT-001..014` | Final accepted evidence |
 
 Maker `cut-002-maker-root-20260808-125` completed only the bounded Windows x64
@@ -1715,6 +1715,25 @@ match. `CUT-013` is `DONE`; Phase 09 returns to `READY`;
 CUT-014 is promoted. CI remains `workflow_dispatch`-only and was not run.
 Checker evidence SHA-256 is
 `44822baed182a9b02302ac5ba0527f98b46b609997ccafb8eff8c38dc72136f7`.
+
+Maker `cut-014-maker-root-20260808-161`, in distinct context
+`cut-014-maker-root-context-20260808-161`, retained a dormant source/data
+recovery window and recorded its ownership, duration, exit conditions, exact
+source identities, backup/restore procedure, artifact custody, limitations,
+superseded-work status, final evidence index, and documentation archive. No
+release has shipped, so the operational clock has not started; after a first
+authorized signed Windows x64 release reaches full promotion, retention is at
+least 30 calendar days. The last complete Python oracle is exact commit
+`41665a96`; deletion checkpoint is `97c81436`; rollback remains restore from a
+verified pre-migration backup, never in place. `STATE.md` is compacted while
+Git, `RUN-LOG.md`, and `EVIDENCE.md` retain history. `CUT-014` and Phase 09 are
+`VERIFY`; `current_task=CUT-014`, `next_task=null`, and
+`same_blocker_attempts=0`. CI remains `workflow_dispatch`-only and was not
+triggered. `GATE-09` remains `TODO` pending a distinct exact-commit Checker.
+Maker evidence is at
+`.omx/artifacts/typescript-bun/CUT-014/cut-014-maker-root-20260808-161/result.json`
+with SHA-256
+`b2b5ebc0adb9db18da5f53f02b49ce2c459e4d763421a1ffc9b3eed23e264687`.
 
 ## Gate External Conditions
 

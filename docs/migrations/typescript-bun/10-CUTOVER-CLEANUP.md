@@ -288,6 +288,11 @@ Record:
 Compact `STATE.md` to a terminal summary but preserve append-only run/evidence
 history. Do not delete the migration plan immediately after success.
 
+Maker closure record:
+[CUT-014-ROLLBACK-WINDOW-CLOSURE.md](./CUT-014-ROLLBACK-WINDOW-CLOSURE.md).
+The record is a candidate only until a distinct exact-commit Checker accepts
+it.
+
 ## Final Definition Of Done
 
 - [ ] Bun is the only active package manager, script runner, and backend runtime

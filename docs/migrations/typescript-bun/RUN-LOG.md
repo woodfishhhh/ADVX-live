@@ -12076,3 +12076,39 @@ Rules:
 - Decisions/plan drift: none; CI remains `workflow_dispatch`-only and was not
   triggered
 - Next single task: `CUT-014`
+
+## `cut-014-maker-root-20260808-161` - 2026-08-08 - `CUT-014`
+
+- Role: `maker`
+- Context ID: `cut-014-maker-root-context-20260808-161`
+- Parent run ID: `cut-013-commit-checker-root-20260808-160`
+- Branch/base HEAD: `TS_backend_refactor` /
+  `7b43ea0a338309403b613df1a1591eb7e9dc9923`
+- State transition: `CUT-014` `READY` -> `IN_PROGRESS` -> `VERIFY`; Phase 09
+  `VERIFY`; `current_task=CUT-014`, `next_task=null`,
+  `same_blocker_attempts=0`
+- Decision: retain a dormant source/data recovery window; no release has
+  shipped, so its operational clock has not started; after a first authorized
+  signed Windows x64 release reaches full promotion, retain material for at
+  least 30 calendar days
+- Custody: repository maintainer before release; the formally named release
+  owner becomes owner/incident commander when publish authority is granted
+- Identities: Bun `1.3.14`, product `0.1.0`, complete Python oracle commit
+  `41665a96cf67eb82cbe02f83abbbe2b79b100e48`, deletion checkpoint
+  `97c81436dcb6df3b30709f6380ddad35b46ac892`
+- Rollback: verified pre-migration SQLite Online Backup restored to a new path;
+  no reverse migration, runtime selector flip, or older runtime against the
+  newer Bun database
+- Archive: tracked plan/decisions/index/history remain; raw `.omx` evidence is
+  local, untracked, hash-bound, and excluded from release packages
+- Closure record:
+  `docs/migrations/typescript-bun/CUT-014-ROLLBACK-WINDOW-CLOSURE.md`
+- Maker evidence:
+  `.omx/artifacts/typescript-bun/CUT-014/cut-014-maker-root-20260808-161/result.json`
+  (`sha256:b2b5ebc0adb9db18da5f53f02b49ce2c459e4d763421a1ffc9b3eed23e264687`,
+  2539 bytes)
+- Limitations: Windows x64 only; unsigned, unpublished, undeployed; macOS and
+  Windows arm64 unproven; post-backup Bun writes are outside rollback state
+- CI remained `workflow_dispatch`-only and was not triggered
+- Next single action: run focused closure verification, create/push the
+  candidate, and request a distinct exact-commit Checker
