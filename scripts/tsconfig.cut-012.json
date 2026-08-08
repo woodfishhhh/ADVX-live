@@ -1,0 +1,7 @@
+{
+  "extends": "./tsconfig.cut-011.json",
+  "compilerOptions": {
+    "noEmit": true
+  },
+  "include": ["./check-cut-012-security.ts", "./run-cut-012.ts", "./evidence-script-runtime.ts"]
+}
