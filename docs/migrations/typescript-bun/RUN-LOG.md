@@ -11870,3 +11870,48 @@ Rules:
 - Decisions/plan drift: automatic CI remains manual-only until migration
   completion by explicit human direction; task order unchanged
 - Next single task: `CUT-012`
+
+## `cut-012-maker-root-20260808-151` - 2026-08-08 - `CUT-012`
+
+- Role: `maker`
+- Context ID: `cut-012-maker-root-context-20260808-151`
+- Parent run ID: `cut-011-commit-checker-root-20260808-149`
+- Branch/implementation HEAD: `TS_backend_refactor` /
+  `52daf8d82a580f532628f327ec332d9731f469ef`
+- Fresh checkout: `D:/Coding/ADVX-live-cut012-maker-151`; remote commit
+  `8f16e400d0250af060249ec609c1a7c480956d33`; no existing dependencies,
+  build outputs, `.omx`, or reused dependency caches
+- State transition: `CUT-012` `READY` -> `IN_PROGRESS` -> `VERIFY`; Phase 09
+  `VERIFY`; `current_task=CUT-012`, `next_task=null`,
+  `same_blocker_attempts=0`
+- Changes:
+  - forced tracked text to stable LF except the one reviewed CRLF skill;
+  - made install, build, and package explicitly ensure Electron runtime bytes;
+  - added one fresh-clone runner and Bun-only security/license/SBOM/artifact
+    verifier;
+  - allowed only strictly shaped untracked `.omx` evidence pointers to be
+    absent in clean clones while retaining normal missing/escaping link errors.
+- Clean-clone commands: 20 consecutive required steps passed before the live
+  plan-check found the intentionally absent FND-003 `.omx` files. Passing
+  steps covered frozen install, contracts, typechecks, lint/format,
+  unit/integration/property/fault tests, replay/eval, desktop/backend builds,
+  package, installed E2E, runtime scan, fuse/ASAR, crash, release inertness,
+  and security/SBOM/artifacts.
+- Focused blocker verification:
+  - strict migration plan-check TypeScript -> exit `0`
+  - focused local-evidence link tests -> exit `0`; two passed
+  - live plan-check -> exit `0`; 133 tasks, 72 links, 129 accepted evidence
+    records, zero errors
+- Security summary: Bun audit advisories `0`; direct license-policy failures
+  `0`; CycloneDX 1.5 components `740`; automatic CI enabled `false`
+- Maker evidence:
+  `.omx/artifacts/typescript-bun/CUT-012/cut-012-maker-root-20260808-151/result.json`
+  (`sha256:00ff20da6802af2ba2a55ba75dfd06167e65db3562593b31f057994dffab92fe`,
+  2482 bytes)
+- Blocker: none
+- Limitations: Windows x64 only; unsigned, unpublished, undeployed; macOS
+  unproven
+- Decisions/plan drift: CI remains `workflow_dispatch`-only until migration
+  completion; task order unchanged
+- Next single action: commit and push the CUT-012 candidate, then run a distinct
+  exact-commit Checker from a second new checkout

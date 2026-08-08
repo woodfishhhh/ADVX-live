@@ -10,20 +10,20 @@ wall_clock_budget_minutes: null
 token_budget: null
 cost_budget_usd: null
 current_phase: "09"
-current_task: null
-next_task: "CUT-012"
+current_task: "CUT-012"
+next_task: null
 baseline_commit: "41665a96cf67eb82cbe02f83abbbe2b79b100e48"
 last_verified_commit: "55b2d3157aa05339c62eafb9ffd621f25204fb53"
-current_head: "55b2d3157aa05339c62eafb9ffd621f25204fb53"
+current_head: "52daf8d82a580f532628f327ec332d9731f469ef"
 current_branch: "TS_backend_refactor"
 worktree_root: "D:/Coding/ADVX-live"
 worktree_dirty: true
-last_run_id: "cut-011-commit-checker-root-20260808-149"
-last_context_id: "cut-011-commit-checker-root-context-20260808-149"
-maker_run_id: "cut-011-maker-root-20260808-148"
-maker_context_id: "cut-011-maker-root-context-20260808-148"
-checker_run_id: "cut-011-commit-checker-root-20260808-149"
-checker_context_id: "cut-011-commit-checker-root-context-20260808-149"
+last_run_id: "cut-012-maker-root-20260808-151"
+last_context_id: "cut-012-maker-root-context-20260808-151"
+maker_run_id: "cut-012-maker-root-20260808-151"
+maker_context_id: "cut-012-maker-root-context-20260808-151"
+checker_run_id: null
+checker_context_id: null
 same_blocker_attempts: 0
 ---
 
@@ -34,12 +34,52 @@ same_blocker_attempts: 0
 | Field | Value |
 | --- | --- |
 | Mode | Assisted implementation |
-| Current phase | Phase 09: `READY` |
-| Current task | None |
-| Next task | `CUT-012` (`READY`) |
+| Current phase | Phase 09: `VERIFY` |
+| Current task | `CUT-012` (`VERIFY`) |
+| Next task | None |
 | Implementation authorization | Active |
 | Independent verifier | Distinct Checker required after Maker reaches `VERIFY` |
 | Active blocker | None |
+
+## Current CUT-012 Maker Record
+
+Maker `cut-012-maker-root-20260808-151` used distinct context
+`cut-012-maker-root-context-20260808-151` on branch `TS_backend_refactor`.
+The implementation checkpoints are
+`8f16e400d0250af060249ec609c1a7c480956d33` and
+`52daf8d82a580f532628f327ec332d9731f469ef`.
+
+A remote fresh checkout at
+`D:/Coding/ADVX-live-cut012-maker-151` started without dependency, build, or
+`.omx` directories and used new empty Bun, Electron, and electron-builder
+caches. Bun `1.3.14`, Node `v24.18.0`, and Git `2.54.0.windows.1` ran on
+Windows x64 build `10.0.26200`.
+
+The clean run passed frozen Bun install, strict CUT-012 TypeScript, contract
+drift, repository TypeScript, lint, format, unit/integration/property/fault
+tests, replay/eval, desktop build, backend compile, Windows package, installed
+end-to-end, runtime scan, fuse/ASAR integrity, crash evidence, inert release
+checks, and Bun-only secret/audit/license/SBOM/artifact verification. The run
+produced a 740-component CycloneDX 1.5 SBOM, zero audit advisories, zero direct
+license-policy failures, and verified automatic CI remains disabled.
+
+The only initial failure was live plan-check requiring four intentionally
+untracked historical `.omx` files. The focused repair permits only
+well-formed task/run/file evidence pointers to be absent while retaining
+ordinary missing-link and path-escape rejection. Strict plan-check TypeScript,
+two focused link tests, and live plan-check now pass with 133 tasks, 72 links,
+129 accepted evidence records, and zero errors. The first 20 clean-clone
+commands were not repeated after the unrelated plan-check-only change.
+
+Maker evidence is at
+`.omx/artifacts/typescript-bun/CUT-012/cut-012-maker-root-20260808-151/result.json`
+with SHA-256
+`00ff20da6802af2ba2a55ba75dfd06167e65db3562593b31f057994dffab92fe`.
+`CUT-012` and Phase 09 are `VERIFY`; `current_task=CUT-012`, `next_task=null`,
+and `same_blocker_attempts=0`. A distinct exact-commit Checker must run the
+complete clean-clone proof on the candidate commit. CI stays
+`workflow_dispatch`-only; no merge, rebase, tag, PR, release, signing, or
+deployment occurred.
 
 ## Current CUT-011 Exact-Commit Checker Record
 
@@ -1176,7 +1216,7 @@ worktree again; this snapshot is not a substitute for fresh `git status`.
 | 06 Observability and replay | `DONE` | `GATE-06` | [07](./07-OBSERVABILITY-REPLAY.md) |
 | 07 Test and tooling convergence | `DONE` | `GATE-07` | [08](./08-TEST-TOOLING.md) |
 | 08 Packaging and security | `DONE` | `GATE-08` | [09](./09-PACKAGING-SECURITY.md) |
-| 09 Cutover and Python removal | `READY` | `GATE-09` | [10](./10-CUTOVER-CLEANUP.md) |
+| 09 Cutover and Python removal | `VERIFY` | `GATE-09` | [10](./10-CUTOVER-CLEANUP.md) |
 
 ## Open Decisions
 

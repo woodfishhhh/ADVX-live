@@ -7833,3 +7833,49 @@ accepted task/gate record and does not satisfy PKG-011 or any dependency.
 - Limitations: Windows x64 only; unsigned, unpublished, undeployed; macOS
   unproven; CUT-012 clean-clone verification pending.
 - Next task: `CUT-012`.
+
+### CUT-012 / cut-012-maker-root-20260808-151
+
+- Claim: a remote Windows x64 checkout with no dependencies, build outputs,
+  local evidence, or reused dependency caches can install with Bun and execute
+  every clean-clone build, test, package, installed-runtime, scan, security,
+  SBOM, and artifact boundary required by CUT-012.
+- Status: `VERIFY`
+- Date: 2026-08-08
+- Environment: Windows x64 build `10.0.26200`; Bun `1.3.14`; Node `v24.18.0`;
+  Git `2.54.0.windows.1`; branch `TS_backend_refactor`
+- Evidence class: `clean-clone`, `test`, `package`, `installed-e2e`, `security`
+- Maker: root
+- Maker run/context ID: `cut-012-maker-root-20260808-151` /
+  `cut-012-maker-root-context-20260808-151`
+- Reviewed source-state hash: `52daf8d82a580f532628f327ec332d9731f469ef`
+- Clean-clone source hash: `8f16e400d0250af060249ec609c1a7c480956d33`
+- Commands/procedure:
+  - `bun install --frozen-lockfile` -> exit `0`; Electron runtime installed
+    explicitly into the fresh dependency graph
+  - contracts, strict/repository TypeScript, lint, and format -> exit `0`
+  - unit/integration/property/fault tests and replay/eval -> exit `0`
+  - desktop build, Bun backend compile, Windows x64 package, installed E2E,
+    restart/uninstall/orphan audit -> exit `0`
+  - runtime scan, fuse/ASAR integrity, crash evidence, release inertness,
+    secret scan, Bun audit, license/SBOM/artifact verification -> exit `0`
+  - focused plan-check TypeScript and two clean-link regressions -> exit `0`
+  - live plan-check -> exit `0`; 133 tasks, 72 links, 129 accepted evidence
+    records, zero errors
+- Candidate assertions:
+  - Windows checkout bytes remain LF-stable for generated contracts and exact
+    SQLite migration checksums;
+  - all dependency caches were new empty directories for the clean proof;
+  - Bun audit has zero advisories, the CycloneDX 1.5 SBOM has 740 components,
+    and direct license-policy failures are zero;
+  - installed Electron/Bun lifecycle and no-orphan checks pass;
+  - CI remains disabled for automatic triggers and is
+    `workflow_dispatch`-only.
+- Maker artifact:
+  `.omx/artifacts/typescript-bun/CUT-012/cut-012-maker-root-20260808-151/result.json`
+  (`sha256:00ff20da6802af2ba2a55ba75dfd06167e65db3562593b31f057994dffab92fe`,
+  2482 bytes)
+- Checker required: distinct exact-commit clean checkout; Maker has not marked
+  this task `DONE`.
+- Limitations: Windows x64 only; unsigned, unpublished, undeployed; macOS
+  unproven.
