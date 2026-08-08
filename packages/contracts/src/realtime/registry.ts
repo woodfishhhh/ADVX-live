@@ -34,7 +34,7 @@ export type RealtimeMessageRegistration = {
   readonly messageType: string
   readonly direction: RealtimeDirection
   readonly scopes: RealtimeScopeRules
-  readonly currentPythonWire: boolean
+  readonly legacyWire: boolean
   readonly schema: Schema<unknown>
 }
 
@@ -43,13 +43,13 @@ function register<TType extends string, TPayload>(
   direction: RealtimeDirection,
   scopes: RealtimeScopeRules,
   payload: Schema<TPayload>,
-  currentPythonWire: boolean
+  legacyWire: boolean
 ) {
   return {
     messageType,
     direction,
     scopes,
-    currentPythonWire,
+    legacyWire,
     schema: defineRealtimeEnvelopeSchema(messageType, payload, scopes)
   } as const
 }
@@ -82,7 +82,7 @@ export const realtimeMessageRegistrations = [
   register('audio.turn.state', 'internal-publication', roomSessionScope, pairedAudioTurnPayloadSchema, false)
 ] as const
 
-export const CURRENT_PYTHON_WIRE_MESSAGE_COUNT = 19 as const
+export const LEGACY_WIRE_MESSAGE_COUNT = 19 as const
 export const realtimeEnvelopeSchema = schema.union(
   realtimeMessageRegistrations.map((entry) => entry.schema) as unknown as readonly [
     (typeof realtimeMessageRegistrations)[number]['schema'],
@@ -96,7 +96,7 @@ export const realtimeMessageRegistry = Object.freeze(
 
 export type RealtimeEnvelope = InferSchema<typeof realtimeEnvelopeSchema>
 export type RealtimeMessageType = (typeof realtimeMessageRegistrations)[number]['messageType']
-export type CurrentPythonWireMessageType = Extract<
+export type LegacyWireMessageType = Extract<
   (typeof realtimeMessageRegistrations)[number],
-  { readonly currentPythonWire: true }
+  { readonly legacyWire: true }
 >['messageType']

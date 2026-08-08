@@ -2,9 +2,7 @@ import { afterEach, describe, expect, it, vi } from "vitest";
 import {
   BackendClientError,
   BunGeneratedControlTransport,
-  PythonOpenApiControlTransport,
   createBackendControlTransport,
-  resolveBackendKind,
   resolveBackendRuntime
 } from "./backend-control-adapter";
 
@@ -15,29 +13,18 @@ afterEach(() => {
   vi.restoreAllMocks();
 });
 
-describe("desktop control compatibility adapter", () => {
-  it("defaults to Bun and keeps Python as an explicit local rollback", () => {
+describe("desktop Bun control adapter", () => {
+  it("selects only Bun source or compiled runtimes", () => {
     expect(resolveBackendRuntime(undefined)).toBe("bun-source");
-    expect(resolveBackendRuntime("python-oracle")).toBe("python-oracle");
+    expect(resolveBackendRuntime("python-oracle")).toBe("bun-source");
     expect(resolveBackendRuntime("unknown-runtime")).toBe("bun-source");
     expect(resolveBackendRuntime("bun-source")).toBe("bun-source");
     expect(resolveBackendRuntime("bun-compiled")).toBe("bun-compiled");
     expect(resolveBackendRuntime(undefined, { packaged: true })).toBe("bun-compiled");
     expect(resolveBackendRuntime("bun-source", { packaged: true })).toBe("bun-compiled");
     expect(resolveBackendRuntime("python-oracle", { packaged: true })).toBe("bun-compiled");
-    expect(resolveBackendKind(undefined)).toBe("bun");
-    expect(resolveBackendKind("bun-source")).toBe("bun");
-    expect(resolveBackendKind("bun-compiled")).toBe("bun");
-    expect(resolveBackendKind("bun-source", { packaged: true })).toBe("bun");
     expect(createBackendControlTransport({ baseUrl: "http://127.0.0.1:8765", localToken: "token" }))
       .toBeInstanceOf(BunGeneratedControlTransport);
-    expect(
-      createBackendControlTransport({
-        baseUrl: "http://127.0.0.1:8765",
-        localToken: "token",
-        backendKind: "bun"
-      })
-    ).toBeInstanceOf(BunGeneratedControlTransport);
   });
 
   it("uses authenticated generated operation bindings and validates health responses", async () => {
@@ -63,40 +50,24 @@ describe("desktop control compatibility adapter", () => {
     expect(request).toHaveBeenCalledTimes(1);
   });
 
-  it("normalizes Python nested and Bun flat errors without retrying", async () => {
-    const request = vi
-      .fn()
-      .mockResolvedValueOnce(
-        new Response(JSON.stringify({ detail: { code: "invalid_local_token", message: "safe" } }), {
-          status: 401,
-          headers: { "Content-Type": "application/json" }
-        })
-      )
-      .mockResolvedValueOnce(
-        new Response(JSON.stringify({ code: "invalid_local_token", safe_detail: "safe" }), {
-          status: 401,
-          headers: { "Content-Type": "application/json" }
-        })
-      );
+  it("normalizes Bun errors without retrying", async () => {
+    const request = vi.fn().mockResolvedValueOnce(
+      new Response(JSON.stringify({ code: "invalid_local_token", safe_detail: "safe" }), {
+        status: 401,
+        headers: { "Content-Type": "application/json" }
+      })
+    );
     globalThis.fetch = request;
-    const python = new PythonOpenApiControlTransport({
-      baseUrl: "http://127.0.0.1:8765",
-      localToken: "token"
-    });
     const bun = new BunGeneratedControlTransport({
       baseUrl: "http://127.0.0.1:8765",
       localToken: "token"
     });
 
-    await expect(python.request({ path: "/health", method: "GET" })).rejects.toMatchObject({
-      code: "invalid_local_token",
-      message: "safe"
-    });
     await expect(bun.request({ path: "/health", method: "GET" })).rejects.toMatchObject({
       code: "invalid_local_token",
       message: "safe"
     });
-    expect(request).toHaveBeenCalledTimes(2);
+    expect(request).toHaveBeenCalledTimes(1);
   });
 
   it("distinguishes caller cancellation from deadline expiry", async () => {
@@ -106,7 +77,7 @@ describe("desktop control compatibility adapter", () => {
       expect(init?.signal?.aborted).toBe(true);
       return Promise.reject(new DOMException("aborted", "AbortError"));
     });
-    const transport = new PythonOpenApiControlTransport({
+    const transport = new BunGeneratedControlTransport({
       baseUrl: "http://127.0.0.1:8765",
       localToken: "token"
     });
@@ -118,7 +89,7 @@ describe("desktop control compatibility adapter", () => {
 
   it("uses a bounded status fallback for malformed error bodies", async () => {
     globalThis.fetch = vi.fn(async () => new Response("not-json", { status: 503 }));
-    const transport = new PythonOpenApiControlTransport({
+    const transport = new BunGeneratedControlTransport({
       baseUrl: "http://127.0.0.1:8765",
       localToken: "token"
     });

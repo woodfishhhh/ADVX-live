@@ -276,4 +276,5 @@ export const pairedAudioTurnPayloadSchema = schema.refine(
 )
 
 export type BarrageSnapshot = InferSchema<typeof barrageSnapshotSchema>
+export type AudioSource = InferSchema<typeof audioSourceSchema>
 export type PairedAudioTurnPayload = InferSchema<typeof pairedAudioTurnPayloadSchema>

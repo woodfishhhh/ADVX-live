@@ -1,7 +1,21 @@
 import type { AiCallTrace } from '../../../../shared/backend-client'
 
-type ViewerTriggerContext = NonNullable<AiCallTrace['trigger_context']>
-type ViewerTrigger = ViewerTriggerContext['triggers'][number]
+export type ViewerTrigger =
+  | 'user_text'
+  | 'final_voice'
+  | 'system_audio'
+  | 'screen_change'
+  | 'ambient_tick'
+export type ViewerTriggerContext = Readonly<{
+  triggers: readonly ViewerTrigger[]
+  screen_change_score?: number | null
+  selection_reason_codes?: readonly string[]
+  target_viewer_id?: string | null
+  target_persona_id?: string | null
+  target_ambiguous?: boolean
+  trigger_event_ids?: readonly string[]
+  trigger_frame_ids?: readonly string[]
+}>
 type ViewerOutputDelivery = NonNullable<AiCallTrace['viewer_output_delivery']>
 
 const timestampFormatter = new Intl.DateTimeFormat('zh-CN', {
@@ -15,7 +29,6 @@ const timestampFormatter = new Intl.DateTimeFormat('zh-CN', {
 })
 
 export const aiCallRoleLabels = {
-  legacy_director: '旧版导演记录',
   viewer: '观众',
   visual_summary: '视觉摘要',
   history_summary: '历史摘要',
@@ -41,6 +54,43 @@ export const viewerTriggerLabels: Record<ViewerTrigger, string> = {
   system_audio: '系统音频',
   screen_change: '画面变化',
   ambient_tick: '静默暖场'
+}
+
+const viewerTriggers = new Set<string>(Object.keys(viewerTriggerLabels))
+
+function optionalString(value: unknown): string | null | undefined {
+  return value === null || typeof value === 'string' ? value : undefined
+}
+
+function stringList(value: unknown): readonly string[] | undefined {
+  return Array.isArray(value) && value.every((item) => typeof item === 'string')
+    ? value
+    : undefined
+}
+
+export function parseViewerTriggerContext(value: unknown): ViewerTriggerContext | null {
+  if (!value || typeof value !== 'object' || Array.isArray(value)) return null
+  const record = value as Record<string, unknown>
+  const rawTriggers = stringList(record.triggers)
+  const triggers = rawTriggers?.filter((trigger): trigger is ViewerTrigger =>
+    viewerTriggers.has(trigger)
+  )
+  if (!triggers || triggers.length === 0) return null
+
+  return {
+    triggers,
+    screen_change_score:
+      record.screen_change_score === null || typeof record.screen_change_score === 'number'
+        ? record.screen_change_score
+        : undefined,
+    selection_reason_codes: stringList(record.selection_reason_codes),
+    target_viewer_id: optionalString(record.target_viewer_id),
+    target_persona_id: optionalString(record.target_persona_id),
+    target_ambiguous:
+      typeof record.target_ambiguous === 'boolean' ? record.target_ambiguous : undefined,
+    trigger_event_ids: stringList(record.trigger_event_ids),
+    trigger_frame_ids: stringList(record.trigger_frame_ids)
+  }
 }
 
 const viewerSelectionReasonLabels: Record<string, string> = {

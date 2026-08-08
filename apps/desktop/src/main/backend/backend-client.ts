@@ -17,7 +17,7 @@ import type {
   BackendViewerEvent,
   BackendViewerSnapshot,
   ModelConfig,
-  RuntimeModelProviderCandidate
+  RuntimeProviderReference
 } from "../../shared/contracts";
 import type {
   AiCallQuery,
@@ -49,13 +49,8 @@ import {
 import {
   BackendClientError,
   createBackendControlTransport,
-  type BackendControlTransport,
-  type BackendKind
+  type BackendControlTransport
 } from "./backend-control-adapter";
-import {
-  backendKindForRuntime,
-  runtimeForBackendKind
-} from "./backend-runtime";
 import {
   BackendRealtimeAdapter,
   type ParsedRealtimeServerWire,
@@ -132,30 +127,20 @@ export class BackendClient {
     baseUrl?: string;
     localToken: string;
     backendRuntime?: BackendRuntime;
-    backendKind?: BackendKind;
     controlTransport?: BackendControlTransport;
   }) {
     this.baseUrl = (options.baseUrl ?? "http://127.0.0.1:8765").replace(/\/$/, "");
     this.websocketUrl = this.baseUrl.replace(/^http/, "ws") + "/ws";
     this.localToken = options.localToken;
-    this.backendRuntime =
-      options.backendRuntime ??
-      (options.backendKind
-        ? runtimeForBackendKind(options.backendKind)
-        : options.controlTransport
-          ? runtimeForBackendKind(options.controlTransport.backendKind)
-          : "bun-source");
-    const backendKind = backendKindForRuntime(this.backendRuntime);
+    this.backendRuntime = options.backendRuntime ?? "bun-source";
     this.realtimeAdapter = new BackendRealtimeAdapter({
-      backendKind,
       backendStartId: `desktop-${randomUUID()}`
     });
     this.controlTransport =
       options.controlTransport ??
       createBackendControlTransport({
         baseUrl: this.baseUrl,
-        localToken: options.localToken,
-        backendKind
+        localToken: options.localToken
       });
   }
 
@@ -390,7 +375,7 @@ export class BackendClient {
     applyId: string,
     baseRevision: number,
     compiled: CompiledRuntimeSpec,
-    providerCandidate: RuntimeModelProviderCandidate
+    providerReference: RuntimeProviderReference
   ): Promise<RuntimeApplySnapshot> {
     const providerChanged =
       this.runtime === null ||
@@ -407,7 +392,7 @@ export class BackendClient {
         audience_contract_version: 3,
         canonical_runtime_spec: compiled.spec,
         client_config_hash: compiled.configHash,
-        provider_candidate: providerChanged ? providerCandidate : undefined
+        provider_candidate: providerChanged ? providerReference : undefined
       },
       { timeoutMs: PROVIDER_OPERATION_TIMEOUT_MS }
     );
@@ -420,7 +405,7 @@ export class BackendClient {
     applyId: string,
     baseRevision: number,
     targetRevision: number,
-    providerCandidate: RuntimeModelProviderCandidate
+    providerReference: RuntimeProviderReference
   ): Promise<RuntimeApplySnapshot> {
     const currentProvider =
       this.runtime?.session_id === sessionId
@@ -433,9 +418,6 @@ export class BackendClient {
       currentProvider !== undefined &&
       targetProvider !== undefined &&
       !sameRuntimeProvider(currentProvider, targetProvider);
-    const providerCandidateMatchesTarget =
-      targetProvider !== undefined &&
-      sameRuntimeProviderCandidate(targetProvider, providerCandidate);
     const runtime = await this.request<RuntimeApplySnapshot>(
       `/runtime/sessions/${encodeURIComponent(sessionId)}/rollback`,
       "POST",
@@ -444,8 +426,7 @@ export class BackendClient {
         base_revision: baseRevision,
         target_revision: targetRevision,
         audience_contract_version: 3,
-        provider_candidate:
-          providerChanged && providerCandidateMatchesTarget ? providerCandidate : undefined
+        provider_candidate: providerChanged ? providerReference : undefined
       },
       { timeoutMs: PROVIDER_OPERATION_TIMEOUT_MS }
     );
@@ -1031,8 +1012,8 @@ export class BackendClient {
           reactionType: message.barrage.reaction_type,
           evidenceRefs: (message.barrage.evidence_refs ?? []).map((reference) => ({
             source: reference.source,
-            eventId: reference.event_id,
-            frameIndex: reference.frame_index
+            eventId: reference.event_id ?? null,
+            frameIndex: reference.frame_index ?? null
           })),
           expiresAt: message.barrage.expires_at_ms
         };
@@ -1290,19 +1271,6 @@ function sameRuntimeProvider(
     left.viewer_model === right.viewer_model &&
     left.memory_model === right.memory_model &&
     left.visual_summary_model === right.visual_summary_model
-  );
-}
-
-function sameRuntimeProviderCandidate(
-  provider: CanonicalRuntimeSpecProvider,
-  candidate: RuntimeModelProviderCandidate
-): boolean {
-  return (
-    provider.provider_profile_id === candidate.provider_profile_id &&
-    provider.viewer_model === (candidate.viewer_model ?? candidate.model_name) &&
-    provider.memory_model === (candidate.memory_model ?? candidate.model_name) &&
-    provider.visual_summary_model ===
-      (candidate.visual_summary_model ?? candidate.model_name)
   );
 }
 

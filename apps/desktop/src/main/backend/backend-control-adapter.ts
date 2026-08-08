@@ -5,15 +5,6 @@ import {
   type HttpMethod,
   type HttpOperation
 } from "@advx/contracts/http";
-import {
-  backendKindForRuntime,
-  resolveBackendRuntime,
-  runtimeForBackendKind,
-  type BackendKind,
-  type BackendRuntimeResolutionOptions
-} from "./backend-runtime";
-
-export type { BackendKind } from "./backend-runtime";
 export { BACKEND_RUNTIMES, resolveBackendRuntime } from "./backend-runtime";
 
 const PROTOCOL_VERSION = 3;
@@ -44,33 +35,17 @@ export class BackendClientError extends Error {
 }
 
 export interface BackendControlTransport {
-  readonly backendKind: BackendKind;
   request<T>(request: ControlRequest): Promise<T>;
 }
-
-export function resolveBackendKind(
-  runtime = process.env.ADVX_BACKEND_RUNTIME,
-  options: BackendRuntimeResolutionOptions = {}
-): BackendKind {
-  return backendKindForRuntime(resolveBackendRuntime(runtime, options));
-}
-
-export { runtimeForBackendKind };
 
 export function createBackendControlTransport(options: {
   baseUrl: string;
   localToken: string;
-  backendKind?: BackendKind;
 }): BackendControlTransport {
-  const backendKind = options.backendKind ?? "bun";
-  if (backendKind === "bun") {
-    return new BunGeneratedControlTransport(options);
-  }
-  return new PythonOpenApiControlTransport(options);
+  return new BunGeneratedControlTransport(options);
 }
 
 abstract class FetchControlTransport implements BackendControlTransport {
-  abstract readonly backendKind: BackendKind;
   private readonly baseUrl: string;
   private readonly localToken: string;
 
@@ -155,13 +130,7 @@ abstract class FetchControlTransport implements BackendControlTransport {
   }
 }
 
-export class PythonOpenApiControlTransport extends FetchControlTransport {
-  readonly backendKind = "python" as const;
-}
-
 export class BunGeneratedControlTransport extends FetchControlTransport {
-  readonly backendKind = "bun" as const;
-
   override async request<T>(request: ControlRequest): Promise<T> {
     const operation = resolveOperation(request.method, request.path);
     if (!operation) {
@@ -247,8 +216,7 @@ function composeAbortSignal(timeoutMs: number, callerSignal?: AbortSignal): {
 }
 
 function normalizeHttpError(status: number, payload: unknown): BackendClientError {
-  const record = isRecord(payload) ? payload : null;
-  const detail = record && isRecord(record.detail) ? record.detail : record;
+  const detail = isRecord(payload) ? payload : null;
   const code = detail && typeof detail.code === "string" ? detail.code : `http_${status}`;
   const message =
     detail && typeof detail.safe_detail === "string"

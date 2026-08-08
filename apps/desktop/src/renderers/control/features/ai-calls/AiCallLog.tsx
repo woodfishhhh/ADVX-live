@@ -35,7 +35,8 @@ import {
   formatViewerSelectionReasons,
   formatViewerTriggerLabels,
   formatViewerTriggerReasons,
-  formatViewerTriggerTarget
+  formatViewerTriggerTarget,
+  parseViewerTriggerContext
 } from './aiCallFormatters'
 import { collectAiCallImageReferences } from './aiCallImages'
 
@@ -88,19 +89,19 @@ function JsonBlock({ value }: { value: unknown }): React.JSX.Element {
   )
 }
 
-function ImagePreview({
+function ImageMetadata({
   previewId,
   label
 }: {
   previewId: string | null
   label: string
 }): React.JSX.Element {
-  const [dataUrl, setDataUrl] = useState<string | null>(null)
+  const [metadata, setMetadata] = useState<string | null>(null)
   const [unavailable, setUnavailable] = useState(false)
 
   useEffect(() => {
     let disposed = false
-    setDataUrl(null)
+    setMetadata(null)
     setUnavailable(false)
     if (!previewId) {
       setUnavailable(true)
@@ -110,7 +111,9 @@ function ImagePreview({
     }
     void window.advx.queryAiCallImage(previewId).then(
       (preview) => {
-        if (!disposed) setDataUrl(preview.data_url)
+        if (!disposed) {
+          setMetadata(`${preview.mime_type} · ${preview.byte_length.toLocaleString()} B`)
+        }
       },
       () => {
         if (!disposed) setUnavailable(true)
@@ -121,20 +124,14 @@ function ImagePreview({
     }
   }, [previewId])
 
-  if (dataUrl) {
-    return (
-      <img
-        className="size-full object-contain"
-        src={dataUrl}
-        alt={label}
-        referrerPolicy="no-referrer"
-      />
-    )
-  }
-
   return (
-    <div className="grid size-full place-items-center px-2 text-center text-[10px] text-[var(--text-faint)]">
-      {unavailable ? (previewId ? '预览已过期' : '旧记录未保留图片') : '加载图片'}
+    <div
+      className="grid size-full place-items-center px-2 text-center text-[10px] text-[var(--text-faint)]"
+      title={label}
+    >
+      {metadata ?? (unavailable
+        ? (previewId ? '图片元数据已过期' : '记录未保留图片')
+        : '读取图片元数据')}
     </div>
   )
 }
@@ -149,7 +146,7 @@ function viewerDecisionReason(value: unknown): string | null {
 
 function ViewerTriggerContext({ trace }: { trace: AiCallTrace }): React.JSX.Element | null {
   if (trace.role !== 'viewer') return null
-  const context = trace.trigger_context
+  const context = parseViewerTriggerContext(trace.trigger_context)
   if (!context) {
     return (
       <section className="border-b border-[var(--border)]">
@@ -287,8 +284,9 @@ const AiCallListRow = memo(function AiCallListRow({
   selected: boolean
   onSelect: (callId: string) => void
 }): React.JSX.Element {
-  const triggerLabel = trace.role === 'viewer' && trace.trigger_context
-    ? formatViewerTriggerLabels(trace.trigger_context.triggers)
+  const triggerContext = parseViewerTriggerContext(trace.trigger_context)
+  const triggerLabel = trace.role === 'viewer' && triggerContext
+    ? formatViewerTriggerLabels(triggerContext.triggers)
     : null
 
   return (
@@ -338,7 +336,7 @@ function CallDetail({ trace }: { trace: AiCallTrace }): React.JSX.Element {
   const correlations = collectCorrelationIds(trace)
   const timeline = trace.timeline ?? []
   const imageReferences = collectAiCallImageReferences(trace.request?.input_preview)
-  const hasAvailableImagePreview = imageReferences.some((image) => image.previewId !== null)
+  const hasRetainedImageMetadata = imageReferences.some((image) => image.previewId !== null)
   const decisionReason = viewerDecisionReason(trace.response?.parsed_output)
   const [copied, setCopied] = useState(false)
 
@@ -441,7 +439,7 @@ function CallDetail({ trace }: { trace: AiCallTrace }): React.JSX.Element {
                     key={`${image.previewId ?? image.sha256 ?? 'image'}-${index}`}
                   >
                     <div className="grid aspect-video overflow-hidden rounded-md bg-[var(--bg-deep)]">
-                      <ImagePreview previewId={image.previewId} label={label} />
+                      <ImageMetadata previewId={image.previewId} label={label} />
                     </div>
                     <figcaption className="mt-1.5 truncate text-[10px] text-[var(--text-faint)]" title={image.sha256 ?? undefined}>
                       {label}{image.mimeType ? ` · ${image.mimeType}` : ''}
@@ -455,9 +453,9 @@ function CallDetail({ trace }: { trace: AiCallTrace }): React.JSX.Element {
         <JsonBlock value={trace.request?.input_preview} />
         {trace.request?.redacted_fields && trace.request.redacted_fields.length > 0 && (
           <p className="m-0 border-t border-[var(--border)] px-4 py-2 text-[10px] text-[var(--text-faint)]">
-            已保护字段：{trace.request.redacted_fields.join('、')}。{hasAvailableImagePreview
-              ? '图片内容已在上方显示，原始地址不会写入调用记录。'
-              : '旧记录未保留图片内容；新调用会在上方显示图片预览。'}
+            已保护字段：{trace.request.redacted_fields.join('、')}。{hasRetainedImageMetadata
+              ? '上方仅显示脱敏后的图片元数据，原始内容和地址不会写入调用记录。'
+              : '调用记录未保留图片内容。'}
           </p>
         )}
       </section>

@@ -182,6 +182,19 @@ export const legacyMemeImportResponseSchema = schema.object({
 })
 
 export type RoomLongTermMemory = InferSchema<typeof roomLongTermMemorySchema>
+export type RoomMemoryType = InferSchema<typeof roomMemoryTypeSchema>
 export type MemoryCandidateRequest = InferSchema<typeof memoryCandidateRequestSchema>
+export type CandidateCommitResponse = InferSchema<
+  typeof candidateCommitResponseSchema
+>
+export type MemoryHeadResponse = InferSchema<typeof memoryHeadResponseSchema>
+export type MemoryResetResponse = InferSchema<typeof memoryResetResponseSchema>
 export type ModeMeme = InferSchema<typeof modeMemeSchema>
 export type MemeCandidate = InferSchema<typeof memeCandidateSchema>
+export type AutoIngestResponse = InferSchema<typeof autoIngestResponseSchema>
+export type LegacyMemeImportRequest = InferSchema<
+  typeof legacyMemeImportRequestSchema
+>
+export type LegacyMemeImportResponse = InferSchema<
+  typeof legacyMemeImportResponseSchema
+>

@@ -139,16 +139,9 @@ function createBackendProcessController(): BackendProcessController {
     ? resolve(configuredDataDirectory)
     : backendRuntime === "bun-source"
       ? join(app.getPath("userData"), "backend", "bun-source")
-      : backendRuntime === "bun-compiled"
-        ? join(app.getPath("userData"), "backend", "bun-compiled")
-        : app.isPackaged
-          ? join(app.getPath("userData"), "data")
-          : resolve(app.getAppPath(), "../..", ".advx-data");
+      : join(app.getPath("userData"), "backend", "bun-compiled");
   const processIdentity = {
-    version:
-      backendRuntime === "python-oracle"
-        ? "python-oracle"
-        : `${backendRuntime}@${app.getVersion()}`,
+    version: `${backendRuntime}@${app.getVersion()}`,
     port: Number(backendPort),
     token: localToken,
     dataDirectory,
@@ -192,36 +185,32 @@ function createBackendProcessController(): BackendProcessController {
     );
   }
 
-  if (backendRuntime === "bun-compiled") {
-    const compiledIdentity = {
-      ...processIdentity,
-      dataDirectory
-    } as const;
-    const repositoryRoot = resolve(app.getAppPath(), "../..");
-    logger.info("backend.mode.bun-compiled", {
-      port: compiledIdentity.port,
+  const compiledIdentity = {
+    ...processIdentity,
+    dataDirectory
+  } as const;
+  const repositoryRoot = resolve(app.getAppPath(), "../..");
+  logger.info("backend.mode.bun-compiled", {
+    port: compiledIdentity.port,
+    dataDirectory,
+    packaged: app.isPackaged
+  });
+  return new SpawnedBackendProcess(
+    createBunCompiledBackendProcessOptions({
+      packaged: app.isPackaged,
+      resourcesPath: process.resourcesPath,
+      repositoryRoot,
+      backendExecutable: process.env.ADVX_BACKEND_COMPILED_EXECUTABLE,
+      workingDirectory: app.isPackaged ? process.resourcesPath : repositoryRoot,
+      backendPort,
+      backendBaseUrl,
       dataDirectory,
-      packaged: app.isPackaged
-    });
-    return new SpawnedBackendProcess(
-      createBunCompiledBackendProcessOptions({
-        packaged: app.isPackaged,
-        resourcesPath: process.resourcesPath,
-        repositoryRoot,
-        backendExecutable: process.env.ADVX_BACKEND_COMPILED_EXECUTABLE,
-        workingDirectory: app.isPackaged ? process.resourcesPath : repositoryRoot,
-        backendPort,
-        backendBaseUrl,
-        dataDirectory,
-        startupToken: localToken,
-        expectedBackendVersion: app.getVersion(),
-        identity: compiledIdentity,
-        logger: backendLogger
-      })
-    );
-  }
-
-  throw new Error("Python parity oracle 已移除；请选择 Bun 后端运行时。");
+      startupToken: localToken,
+      expectedBackendVersion: app.getVersion(),
+      identity: compiledIdentity,
+      logger: backendLogger
+    })
+  );
 }
 
 async function initializeBackend(restart = false): Promise<BackendRuntimeStatus> {

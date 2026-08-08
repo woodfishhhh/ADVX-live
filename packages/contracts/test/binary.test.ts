@@ -58,7 +58,7 @@ describe('ADVX-BIN codec', () => {
       ADVX_BINARY_V3_LAYOUT.byteLength]).toEqual([24, 25, 9])
   })
 
-  test('decodes and re-encodes every Python fixture byte-for-byte from offset views', async () => {
+  test('decodes and re-encodes every accepted fixture byte-for-byte from offset views', async () => {
     expect(manifest.fixtures).toHaveLength(6)
     for (const fixture of manifest.fixtures) {
       const canonical = await fixtureBytes(fixture)
@@ -84,9 +84,9 @@ describe('ADVX-BIN codec', () => {
     }
   })
 
-  test('direct TypeScript encoding equals all authoritative Python bytes', async () => {
+  test('direct TypeScript encoding equals all accepted protocol bytes', async () => {
     for (const fixture of manifest.fixtures) {
-      const python = await fixtureBytes(fixture)
+      const accepted = await fixtureBytes(fixture)
       expect(encodeAdvxBinaryEnvelope({
         version: fixture.version,
         mediaType: fixture.mediaType,
@@ -98,7 +98,7 @@ describe('ADVX-BIN codec', () => {
         ...(fixture.turnId === null ? {} : { turnId: fixture.turnId }),
         systemAudioRequired: fixture.systemAudioRequired,
         body: new Uint8Array(directBodies[fixture.name]!)
-      })).toEqual(python)
+      })).toEqual(accepted)
     }
     const v3Audio = await fixtureBytes(manifest.fixtures.find((item) => item.name === 'v3-audio')!)
     expect(new TextDecoder().decode(v3Audio.subarray(9, 9 + new DataView(

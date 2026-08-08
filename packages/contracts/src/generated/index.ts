@@ -1,5 +1,7 @@
-export type { components, operations, paths } from './openapi'
 export type {
+  components,
+  operations,
+  paths,
   components as bunComponents,
   operations as bunOperations,
   paths as bunPaths

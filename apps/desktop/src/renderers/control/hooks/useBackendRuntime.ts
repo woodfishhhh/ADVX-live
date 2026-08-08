@@ -12,7 +12,7 @@ export type BackendNotice = {
 
 export function createDisconnectedBackendStatus(now = Date.now()): BackendRuntimeStatus {
   return {
-    backendRuntime: 'python-oracle',
+    backendRuntime: 'bun-source',
     connection: 'disconnected',
     providersConfigured: false,
     startupError: null,

@@ -7711,3 +7711,48 @@ accepted task/gate record and does not satisfy PKG-011 or any dependency.
 - Limitations: Windows x64 only; unsigned, unpublished, undeployed; macOS
   unproven; CUT-012 clean-clone verification pending.
 - Next task: `CUT-010`
+
+#### CUT-010 candidate / cut-010-maker-root-20260808-146
+
+- Claim: remove temporary dual-runtime and Python compatibility adapters,
+  parity-only clients/tests, copied Python contracts, closed rollback branches,
+  and migration telemetry while retaining durable protocol compatibility,
+  migration history, rollback evidence, redaction, and diagnostics.
+- Status: `VERIFY`
+- Candidate parent HEAD: `10d12f04844e9e4d1dd80ce7f8ee8020a4e6f44e`
+- Date: 2026-08-08
+- Environment: Windows x64; Bun `1.3.14`; branch `TS_backend_refactor`
+- Evidence class: `static`, `unit`, `review`
+- Maker: root
+- Maker run/context ID: `cut-010-maker-root-20260808-146` /
+  `cut-010-maker-root-context-20260808-146`
+- Checker: pending distinct exact-commit Checker
+- Checker run/context ID: pending
+- Reviewed source-state hash: pending candidate commit
+- Source identity:
+  `34626421746e88ffa986de45ff2cab1d466ae71a8a5c6a3cd7a843362aa66235`
+- Commands/procedure:
+  - `bun run typecheck` -> exit `0`
+  - `bun run check:cut-010` -> exit `0`; no active tracked Python files and CI
+    remains manual-only
+  - targeted contract suite -> exit `0`; 14 test blocks and 25 named assertions
+  - targeted desktop backend Vitest -> exit `0`; 10 tests passed
+  - targeted trace/migration Bun tests -> exit `0`; eight tests passed
+  - `bun run contracts:bun-openapi:check` -> exit `0`; byte-equal
+  - `bun run check:pkg-012` -> exit `0`; release authority remains inert
+- Candidate assertions:
+  - Bun is the only supported product runtime;
+  - copied Python OpenAPI, parity-oracle machinery, SQLite Python migration
+    adapters, and closed selector/rollback branches are absent;
+  - realtime v3/v4 compatibility, Bun SQL migration history, CUT-003 restore
+    evidence, trace redaction, and useful diagnostics remain;
+  - `.github/workflows/bun-ci.yml` has only `workflow_dispatch` and remains off
+    until migration completion under explicit human direction.
+- Artifact:
+  `.omx/artifacts/typescript-bun/CUT-010/cut-010-maker-root-20260808-146/result.json`
+  (`sha256:7d2669fec82ef1e801701b627e1bbd6698ddd40f9756ee3af3beac27f4cee931`,
+  1612 bytes)
+- Limitations: Windows x64 only; unsigned, unpublished, undeployed; macOS
+  unproven; CUT-012 clean-clone verification pending.
+- Next action: create and push the candidate commit, then run the distinct
+  exact-commit Checker before accepting `DONE`.

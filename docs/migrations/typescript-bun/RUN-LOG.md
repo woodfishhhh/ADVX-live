@@ -11695,3 +11695,52 @@ Rules:
 - Decisions/plan drift: automatic CI remains manual-only until migration
   completion by explicit human direction; task order unchanged
 - Next single task: `CUT-010`
+
+## `cut-010-maker-root-20260808-146` - 2026-08-08 - `CUT-010`
+
+- Role: `maker`
+- Context ID: `cut-010-maker-root-context-20260808-146`
+- Parent run ID: `cut-009-commit-checker-root-20260808-145`
+- Branch/parent HEAD: `TS_backend_refactor` /
+  `10d12f04844e9e4d1dd80ce7f8ee8020a4e6f44e`
+- Dirty tree before/after: `true`; unrelated local Codex configuration,
+  `.omx`, `output`, `promo`, historical Python source, and caches preserved
+- State transition: `CUT-010` `READY` -> `IN_PROGRESS` -> `VERIFY`; Phase 09
+  `VERIFY`; `current_task=CUT-010`, `next_task=null`,
+  `same_blocker_attempts=0`
+- Changes:
+  - removed the temporary Python/dual-runtime selector and transports, copied
+    Python OpenAPI contracts, parity clients/tests, SQLite Python migration
+    adapters, and closed rollback branches;
+  - made Bun the only supported runtime while retaining realtime v3/v4 protocol
+    negotiation, Bun SQL migration history, rollback evidence, redaction, and
+    useful diagnostics;
+  - replaced remaining product type dependencies with framework-neutral
+    hand-authored contracts owned by `packages/contracts`;
+  - added one focused CUT-010 checker and kept CI `workflow_dispatch`-only until
+    migration completion.
+- Commands:
+  - `bun run typecheck` -> exit `0`
+  - `bun run check:cut-010` -> exit `0`; zero active tracked Python files,
+    durable boundaries retained, source aggregate
+    `34626421746e88ffa986de45ff2cab1d466ae71a8a5c6a3cd7a843362aa66235`
+  - targeted contracts -> exit `0`; 14 test blocks and 25 named assertions
+  - targeted desktop backend Vitest -> exit `0`; 10 tests passed
+  - targeted trace/migration Bun tests -> exit `0`; eight tests passed
+  - `bun run contracts:bun-openapi:check` -> exit `0`; generated declaration is
+    byte-equal
+  - `bun run check:pkg-012` -> exit `0`; Windows x64 package/rollback boundary
+    remains inert, unpublished, and undeployed
+- Evidence candidate:
+  `.omx/artifacts/typescript-bun/CUT-010/cut-010-maker-root-20260808-146/result.json`
+  (`sha256:7d2669fec82ef1e801701b627e1bbd6698ddd40f9756ee3af3beac27f4cee931`,
+  1612 bytes)
+- Candidate aggregate:
+  `34626421746e88ffa986de45ff2cab1d466ae71a8a5c6a3cd7a843362aa66235`
+- Blocker: none
+- Limitations: Windows x64 only; unsigned, unpublished, undeployed; macOS
+  unproven; CUT-012 clean-clone verification pending
+- Decisions/plan drift: automatic CI remains disabled until migration
+  completion by explicit human direction; task order unchanged
+- Next single action: create the CUT-010 candidate commit, push only to
+  `origin/TS_backend_refactor`, then run a distinct exact-commit Checker

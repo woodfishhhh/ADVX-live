@@ -61,6 +61,6 @@ bun run contracts
 bun run contracts:bun-openapi:check
 ```
 
-`src/generated/openapi.ts` remains a deprecated parity-compatibility artifact
-until the post-cutover cleanup task removes the Python oracle. Current product
-code must not regenerate contracts from that historical service.
+The generated surface contains only the Bun control-plane projection. Historical
+Python OpenAPI output is retained through accepted migration evidence and Git,
+not as an active package export.

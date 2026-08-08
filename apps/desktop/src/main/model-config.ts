@@ -2,7 +2,7 @@ import {
   DEFAULT_ASR_BASE_URL,
   DEFAULT_ASR_MODEL,
   type ModelConfig,
-  type RuntimeModelProviderCandidate
+  type RuntimeProviderReference
 } from "../shared/contracts";
 
 export type ResolvedModelProvider = {
@@ -144,18 +144,12 @@ export function resolveModelProvider(config: ModelConfig): ResolvedModelProvider
   };
 }
 
-export function createRuntimeProviderCandidate(
+export function createRuntimeProviderReference(
   config: ModelConfig
-): RuntimeModelProviderCandidate {
+): RuntimeProviderReference {
   const provider = resolveModelProvider(config);
   return {
-    provider_profile_id: provider.providerProfileId,
-    model_base_url: provider.baseUrl,
-    model_name: provider.defaultModel,
-    viewer_model: provider.viewerModel,
-    memory_model: provider.memoryModel,
-    visual_summary_model: provider.visualSummaryModel,
-    model_api_key: provider.apiKey
+    provider_profile_id: provider.providerProfileId
   };
 }
 

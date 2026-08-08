@@ -9,10 +9,10 @@ import {
 
 describe('OBS-003 trace evidence normalizer', () => {
   test('normalizes viewer traces without changing the versioned contract', () => {
-    const result = normalizeViewerTrace(viewerTraceFixture(), 'python')
+    const result = normalizeViewerTrace(viewerTraceFixture())
 
     expect(result.normalizer_version).toBe(TRACE_EVIDENCE_NORMALIZER_VERSION)
-    expect(result.source_runtime).toBe('python')
+    expect(result.source_runtime).toBe('bun')
     expect(result.trace.trace_kind).toBe('viewer_request')
     expect(result.trace.memory.memory_ids).toEqual(['memory-1'])
     expect(result.trace.side_effects?.published_barrage_id).toBe('barrage-1')

@@ -75,15 +75,12 @@ export type RuntimeViewer = NonNullable<RuntimeSessionSnapshot['viewers']>[numbe
 export type ProviderProbeResult = ProviderCapabilityProbeResult
 export type DebugTraceSummary = ViewerRequestTrace
 export type DebugTraceQueryResult = TraceQueryResponse
-export type AiCallTrace = import('@advx/contracts').components['schemas']['AiCallTrace']
-export type AiCallListItem =
-  import('@advx/contracts').components['schemas']['AiCallListItem']
-export type AiCallImagePreview =
-  import('@advx/contracts').components['schemas']['AiCallImagePreview']
-export type AiCallQueryResponse =
-  import('@advx/contracts').components['schemas']['AiCallQueryResponse']
-export type AiCallRole = import('@advx/contracts').components['schemas']['AiCallRole']
-export type AiCallStatus = import('@advx/contracts').components['schemas']['AiCallStatus']
+export type AiCallTrace = import('@advx/contracts').AiCallTrace
+export type AiCallListItem = import('@advx/contracts').AiCallListItem
+export type AiCallImagePreview = import('@advx/contracts').AiCallImagePreview
+export type AiCallQueryResponse = import('@advx/contracts').AiCallQueryResponse
+export type AiCallRole = import('@advx/contracts').AiCallRole
+export type AiCallStatus = import('@advx/contracts').AiCallStatus
 export type AiCallQuery = {
   sessionId?: string
   role?: AiCallRole
@@ -92,20 +89,19 @@ export type AiCallQuery = {
   cursor?: string
   limit?: number
 }
-export type RoomLongTermMemory = import('@advx/contracts').components['schemas']['RoomLongTermMemory']
-export type RoomMemoryType = import('@advx/contracts').components['schemas']['RoomMemoryType']
-export type MemoryCandidateRequest = import('@advx/contracts').components['schemas']['MemoryCandidateRequest']
-export type MemoryResetResponse = import('@advx/contracts').components['schemas']['MemoryResetResponse']
-export type ModeMeme = import('@advx/contracts').components['schemas']['ModeMeme']
-export type MemeCandidate = import('@advx/contracts').components['schemas']['MemeCandidate']
-export type CandidateCommitResponse =
-  import('@advx/contracts').components['schemas']['CandidateCommitResponse']
-export type AutoIngestResponse = import('@advx/contracts').components['schemas']['AutoIngestResponse']
+export type RoomLongTermMemory = import('@advx/contracts').RoomLongTermMemory
+export type RoomMemoryType = import('@advx/contracts').RoomMemoryType
+export type MemoryCandidateRequest = import('@advx/contracts').MemoryCandidateRequest
+export type MemoryResetResponse = import('@advx/contracts').MemoryResetResponse
+export type ModeMeme = import('@advx/contracts').ModeMeme
+export type MemeCandidate = import('@advx/contracts').MemeCandidate
+export type CandidateCommitResponse = import('@advx/contracts').CandidateCommitResponse
+export type AutoIngestResponse = import('@advx/contracts').AutoIngestResponse
 
 export type LegacyMemeImportRequest =
-  import('@advx/contracts').components['schemas']['LegacyMemeImportRequest']
+  import('@advx/contracts').LegacyMemeImportRequest
 export type LegacyMemeImportResponse =
-  import('@advx/contracts').components['schemas']['LegacyMemeImportResponse']
+  import('@advx/contracts').LegacyMemeImportResponse
 
 export type TextSubmitTarget = {
   targetViewerId?: string
@@ -125,8 +121,7 @@ export type RoomMemoryEdit = {
   evidenceEventIds?: readonly string[]
 }
 
-export type RoomMemoryHead =
-  import('@advx/contracts').components['schemas']['MemoryHeadResponse']
+export type RoomMemoryHead = import('@advx/contracts').MemoryHeadResponse
 
 export function compileCanonicalRuntimeSpec(
   workspace: AudienceWorkspaceState,

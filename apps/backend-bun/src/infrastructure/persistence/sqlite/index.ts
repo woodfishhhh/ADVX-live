@@ -56,27 +56,6 @@ export {
 export { SqliteRoomMemoryRepository } from './room-memory-repository'
 export { SqliteModeMemeRepository } from './mode-meme-repository'
 export { SqliteOutboxRepository } from './outbox-repository'
-export {
-  LEGACY_ALEMBIC_HEAD,
-  LEGACY_MIGRATION_BASELINE_VERSION,
-  LEGACY_MIGRATION_STRATEGY,
-  LegacyDatabaseMigrationError,
-  legacyMigrationRunDirectory,
-  migrateLegacyDatabase,
-  type BackendStopReceipt,
-  type LegacyBackupRestoreAdapter,
-  type LegacyDatabaseMigrationErrorCode,
-  type LegacyDatabaseMigrationOptions,
-  type LegacyDatabaseMigrationReceipt,
-  type LegacyTableComparison
-} from './legacy-database-migration'
-export {
-  PythonOnlineBackupError,
-  PythonSqliteOnlineBackupAdapter,
-  type OnlineRestoreReceipt,
-  type PythonOnlineBackupAdapterOptions,
-  type PythonOnlineBackupErrorCode
-} from './python-online-backup-adapter'
 export { SqliteTransactionBoundary } from './transaction'
 export {
   advxPersistenceSchema,

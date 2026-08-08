@@ -3,7 +3,6 @@ import {
   parseCanonicalRealtimeEnvelope,
   type RealtimeEnvelope
 } from "@advx/contracts";
-import type { BackendKind } from "./backend-control-adapter";
 
 export type RealtimeWireFamily = "legacy" | "canonical-envelope";
 
@@ -29,20 +28,18 @@ type RealtimeConnectionIdentity = {
 const MAX_SEEN_MESSAGE_IDS = 1_024;
 
 /**
- * Keeps legacy Python wire compatibility while accepting the canonical Bun
- * envelope. The native Electron WebSocket API cannot attach arbitrary HTTP
- * headers, so Bun continues to receive the authenticated legacy hello token;
- * all inbound wire families are normalized at this boundary.
+ * Keeps durable realtime v3/v4 compatibility while accepting the canonical
+ * Bun envelope. The native Electron WebSocket API cannot attach arbitrary HTTP
+ * headers, so the authenticated legacy hello token remains the connection
+ * bootstrap; all inbound wire families are normalized at this boundary.
  */
 export class BackendRealtimeAdapter {
-  readonly backendKind: BackendKind;
   readonly wireFamily: RealtimeWireFamily = "legacy";
   private backendStartId: string;
   private connectionGeneration = 0;
   private readonly seenMessageIds = new Set<string>();
 
-  constructor(options: { backendKind: BackendKind; backendStartId: string }) {
-    this.backendKind = options.backendKind;
+  constructor(options: { backendStartId: string }) {
     this.backendStartId = options.backendStartId;
   }
 

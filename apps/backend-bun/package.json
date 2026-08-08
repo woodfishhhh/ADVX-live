@@ -38,7 +38,6 @@
     "test:dat-007": "bun test src/infrastructure/persistence/sqlite/room-memory-repository.test.ts",
     "test:dat-008": "bun test src/infrastructure/persistence/sqlite/mode-meme-repository.test.ts",
     "test:dat-009": "bun test src/infrastructure/persistence/sqlite/outbox-repository.test.ts",
-    "test:dat-010": "bun test src/infrastructure/persistence/sqlite/legacy-database-migration.test.ts",
     "test:dat-011": "bun test src/infrastructure/persistence/sqlite/persistence-faults.test.ts",
     "test:agt-001": "bun test src/application/ports/providers.test.ts",
     "test:agt-002": "bun test src/providers/asr/stepfun-asr.test.ts",

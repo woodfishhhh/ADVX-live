@@ -1,5 +1,4 @@
 import { describe, expect, test } from 'bun:test'
-import { fileURLToPath } from 'node:url'
 import {
   ADVX_PROTOCOL_COMPATIBILITY,
   guardBinaryProtocolVersion,
@@ -10,8 +9,6 @@ import {
   type ProtocolCompatibilityFailure,
   type ProtocolConnectionContext
 } from '../src/compatibility'
-
-const root = fileURLToPath(new URL('../../../', import.meta.url))
 
 function negotiate(input: {
   preferredVersion?: unknown
@@ -47,33 +44,6 @@ function expectFailure(
   return result as ProtocolCompatibilityFailure
 }
 
-async function pythonNegotiationOracle(): Promise<Record<string, unknown>> {
-  const child = Bun.spawn([
-    'uv', 'run', '--project', 'apps/backend', 'python',
-    'packages/contracts/test/protocol-compatibility-oracle.py'
-  ], {
-    cwd: root,
-    stdout: 'pipe',
-    stderr: 'pipe',
-    env: { ...process.env, PYTHONUTF8: '1' }
-  })
-  let timedOut = false
-  const timeout = setTimeout(() => {
-    timedOut = true
-    child.kill()
-  }, 10_000)
-  const [exitCode, stdout, stderr] = await Promise.all([
-    child.exited,
-    new Response(child.stdout).text(),
-    new Response(child.stderr).text()
-  ])
-  clearTimeout(timeout)
-  if (timedOut || exitCode !== 0) {
-    throw new Error(`Python negotiation oracle failed (${exitCode}): ${stderr}`)
-  }
-  return JSON.parse(stdout) as Record<string, unknown>
-}
-
 describe('CON-010 protocol compatibility', () => {
   test('current client/current server negotiates realtime v4', () => {
     const result = negotiate()
@@ -90,19 +60,12 @@ describe('CON-010 protocol compatibility', () => {
     if (result.ok) expect(result.context.binaryVersions).toEqual([1, 2])
   })
 
-  test('current client/supported older Python oracle boundary negotiates realtime v3', async () => {
-    const oracle = await pythonNegotiationOracle()
-    expect(oracle).toEqual({
-      current_server_supported: [3, 4],
-      current_client_current_server: 4,
-      older_client_current_server: 3,
-      current_client_older_v3_oracle: 3
-    })
+  test('current client/supported older v3 peer negotiates realtime v3', () => {
     expect(negotiate({ serverSupportedVersions: [3] })).toMatchObject({
       ok: true,
-      negotiatedVersion: oracle.current_client_older_v3_oracle
+      negotiatedVersion: 3
     })
-  }, 15_000)
+  })
 
   test('unknown future major version fails closed', () => {
     const failure = expectFailure(

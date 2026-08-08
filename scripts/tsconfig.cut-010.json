@@ -8,15 +8,8 @@
     "allowImportingTsExtensions": true,
     "resolveJsonModule": true,
     "skipLibCheck": true,
-    "typeRoots": [
-      "../apps/backend-bun/node_modules/@types",
-      "../node_modules/@types"
-    ],
+    "typeRoots": ["../apps/backend-bun/node_modules/@types", "../node_modules/@types"],
     "types": ["bun", "node"]
   },
-  "include": [
-    "check-cut-003.ts",
-    "evidence-script-runtime.ts",
-    "../apps/backend-bun/src/infrastructure/persistence/sqlite/sql.d.ts"
-  ]
+  "include": ["check-cut-010.ts", "evidence-script-runtime.ts"]
 }

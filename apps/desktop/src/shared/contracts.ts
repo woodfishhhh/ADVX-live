@@ -1,4 +1,4 @@
-import type { components } from "@advx/contracts";
+import type { AudioSource, ProviderProfileReference } from "@advx/contracts";
 import type { AudienceWorkspaceState } from "./audience";
 import type {
   AiCallQuery,
@@ -91,8 +91,7 @@ export type ModelConfigStatus = {
   asrApiKeyStored: boolean
 }
 
-export type RuntimeModelProviderCandidate =
-  components["schemas"]["RuntimeModelProviderCandidate"]
+export type RuntimeProviderReference = ProviderProfileReference
 
 export type SaveModelConfigResult = {
   ok: boolean
@@ -117,7 +116,7 @@ export type BackendSessionSnapshot = {
   revision: number
 }
 
-export type BackendRuntime = 'python-oracle' | 'bun-source' | 'bun-compiled'
+export type BackendRuntime = 'bun-source' | 'bun-compiled'
 
 export type SessionLifecycleLogEvent = {
   reason:
@@ -217,7 +216,7 @@ export type BackendViewerEvent = {
   viewer: BackendViewerSnapshot
 }
 
-export type AudioSource = components["schemas"]["AudioSource"]
+export type { AudioSource }
 
 export type BackendTranscriptEvent = {
   source: AudioSource

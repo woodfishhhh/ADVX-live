@@ -2,7 +2,6 @@ import { describe, expect, test } from 'vitest'
 import { formatBunFailure, runBunCommand, runBunTests } from './bun-suite'
 
 const evidenceAndEvalTests = [
-  'tests/parity/harness.test.ts',
   'apps/backend-bun/src/application/evaluation/agent-evaluator.test.ts'
 ]
 

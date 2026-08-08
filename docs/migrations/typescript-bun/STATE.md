@@ -10,18 +10,18 @@ wall_clock_budget_minutes: null
 token_budget: null
 cost_budget_usd: null
 current_phase: "09"
-current_task: null
-next_task: "CUT-010"
+current_task: "CUT-010"
+next_task: null
 baseline_commit: "41665a96cf67eb82cbe02f83abbbe2b79b100e48"
 last_verified_commit: "3ff566d6fe8eb3eb6d025da3e08fd8d08e7cdec0"
-current_head: "3ff566d6fe8eb3eb6d025da3e08fd8d08e7cdec0"
+current_head: "10d12f04844e9e4d1dd80ce7f8ee8020a4e6f44e"
 current_branch: "TS_backend_refactor"
 worktree_root: "D:/Coding/ADVX-live"
 worktree_dirty: true
-last_run_id: "cut-009-commit-checker-root-20260808-145"
-last_context_id: "cut-009-commit-checker-root-context-20260808-145"
-maker_run_id: "cut-009-maker-root-20260808-144"
-maker_context_id: "cut-009-maker-root-context-20260808-144"
+last_run_id: "cut-010-maker-root-20260808-146"
+last_context_id: "cut-010-maker-root-context-20260808-146"
+maker_run_id: "cut-010-maker-root-20260808-146"
+maker_context_id: "cut-010-maker-root-context-20260808-146"
 checker_run_id: "cut-009-commit-checker-root-20260808-145"
 checker_context_id: "cut-009-commit-checker-root-context-20260808-145"
 same_blocker_attempts: 0
@@ -34,12 +34,43 @@ same_blocker_attempts: 0
 | Field | Value |
 | --- | --- |
 | Mode | Assisted implementation |
-| Current phase | Phase 09: `READY` |
-| Current task | None |
-| Next task | `CUT-010` (`READY`) |
+| Current phase | Phase 09: `VERIFY` |
+| Current task | `CUT-010` (`VERIFY`) |
+| Next task | None |
 | Implementation authorization | Active |
 | Independent verifier | Distinct Checker required after Maker reaches `VERIFY` |
 | Active blocker | None |
+
+## Current CUT-010 Maker Record
+
+Maker `cut-010-maker-root-20260808-146` used distinct context
+`cut-010-maker-root-context-20260808-146` on branch `TS_backend_refactor` at
+parent HEAD `10d12f04844e9e4d1dd80ce7f8ee8020a4e6f44e`.
+
+It removed the temporary Python/dual-runtime selector and transports, copied
+Python OpenAPI contracts, parity-only clients and tests, SQLite Python migration
+adapters, and closed rollback branches. The supported runtime is now Bun-only.
+Durable realtime v3/v4 protocol negotiation, Bun SQL migration history,
+CUT-003 restore evidence, trace redaction, and useful diagnostics remain.
+
+Repository TypeScript, the focused CUT-010 checker, 14 contract test blocks
+covering 25 named assertions, 10 desktop backend tests, eight trace/migration
+tests, the generated Bun OpenAPI drift check, PKG-012 rollback/package checks,
+live plan-check, and whitespace validation pass. The focused checker reports no
+active tracked Python files and source aggregate
+`34626421746e88ffa986de45ff2cab1d466ae71a8a5c6a3cd7a843362aa66235`.
+`.github/workflows/bun-ci.yml` remains `workflow_dispatch`-only; automatic CI
+stays disabled until migration completion under explicit human direction.
+
+Maker evidence is at
+`.omx/artifacts/typescript-bun/CUT-010/cut-010-maker-root-20260808-146/result.json`
+with SHA-256
+`7d2669fec82ef1e801701b627e1bbd6698ddd40f9756ee3af3beac27f4cee931`.
+
+`CUT-010` and Phase 09 are `VERIFY`; `current_task=CUT-010`,
+`next_task=null`, and `same_blocker_attempts=0`. A distinct Checker must verify
+the exact candidate commit. No CUT-011 source, merge, rebase, tag, PR, release,
+signing, deployment, or automatic CI execution occurred.
 
 ## Current CUT-009 Exact-Commit Checker Record
 

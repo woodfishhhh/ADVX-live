@@ -564,7 +564,14 @@ export const replayResultSchema = schema.object({
 export type TraceQuery = InferSchema<typeof traceQuerySchema>
 export type TraceQueryResponse = InferSchema<typeof traceQueryResponseSchema>
 export type ViewerRequestTrace = InferSchema<typeof viewerRequestTraceSchema>
+export type AiCallRole = InferSchema<typeof aiCallRoleSchema>
+export type AiCallStatus = InferSchema<typeof aiCallStatusSchema>
 export type AiCallTrace = InferSchema<typeof aiCallTraceSchema>
+export type AiCallListItem = InferSchema<typeof aiCallListItemSchema>
+export type AiCallQueryResponse = InferSchema<typeof aiCallQueryResponseSchema>
+export type AiCallImagePreview = InferSchema<
+  typeof aiCallImagePreviewMetadataSchema
+>
 export type DebugRuntimeSnapshot = InferSchema<typeof debugRuntimeSnapshotSchema>
 export type ReplayRequest = InferSchema<typeof replayRequestSchema>
 export type ReplayResult = InferSchema<typeof replayResultSchema>

@@ -45,16 +45,3 @@ export * from './http/index'
 export * from './realtime/index'
 export * from './binary/index'
 export * from './compatibility'
-
-// Generated aliases remain available while consumers migrate to canonical schemas.
-export type {
-  RealtimeBarrageEvent,
-  RealtimeBinaryInputHeader,
-  RealtimeClientMessage,
-  RealtimeIngestAck,
-  RealtimeIngestRejected,
-  RealtimeServerMessage,
-  components,
-  operations,
-  paths
-} from './legacy'

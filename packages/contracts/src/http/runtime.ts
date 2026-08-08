@@ -437,6 +437,9 @@ export type PersonaTemplate = InferSchema<typeof personaTemplateSchema>
 export type PersonaOverride = InferSchema<typeof personaOverrideSchema>
 export type ModeDefinition = InferSchema<typeof modeDefinitionSchema>
 export type RuntimeSessionSnapshot = InferSchema<typeof runtimeSessionSnapshotSchema>
+export type ProviderProfileReference = InferSchema<
+  typeof providerProfileReferenceSchema
+>
 export type RuntimeApplyRequest = InferSchema<typeof runtimeApplyRequestSchema>
 export type RuntimeRollbackRequest = InferSchema<typeof runtimeRollbackRequestSchema>
 export type SessionAudienceSnapshot = InferSchema<

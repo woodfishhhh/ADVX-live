@@ -147,9 +147,9 @@ its hash/schema/representative tables, and only then launch the known-good
 binary. User data remains outside the install root and uninstall must not be
 treated as data rollback.
 
-The local `python-oracle` selector remains a development/parity rollback until
-Phase 09. It is not a packaged production updater or a substitute for a signed
-known-good Windows artifact.
+After Python deletion, rollback uses the `TS_backend_refactor` branch history
+and the `CUT-003` restore-from-backup procedure. No in-place runtime selector
+remains, and neither path substitutes for a signed known-good Windows artifact.
 
 | Condition | Required action | Binary rollback allowed? |
 | --- | --- | --- |

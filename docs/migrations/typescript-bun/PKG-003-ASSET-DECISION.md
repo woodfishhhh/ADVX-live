@@ -29,7 +29,6 @@ assets and must not be copied into `resources/backend`:
 
 - `apps/backend-bun/src/application/evaluation/fixtures/agent-eval-smoke.json`;
 - `apps/backend-bun/src/testing/fixtures/tst-006-negative-corpus.json`;
-- `apps/backend-bun/src/infrastructure/persistence/sqlite/legacy-database-fixture.py`;
 - `apps/backend-bun/openapi/advx-control-plane.openapi.json` (generated
   contract snapshot used by the OpenAPI check).
 

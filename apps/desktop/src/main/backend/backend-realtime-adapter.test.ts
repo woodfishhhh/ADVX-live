@@ -40,7 +40,6 @@ afterEach(() => {
 describe("desktop realtime compatibility adapter", () => {
   it("keeps the authenticated legacy hello while normalizing canonical Bun envelopes", () => {
     const adapter = new BackendRealtimeAdapter({
-      backendKind: "bun",
       backendStartId: "backend-start-1"
     });
     const hello = JSON.parse(
@@ -66,7 +65,6 @@ describe("desktop realtime compatibility adapter", () => {
 
   it("deduplicates event identities and rejects stale connection generations", () => {
     const adapter = new BackendRealtimeAdapter({
-      backendKind: "python",
       backendStartId: "backend-start-1"
     });
     const identity = adapter.beginConnection();
@@ -86,7 +84,6 @@ describe("desktop realtime compatibility adapter", () => {
 
   it("normalizes clean shutdown messages from either wire family", () => {
     const adapter = new BackendRealtimeAdapter({
-      backendKind: "bun",
       backendStartId: "backend-start-1"
     });
     const canonical = realtimeMessageRegistry["backend.shutdown"].schema.parse({

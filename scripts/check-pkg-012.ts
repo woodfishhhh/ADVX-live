@@ -63,7 +63,7 @@ const requiredRunbookText = [
   'HTTP v3, realtime v4 with negotiated v3/v4 support, and schema package v1',
   'SQLite Online Backup API evidence followed by stopped-backend copy-and-swap',
   'Never run an older binary against a newer, incompatible database',
-  'The local `python-oracle` selector remains a development/parity rollback until Phase 09',
+  'After Python deletion, rollback uses the `TS_backend_refactor` branch history and the `CUT-003` restore-from-backup procedure',
   'server-side removal or freezing of the affected channel metadata pointer',
   'explicit human publish authorization',
   'does not add an updater library'
@@ -128,10 +128,14 @@ if (!limitation.includes('> Current release scope: Windows x64 only')) {
 const rootPackage = JSON.parse(await readFile(rootPackagePath, 'utf8')) as PackageManifest
 const desktopPackage = JSON.parse(await readFile(desktopPackagePath, 'utf8')) as PackageManifest
 const packageCommand = rootPackage.scripts?.['package:desktop'] ?? ''
-if (!packageCommand.includes('electron-builder --win --x64 --dir')) {
+const desktopPackageCommand = desktopPackage.scripts?.['package:win:x64:dir'] ?? ''
+if (
+  !packageCommand.includes('package:win:x64:dir') ||
+  !desktopPackageCommand.includes('electron-builder --win --x64 --dir')
+) {
   failures.push('package:desktop must remain explicitly Windows x64')
 }
-if (/--(?:mac|publish)\b/.test(packageCommand)) {
+if (/--(?:mac|publish)\b/.test(`${packageCommand}\n${desktopPackageCommand}`)) {
   failures.push('package:desktop must not build macOS or publish')
 }
 const desktopDependencies = packageDependencies(desktopPackage)
@@ -189,6 +193,7 @@ const result = {
   ciReleaseAuthority: false,
   productUpdaterMarkers: sourceUpdaterFindings,
   packageCommand,
+  desktopPackageCommand,
   requiredRunbookClauses: requiredRunbookText.length,
   reviewedFiles,
   failures

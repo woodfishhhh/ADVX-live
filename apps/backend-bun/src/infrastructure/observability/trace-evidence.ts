@@ -9,18 +9,16 @@ import {
 
 export const TRACE_EVIDENCE_NORMALIZER_VERSION = 1 as const
 
-export type TraceEvidenceRuntime = 'bun' | 'python'
-
 export type NormalizedViewerTrace = Readonly<{
   normalizer_version: typeof TRACE_EVIDENCE_NORMALIZER_VERSION
-  source_runtime: TraceEvidenceRuntime
+  source_runtime: 'bun'
   trace_kind: 'viewer_request'
   trace: ViewerRequestTrace
 }>
 
 export type NormalizedAiCallTrace = Readonly<{
   normalizer_version: typeof TRACE_EVIDENCE_NORMALIZER_VERSION
-  source_runtime: TraceEvidenceRuntime
+  source_runtime: 'bun'
   trace_kind: 'ai_call'
   trace: AiCallTrace
 }>
@@ -28,27 +26,19 @@ export type NormalizedAiCallTrace = Readonly<{
 export type NormalizedTraceEvidence = NormalizedViewerTrace | NormalizedAiCallTrace
 
 /**
- * Normalize traces at the comparison boundary. The payload stays on the
- * existing versioned contract so Python and Bun can be compared field-for-
- * field without leaking runtime-specific objects into the debug API.
+ * Normalize and redact traces before they enter runtime diagnostics.
  */
-export function normalizeViewerTrace(
-  input: unknown,
-  sourceRuntime: TraceEvidenceRuntime = 'bun'
-): NormalizedViewerTrace {
+export function normalizeViewerTrace(input: unknown): NormalizedViewerTrace {
   const trace = viewerRequestTraceSchema.parse(input)
   return Object.freeze({
     normalizer_version: TRACE_EVIDENCE_NORMALIZER_VERSION,
-    source_runtime: sourceRuntime,
+    source_runtime: 'bun',
     trace_kind: 'viewer_request',
     trace
   })
 }
 
-export function normalizeAiCallTrace(
-  input: unknown,
-  sourceRuntime: TraceEvidenceRuntime = 'bun'
-): NormalizedAiCallTrace {
+export function normalizeAiCallTrace(input: unknown): NormalizedAiCallTrace {
   const parsed = aiCallTraceSchema.parse(input)
   const trace = aiCallTraceSchema.parse({
     ...parsed,
@@ -70,7 +60,7 @@ export function normalizeAiCallTrace(
   })
   return Object.freeze({
     normalizer_version: TRACE_EVIDENCE_NORMALIZER_VERSION,
-    source_runtime: sourceRuntime,
+    source_runtime: 'bun',
     trace_kind: 'ai_call',
     trace
   })

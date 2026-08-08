@@ -1242,7 +1242,7 @@ Checker. Candidate evidence:
 | `CUT-007` | `DONE` | Update architecture, backend, protocol, setup, and product-status docs | `CUT-005`, `CUT-006` | Documentation audit |
 | `CUT-008` | `DONE` | Remove Python backend source and Python-only tests after human gate | `CUT-004..007` | Tracked-file audit |
 | `CUT-009` | `DONE` | Remove `pyproject.toml`, `uv.lock`, Alembic runtime, and Python ignores | `CUT-008` | Toolchain audit |
-| `CUT-010` | `READY` | Remove temporary dual-runtime adapters and migration-only shims | `CUT-008`, `CUT-009` | Dead-code audit |
+| `CUT-010` | `VERIFY` | Remove temporary dual-runtime adapters and migration-only shims | `CUT-008`, `CUT-009` | Dead-code audit |
 | `CUT-011` | `TODO` | Run repository-wide no-Python/no-pnpm/no-uv scan with allowlisted history only | `CUT-009`, `CUT-010` | Scan artifact |
 | `CUT-012` | `TODO` | Run clean-clone install, lint, typecheck, tests, build, and installed E2E | `CUT-011` | Clean-clone evidence |
 | `CUT-013` | `TODO` | Independent architecture, security, data, and test review | `CUT-012` | Review verdict |
@@ -1540,6 +1540,25 @@ same 26-file aggregate as Maker.
 including the already recorded legacy Python shim finding. Automatic CI remains
 manual-only until migration completion under explicit human direction. No
 CUT-010 implementation or later task was started.
+
+Maker `cut-010-maker-root-20260808-146`, in distinct context
+`cut-010-maker-root-context-20260808-146`, removed the temporary Python and
+dual-runtime selector/transports, copied Python OpenAPI contracts, parity-only
+clients/tests, SQLite Python migration adapters, and closed rollback branches.
+The supported runtime is Bun-only. Durable realtime v3/v4 negotiation, Bun SQL
+migration history, CUT-003 restore evidence, trace redaction, and diagnostics
+remain.
+
+Repository TypeScript, the focused CUT-010 checker, targeted contract, desktop,
+trace and migration tests, the Bun OpenAPI drift check, PKG-012 package/rollback
+checks, live plan-check, and whitespace validation pass. The focused checker
+reports no active tracked Python files and source aggregate
+`34626421746e88ffa986de45ff2cab1d466ae71a8a5c6a3cd7a843362aa66235`.
+Automatic CI remains `workflow_dispatch`-only until migration completion.
+
+`CUT-010` and Phase 09 are `VERIFY`; `current_task=CUT-010`, `next_task=null`,
+and `same_blocker_attempts=0`. CUT-011 remains `TODO` pending a distinct
+exact-commit Checker. No later task was started.
 
 ## Gate External Conditions
 

@@ -51,7 +51,7 @@ import {
 import {
   asrProviderChanged,
   configureProviderForSession,
-  createRuntimeProviderCandidate,
+  createRuntimeProviderReference,
   mergeProviderProfileSnapshots,
   modelProviderChanged,
   reviseProviderProfileForActiveSession,
@@ -372,8 +372,8 @@ async function compileAudienceRuntime(
   });
 }
 
-async function loadRuntimeProviderCandidate(target: RuntimeProviderIdentity) {
-  return createRuntimeProviderCandidate(await loadRuntimeProviderConfig(target));
+async function loadRuntimeProviderReference(target: RuntimeProviderIdentity) {
+  return createRuntimeProviderReference(await loadRuntimeProviderConfig(target));
 }
 
 function hasCameraCaptureAuthorization(webContentsId: number): boolean {
@@ -1122,7 +1122,7 @@ export function registerDesktopIpc(
         `apply-${randomUUID()}`,
         baseRevision,
         compiled,
-        await loadRuntimeProviderCandidate(compiled.spec.provider)
+        await loadRuntimeProviderReference(compiled.spec.provider)
       );
     }
   );
@@ -1142,7 +1142,7 @@ export function registerDesktopIpc(
         `rollback-${randomUUID()}`,
         baseRevision,
         targetRevision,
-        await loadRuntimeProviderCandidate(targetProvider)
+        await loadRuntimeProviderReference(targetProvider)
       );
     }
   );

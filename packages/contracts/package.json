@@ -11,8 +11,7 @@
     "./binary": "./src/binary/index.ts",
     "./compatibility": "./src/compatibility.ts",
     "./fixtures": "./src/fixtures/index.ts",
-    "./generated": "./src/generated/index.ts",
-    "./legacy": "./src/legacy.ts"
+    "./generated": "./src/generated/index.ts"
   },
   "scripts": {
     "typecheck": "tsc --noEmit",

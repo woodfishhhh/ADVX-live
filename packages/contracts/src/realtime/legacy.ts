@@ -48,6 +48,15 @@ export const legacyRealtimeMessageSchema = schema.union([
   ingestAckSchema, ingestRejectedSchema, transcriptSchema, viewerPresenceSchema
 ])
 export type LegacyRealtimeMessage = InferSchema<typeof legacyRealtimeMessageSchema>
+export type RealtimeServerMessage = LegacyRealtimeMessage
+export type RealtimeIngestAck = Extract<
+  LegacyRealtimeMessage,
+  { type: 'ingest.ack' }
+>
+export type RealtimeIngestRejected = Extract<
+  LegacyRealtimeMessage,
+  { type: 'ingest.rejected' }
+>
 
 export type LegacyNormalizationContext = {
   readonly message_id: string

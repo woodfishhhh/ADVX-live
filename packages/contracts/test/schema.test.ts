@@ -51,7 +51,7 @@ import {
   traceSchemaVersionSchema,
   viewerIdSchema,
   viewerLifecycleStateSchema,
-  CURRENT_PYTHON_WIRE_MESSAGE_COUNT,
+  LEGACY_WIRE_MESSAGE_COUNT,
   normalizeLegacyRealtimeMessage,
   pairedAudioTurnPayloadSchema,
   parseCanonicalRealtimeEnvelope,
@@ -735,24 +735,24 @@ test('replay contracts enforce redaction, Provider whitelists, correlation, and 
   )
 })
 
-test('CON-005 accepts and normalizes all 19 current Python wire families', () => {
+test('CON-005 accepts and normalizes all 19 durable legacy wire families', () => {
   const fixture = JSON.parse(
-    readFileSync(new URL('./fixtures/realtime-python-v4.json', import.meta.url), 'utf8')
+    readFileSync(new URL('./fixtures/realtime-v4.json', import.meta.url), 'utf8')
   ) as {
     messages: Array<{
       wire: unknown
       context: Parameters<typeof normalizeLegacyRealtimeMessage>[1]
     }>
   }
-  equal(fixture.messages.length, CURRENT_PYTHON_WIRE_MESSAGE_COUNT)
+  equal(fixture.messages.length, LEGACY_WIRE_MESSAGE_COUNT)
   const types = new Set<string>()
   for (const entry of fixture.messages) {
     const canonical = normalizeLegacyRealtimeMessage(entry.wire, entry.context)
     types.add(canonical.message_type)
     equal(parseCanonicalRealtimeEnvelope(JSON.parse(JSON.stringify(canonical))), canonical)
   }
-  equal(types.size, CURRENT_PYTHON_WIRE_MESSAGE_COUNT)
-  equal(realtimeMessageRegistrations.filter((entry) => entry.currentPythonWire).length, 19)
+  equal(types.size, LEGACY_WIRE_MESSAGE_COUNT)
+  equal(realtimeMessageRegistrations.filter((entry) => entry.legacyWire).length, 19)
 })
 
 test('CON-005 canonical envelopes reject unknown, secret, and invalid scope fields', () => {
