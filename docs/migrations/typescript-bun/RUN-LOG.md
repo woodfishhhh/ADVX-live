@@ -12146,3 +12146,52 @@ Rules:
 - Decisions/plan drift: none; automatic CI remains disabled,
   `workflow_dispatch`-only, and was not triggered
 - Next single task: `GATE-09`; it was not started in this run
+
+## `gate-09-maker-root-20260809-163` - 2026-08-09 - `GATE-09`
+
+- Role: `maker`
+- Context ID: `gate-09-maker-root-context-20260809-163`
+- Parent run ID: `cut-014-commit-checker-root-20260808-162`
+- Branch/base HEAD: `TS_backend_refactor` /
+  `1614fafc700ed4d53bda811c9758b391e7aaccf4`
+- State transition: `GATE-09` `READY` -> `IN_PROGRESS` -> `VERIFY`; Phase 09
+  `VERIFY`; `current_task=GATE-09`, `next_task=null`,
+  `same_blocker_attempts=0`
+- Final audit: ten requirements pass; exact-commit evidence binding remains the
+  required Checker-owned eleventh requirement
+- Current-state repair: corrected the migration README's stale
+  planning/paused status; no product source changed
+- Installed proof rationale: `CUT-013` changed Electron supervision/lifecycle
+  after `CUT-012`, so the existing `PKG-010` Windows x64 install check was
+  rerun; unrelated clean-clone/dependency/security matrices were not repeated
+- First installed attempt: stopped before installation after a 600-second
+  Electron download timeout; local `@electron/get` source showed proxy support
+  requires `ELECTRON_GET_USE_PROXY=true`
+- Second installed attempt: exit `0`; compiled backend, Electron/NSIS package,
+  install, authenticated handshake, text/frame/microphone/system-audio pipeline,
+  overlay, diagnostics, restart, graceful exit, uninstall, and zero-orphan
+  audit passed
+- Installed result:
+  `.omx/artifacts/typescript-bun/GATE-09/gate-09-maker-root-20260809-163/windows-installed/result.json`
+  (`sha256:9cf6ade19ab54e9c71f9df1bd4922b67addaf396caa89940d9d32253c3f2984b`,
+  3262 bytes)
+- Reused evidence: accepted CUT-003/CUT-004/CUT-012/CUT-013/CUT-014 hashes
+  match; six accepted credentialed-live Provider source hashes still match
+- Static result: zero tracked Python/toolchain requirements, zero pnpm/uv or
+  alternate lock/workspace inputs, Bun `1.3.14`, Node tooling `24.18.0`, manual
+  `workflow_dispatch` only
+- Focused plan-check tests: 50 passed, 197 expectations; live plan-check:
+  133 tasks, 83 links, 132 pre-gate accepted records, zero errors
+- Decision record:
+  `docs/migrations/typescript-bun/GATE-09-FINAL-DECISION.md`
+- Maker evidence:
+  `.omx/artifacts/typescript-bun/GATE-09/gate-09-maker-root-20260809-163/result.json`
+  (`sha256:83618b4ae8e9656d08ec0141bd6572a0432e620cd7268fe712d64bce9f14d605`,
+  3181 bytes)
+- Blocker: none
+- Limitations: Windows x64 only; unsigned, unpublished, undeployed; macOS and
+  Windows arm64 unproven; restore-from-backup data-loss window retained
+- CI was not triggered; signing, publishing, deployment, and updater work stay
+  disabled and unauthorized
+- Next single action: create and push the candidate, then require a distinct
+  exact-commit Checker

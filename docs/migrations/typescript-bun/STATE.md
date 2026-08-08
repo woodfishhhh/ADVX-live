@@ -10,18 +10,18 @@ wall_clock_budget_minutes: null
 token_budget: null
 cost_budget_usd: null
 current_phase: "09"
-current_task: null
-next_task: "GATE-09"
+current_task: "GATE-09"
+next_task: null
 baseline_commit: "41665a96cf67eb82cbe02f83abbbe2b79b100e48"
 last_verified_commit: "60c6e768d59362d21ea206741a0afa6f58c48f5d"
-current_head: "60c6e768d59362d21ea206741a0afa6f58c48f5d"
+current_head: "1614fafc700ed4d53bda811c9758b391e7aaccf4"
 current_branch: "TS_backend_refactor"
 worktree_root: "D:/Coding/ADVX-live"
 worktree_dirty: true
-last_run_id: "cut-014-commit-checker-root-20260808-162"
-last_context_id: "cut-014-commit-checker-root-context-20260808-162"
-maker_run_id: "cut-014-maker-root-20260808-161"
-maker_context_id: "cut-014-maker-root-context-20260808-161"
+last_run_id: "gate-09-maker-root-20260809-163"
+last_context_id: "gate-09-maker-root-context-20260809-163"
+maker_run_id: "gate-09-maker-root-20260809-163"
+maker_context_id: "gate-09-maker-root-context-20260809-163"
 checker_run_id: "cut-014-commit-checker-root-20260808-162"
 checker_context_id: "cut-014-commit-checker-root-context-20260808-162"
 same_blocker_attempts: 0
@@ -34,49 +34,47 @@ same_blocker_attempts: 0
 | Field | Value |
 | --- | --- |
 | Mode | Assisted implementation |
-| Current phase | Phase 09: `READY` |
-| Current task | None |
-| Next task | `GATE-09` (`READY`) |
+| Current phase | Phase 09: `VERIFY` |
+| Current task | `GATE-09` (`VERIFY`) |
+| Next task | None |
 | Implementation authorization | Active |
 | Independent verifier | Distinct exact-commit Checker required for `GATE-09` |
 | Active blocker | None |
 
-## Accepted CUT-014 Record
+## Current GATE-09 Maker Record
 
-Maker `cut-014-maker-root-20260808-161` used distinct context
-`cut-014-maker-root-context-20260808-161` on branch `TS_backend_refactor` at
-base HEAD `7b43ea0a338309403b613df1a1591eb7e9dc9923`.
+Maker `gate-09-maker-root-20260809-163` used distinct context
+`gate-09-maker-root-context-20260809-163` on branch `TS_backend_refactor` at
+base HEAD `1614fafc700ed4d53bda811c9758b391e7aaccf4`.
 
-The Maker retained a dormant source/data recovery window and recorded exact
-Bun/product defaults, the final Python oracle and deletion identities, the
-CUT-003 backup/restore procedure, retention duration and owners, removal
-conditions, open limitations, superseded-work status, evidence identities, and
-archive locations. No release has shipped, so no operational rollback clock
-has started. After a first authorized signed Windows x64 release reaches full
-promotion, the minimum retention period is 30 calendar days.
+The final audit found and corrected the migration README's stale planning and
+paused status. Because `CUT-013` changed Electron supervision/lifecycle code
+after the earlier clean-clone package proof, the Maker reran the existing
+Windows x64 installed check against the current product. Compile, NSIS package,
+install, authenticated `bun-compiled` handshake, recorded text/frame/two-audio
+pipeline, overlay, diagnostics, restart, graceful exit, uninstall, port, and
+zero-orphan checks pass. The first package attempt stopped at an external
+download timeout; a second bounded attempt used the locally documented proxy
+activation and passed without changing source.
 
-Independent exact-commit Checker `cut-014-commit-checker-root-20260808-162`
-used distinct context
-`cut-014-commit-checker-root-context-20260808-162` and accepted commit
-`60c6e768d59362d21ea206741a0afa6f58c48f5d`, tree
-`493d9ce7c8d0540e0ee7198bf503944ee25c53a9`, and identical
-`origin/TS_backend_refactor`. The tracked worktree was clean and the candidate
-contained exactly the five owned migration documents with no prohibited path.
+All six credentialed-live Provider source hashes remain current; CUT-003,
+CUT-004, CUT-012, CUT-013, and CUT-014 accepted artifact hashes match; zero
+tracked Python/toolchain inputs or pnpm/uv lock/workspace files remain; CI is
+still `workflow_dispatch`-only. Ten final requirements pass and exact-commit
+evidence binding is pending the independent Checker.
 
-The closure record is
-`docs/migrations/typescript-bun/CUT-014-ROLLBACK-WINDOW-CLOSURE.md`.
+The decision record is
+`docs/migrations/typescript-bun/GATE-09-FINAL-DECISION.md`. Current installed
+result is at
+`.omx/artifacts/typescript-bun/GATE-09/gate-09-maker-root-20260809-163/windows-installed/result.json`
+with SHA-256
+`9cf6ade19ab54e9c71f9df1bd4922b67addaf396caa89940d9d32253c3f2984b`.
 Maker evidence is at
-`.omx/artifacts/typescript-bun/CUT-014/cut-014-maker-root-20260808-161/result.json`
+`.omx/artifacts/typescript-bun/GATE-09/gate-09-maker-root-20260809-163/result.json`
 with SHA-256
-`b2b5ebc0adb9db18da5f53f02b49ce2c459e4d763421a1ffc9b3eed23e264687`.
-Checker evidence is at
-`.omx/artifacts/typescript-bun/CUT-014/cut-014-commit-checker-root-20260808-162/result.json`
-with SHA-256
-`2ff50fdf8aff6a4e025bfd4b302b62dddd086a353fdd5fc1ba39a4674262b1b3`.
-`CUT-014` is `DONE`; Phase 09 and only `GATE-09` are `READY`;
-`current_task=null`, `next_task=GATE-09`, and `same_blocker_attempts=0`. CI
-remains automatic-trigger-free and `workflow_dispatch`-only; it was not
-triggered.
+`83618b4ae8e9656d08ec0141bd6572a0432e620cd7268fe712d64bce9f14d605`.
+`GATE-09` and Phase 09 are `VERIFY`; `current_task=GATE-09`, `next_task=null`,
+and `same_blocker_attempts=0`. CI was not triggered.
 
 ## Closure Snapshot
 
@@ -92,7 +90,7 @@ triggered.
 | Retention duration | No pre-release expiry; minimum 30 days after first authorized signed release reaches full promotion |
 | Documentation archive | `docs/migrations/typescript-bun/`, Git history, `RUN-LOG.md`, and `EVIDENCE.md` |
 | Raw evidence archive | Local untracked `.omx/artifacts/typescript-bun/`; hash-bound and excluded from release packages |
-| Final gate | `GATE-09` is `READY` and unexecuted |
+| Final gate | `GATE-09` is `VERIFY`; exact-commit Checker pending |
 
 ## Phase State
 
@@ -107,7 +105,7 @@ triggered.
 | 06 Observability and replay | `DONE` | `GATE-06` | [07](./07-OBSERVABILITY-REPLAY.md) |
 | 07 Test and tooling convergence | `DONE` | `GATE-07` | [08](./08-TEST-TOOLING.md) |
 | 08 Packaging and security | `DONE` | `GATE-08` | [09](./09-PACKAGING-SECURITY.md) |
-| 09 Cutover and Python removal | `READY` | `GATE-09` | [10](./10-CUTOVER-CLEANUP.md) |
+| 09 Cutover and Python removal | `VERIFY` | `GATE-09` | [10](./10-CUTOVER-CLEANUP.md) |
 
 ## Active Blockers
 
@@ -120,14 +118,14 @@ None.
   disabled and unauthorized.
 - Real user rollback requires a fresh verified pre-update backup; CUT-003 raw
   database artifacts are synthetic evidence only.
-- `GATE-09` must independently prove the final definition of done against an
-  exact commit before the migration can complete.
+- `GATE-09` exact-commit Checker evidence remains required before the migration
+  can complete.
 
 ## Worktree Ownership
 
 The tracked task surface is owned by this migration run. Existing untracked
 `.codex/`, `.omx/`, `apps/backend/`, `output/`, `promo/`, and cache paths remain
-uncommitted and untouched except for new CUT-014 evidence under `.omx`. A fresh
+uncommitted and untouched except for new GATE-09 evidence under `.omx`. A fresh
 `git status` remains authoritative.
 
 ## Audit Locations

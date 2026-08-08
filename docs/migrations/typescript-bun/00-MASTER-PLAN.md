@@ -1247,7 +1247,7 @@ Checker. Candidate evidence:
 | `CUT-012` | `DONE` | Run clean-clone install, lint, typecheck, tests, build, and installed E2E | `CUT-011` | Clean-clone evidence |
 | `CUT-013` | `DONE` | Independent architecture, security, data, and test review | `CUT-012` | Review verdict |
 | `CUT-014` | `DONE` | Close or explicitly retain rollback window and archive migration state | `CUT-013` | Closure record |
-| `GATE-09` | `READY` | Final proof-or-stop verification | `CUT-001..014` | Final accepted evidence |
+| `GATE-09` | `VERIFY` | Final proof-or-stop verification | `CUT-001..014` | Final accepted evidence |
 
 Maker `cut-002-maker-root-20260808-125` completed only the bounded Windows x64
 Bun-default soak. Four Electron cycles cover the required media combinations,
@@ -1749,6 +1749,27 @@ Checker evidence is at
 `.omx/artifacts/typescript-bun/CUT-014/cut-014-commit-checker-root-20260808-162/result.json`
 with SHA-256
 `2ff50fdf8aff6a4e025bfd4b302b62dddd086a353fdd5fc1ba39a4674262b1b3`.
+
+Final-gate Maker `gate-09-maker-root-20260809-163`, in distinct context
+`gate-09-maker-root-context-20260809-163`, audited all 11 final requirements
+against base HEAD `1614fafc700ed4d53bda811c9758b391e7aaccf4`. Ten requirements pass and the
+exact-commit evidence binding is pending the required Checker. The Maker
+corrected the migration entry README's stale planning/paused status and reran
+the existing Windows x64 installed check because `CUT-013` had changed the
+Electron supervision/lifecycle boundary after the earlier `CUT-012` package
+proof. The fresh compiled/package/NSIS/install/recorded-pipeline/restart/
+uninstall check passes with zero Electron or Bun orphan. The first package
+attempt stopped at an external Electron download timeout; source inspection
+identified the required proxy activation, and the next bounded attempt passed
+with `ELECTRON_GET_USE_PROXY=true` without a source change. Provider source
+hashes still match accepted credentialed-live evidence, all retained evidence
+hashes match, plan-check tests and live plan-check pass, and automatic CI stays
+disabled and untriggered. `GATE-09` and Phase 09 are `VERIFY`;
+`current_task=GATE-09`, `next_task=null`, and `same_blocker_attempts=0`.
+Maker evidence is at
+`.omx/artifacts/typescript-bun/GATE-09/gate-09-maker-root-20260809-163/result.json`
+with SHA-256
+`83618b4ae8e9656d08ec0141bd6572a0432e620cd7268fe712d64bce9f14d605`.
 
 ## Gate External Conditions
 

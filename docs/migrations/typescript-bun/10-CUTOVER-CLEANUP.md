@@ -346,4 +346,8 @@ cutover may not proceed.
 
 ## Observations
 
-To be filled during execution.
+Final-gate Maker record:
+[GATE-09-FINAL-DECISION.md](./GATE-09-FINAL-DECISION.md). The Maker audit passes
+ten final requirements; exact-commit evidence binding remains pending a
+distinct Checker. No completion promise is authorized while `GATE-09` is
+`VERIFY`.

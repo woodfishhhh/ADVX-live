@@ -1,6 +1,6 @@
 # ADVX Live TypeScript + Bun Migration
 
-> Status: planning complete, implementation not started
+> Status: implementation complete; `GATE-09` final verification active
 >
 > Created: 2026-07-29
 >
@@ -12,8 +12,9 @@
 
 ## Purpose
 
-This directory is the execution control plane for migrating ADVX Live from a
-Python/FastAPI backend to a TypeScript backend running on Bun.
+This directory is the execution control plane and durable archive for the ADVX
+Live migration from a Python/FastAPI backend to a TypeScript backend running on
+Bun.
 
 The target is a Python-free product repository and release artifact. It is not a
 claim that Electron stops using Node.js internally. Bun becomes the workspace
@@ -21,8 +22,9 @@ package manager, backend runtime, script runner, test helper, and backend
 compiler. Electron and Electron-specific build tools retain their required Node
 runtime boundary.
 
-This planning pass changes documentation only. It does not install packages,
-change lockfiles, modify product code, or remove Python.
+The implementation and authorized Python/toolchain removal are complete. The
+remaining `GATE-09` task must independently bind the final definition of done
+to an exact commit and accepted evidence before completion may be claimed.
 
 ## Locked Direction
 
@@ -165,9 +167,10 @@ interpretation.
 
 ## Starting And Stopping
 
-Planning is currently complete, but execution is paused. To begin, an authorized
-execution run changes `STATE.md` from `PLANNED` to `ACTIVE`, assigns exactly one
-`READY` task, and follows [PROMPT.md](./PROMPT.md).
+Execution is active at the final verification gate. A fresh run must read
+`STATE.md`, continue only its current or next task, and follow
+[PROMPT.md](./PROMPT.md). Automatic CI/CD, signing, publishing, and deployment
+remain disabled unless separately authorized after migration completion.
 
 The migration is complete only when the independent final gate in
 [10-CUTOVER-CLEANUP.md](./10-CUTOVER-CLEANUP.md) passes and its evidence is
