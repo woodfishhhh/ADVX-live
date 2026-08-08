@@ -1243,8 +1243,8 @@ Checker. Candidate evidence:
 | `CUT-008` | `DONE` | Remove Python backend source and Python-only tests after human gate | `CUT-004..007` | Tracked-file audit |
 | `CUT-009` | `DONE` | Remove `pyproject.toml`, `uv.lock`, Alembic runtime, and Python ignores | `CUT-008` | Toolchain audit |
 | `CUT-010` | `DONE` | Remove temporary dual-runtime adapters and migration-only shims | `CUT-008`, `CUT-009` | Dead-code audit |
-| `CUT-011` | `VERIFY` | Run repository-wide no-Python/no-pnpm/no-uv scan with allowlisted history only | `CUT-009`, `CUT-010` | Scan artifact |
-| `CUT-012` | `TODO` | Run clean-clone install, lint, typecheck, tests, build, and installed E2E | `CUT-011` | Clean-clone evidence |
+| `CUT-011` | `DONE` | Run repository-wide no-Python/no-pnpm/no-uv scan with allowlisted history only | `CUT-009`, `CUT-010` | Scan artifact |
+| `CUT-012` | `READY` | Run clean-clone install, lint, typecheck, tests, build, and installed E2E | `CUT-011` | Clean-clone evidence |
 | `CUT-013` | `TODO` | Independent architecture, security, data, and test review | `CUT-012` | Review verdict |
 | `CUT-014` | `TODO` | Close or explicitly retain rollback window and archive migration state | `CUT-013` | Closure record |
 | `GATE-09` | `TODO` | Final proof-or-stop verification | `CUT-001..014` | Final accepted evidence |
@@ -1601,6 +1601,28 @@ CI remains manual-only.
 `CUT-011` and Phase 09 are `VERIFY`; `current_task=CUT-011`, `next_task=null`,
 and `same_blocker_attempts=0`. CUT-012 remains `TODO` pending a distinct
 exact-commit Checker. No clean checkout or later task was started.
+
+Independent exact-commit Checker
+`cut-011-commit-checker-root-20260808-149`, in distinct context
+`cut-011-commit-checker-root-context-20260808-149`, verified commit
+`55b2d3157aa05339c62eafb9ffd621f25204fb53`, tree
+`a33c42c7ad7974a931afdc90e8b364d53e690c85`, and the identical
+`origin/TS_backend_refactor` ref. The tracked worktree had zero diff and the 29
+changed paths contained zero prohibited, cache, Codex configuration, secret, or
+unrelated paths.
+
+Repository TypeScript, strict CUT-011 TypeScript, the focused repository scan,
+focused formatting, 12 realtime/diagnostics tests, commit whitespace
+validation, and live plan-check pass. The exact scan covers 563 tracked files,
+classifies 2,572 matches, and reports zero active toolchain paths,
+package-script invocations, or active violations. Maker and Checker share
+active-surface aggregate
+`376487996ac187fb1f8b91377f23bc274e9370d0fec796d59c35dfacd336b82e`.
+
+`CUT-011` is `DONE`; Phase 09 returns to `READY`; `current_task=null`,
+`next_task=CUT-012`, and `same_blocker_attempts=0`. Only CUT-012 is promoted.
+Automatic CI remains `workflow_dispatch`-only until migration completion. No
+clean checkout or later task was started.
 
 ## Gate External Conditions
 
