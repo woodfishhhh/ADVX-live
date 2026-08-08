@@ -1244,8 +1244,8 @@ Checker. Candidate evidence:
 | `CUT-009` | `DONE` | Remove `pyproject.toml`, `uv.lock`, Alembic runtime, and Python ignores | `CUT-008` | Toolchain audit |
 | `CUT-010` | `DONE` | Remove temporary dual-runtime adapters and migration-only shims | `CUT-008`, `CUT-009` | Dead-code audit |
 | `CUT-011` | `DONE` | Run repository-wide no-Python/no-pnpm/no-uv scan with allowlisted history only | `CUT-009`, `CUT-010` | Scan artifact |
-| `CUT-012` | `VERIFY` | Run clean-clone install, lint, typecheck, tests, build, and installed E2E | `CUT-011` | Clean-clone evidence |
-| `CUT-013` | `TODO` | Independent architecture, security, data, and test review | `CUT-012` | Review verdict |
+| `CUT-012` | `DONE` | Run clean-clone install, lint, typecheck, tests, build, and installed E2E | `CUT-011` | Clean-clone evidence |
+| `CUT-013` | `READY` | Independent architecture, security, data, and test review | `CUT-012` | Review verdict |
 | `CUT-014` | `TODO` | Close or explicitly retain rollback window and archive migration state | `CUT-013` | Closure record |
 | `GATE-09` | `TODO` | Final proof-or-stop verification | `CUT-001..014` | Final accepted evidence |
 
@@ -1647,6 +1647,28 @@ focused regression tests, and live plan-check pass. `CUT-012` and Phase 09 are
 `VERIFY`; `current_task=CUT-012`, `next_task=null`, and
 `same_blocker_attempts=0`. CUT-013 remains `TODO` pending an exact-commit
 Checker in a second fresh checkout.
+
+Independent exact-commit Checker
+`cut-012-commit-checker-root-20260808-152`, in distinct context
+`cut-012-commit-checker-root-context-20260808-152`, cloned the identical
+`origin/TS_backend_refactor` commit
+`78d74e94be61b5a358daee158cf79977dce6b500` into a second new checkout. Its
+tree is `6d348032ba992ffc50023b22a264900c82574074`, tracked source stayed clean, and
+the 11 task-range paths contained zero prohibited or unrelated paths.
+
+The exact commit passed all 21 clean-clone commands with new empty dependency
+caches. Installed Windows x64 text/frame/microphone/system-audio/voice/
+overlay, restart, graceful stop, uninstall, and zero-orphan checks pass.
+Security scanned 556 tracked files with zero secret findings, audit advisories,
+direct license-policy failures, trusted dependency scripts, or untrusted
+dependency scripts; the CycloneDX 1.5 SBOM contains 740 components. Fuses,
+ASAR integrity, crash evidence, runtime scan, and release inertness pass. Live
+plan-check reports 133 tasks, 72 links, 130 evidence records, and zero errors.
+
+`CUT-012` is `DONE`; Phase 09 returns to `READY`; `current_task=null`,
+`next_task=CUT-013`, and `same_blocker_attempts=0`. Only CUT-013 is promoted.
+Automatic CI remains `workflow_dispatch`-only. No later task, release action,
+or deployment was started.
 
 ## Gate External Conditions
 

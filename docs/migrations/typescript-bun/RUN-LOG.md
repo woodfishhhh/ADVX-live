@@ -11915,3 +11915,42 @@ Rules:
   completion; task order unchanged
 - Next single action: commit and push the CUT-012 candidate, then run a distinct
   exact-commit Checker from a second new checkout
+
+## `cut-012-commit-checker-root-20260808-152` - 2026-08-08 - `CUT-012`
+
+- Role: `checker`
+- Context ID: `cut-012-commit-checker-root-context-20260808-152`
+- Parent run ID: `cut-012-maker-root-20260808-151`
+- Checker participated in implementation or staging: `false`
+- Exact commit: `78d74e94be61b5a358daee158cf79977dce6b500`
+- Exact tree: `6d348032ba992ffc50023b22a264900c82574074`
+- Upstream identity: `origin/TS_backend_refactor` resolved to the exact commit
+- Fresh checkout: `D:/Coding/ADVX-live-cut012-checker-152`; no existing
+  dependencies, build outputs, `.omx`, or dependency caches
+- Source-state checks:
+  - tracked status before/after: zero;
+  - changed paths since accepted control parent: 11;
+  - prohibited, cache, secret, Codex configuration, or unrelated paths: zero;
+  - commit whitespace validation -> exit `0`.
+- Commands: 21/21 exit `0`; frozen install, contracts, strict/repository
+  TypeScript, lint/format, unit/integration/property/fault, replay/eval,
+  desktop/backend builds, package, installed E2E, runtime scan, fuse/ASAR,
+  crash, inert release, security/SBOM/artifacts, and live plan-check
+- Installed E2E: text, frame, microphone, system audio, voice activity,
+  overlay, restart, graceful exit, uninstall, and zero Electron/backend orphans
+- Security: 556 tracked files, zero secret findings, zero audit advisories,
+  zero direct license-policy failures, zero trusted/untrusted dependency
+  scripts, 740 CycloneDX 1.5 components, automatic CI enabled `false`
+- Live plan-check: 133 tasks, 72 links, 130 evidence records, zero errors
+- Accepted evidence:
+  `.omx/artifacts/typescript-bun/CUT-012/cut-012-commit-checker-root-20260808-152/result.json`
+  (`sha256:c9531a34c6237c7f68c28e5bb840e172cdb3a8320c82c6ee2998bda8cb9f1cb9`,
+  4189 bytes)
+- Decision: `CUT-012` `VERIFY` -> `DONE`; Phase 09 `READY`;
+  `current_task=null`, `next_task=CUT-013`, `same_blocker_attempts=0`
+- Blocker: none
+- Limitations: Windows x64 only; unsigned, unpublished, undeployed; macOS
+  unproven
+- Decisions/plan drift: CI remains `workflow_dispatch`-only until migration
+  completion; task order unchanged
+- Next single task: `CUT-013`

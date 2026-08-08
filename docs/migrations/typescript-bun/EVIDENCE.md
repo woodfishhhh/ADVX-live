@@ -7840,7 +7840,9 @@ accepted task/gate record and does not satisfy PKG-011 or any dependency.
   local evidence, or reused dependency caches can install with Bun and execute
   every clean-clone build, test, package, installed-runtime, scan, security,
   SBOM, and artifact boundary required by CUT-012.
-- Status: `VERIFY`
+- Status: `DONE`
+- Accepted commit: `78d74e94be61b5a358daee158cf79977dce6b500`
+- Accepted tree: `6d348032ba992ffc50023b22a264900c82574074`
 - Date: 2026-08-08
 - Environment: Windows x64 build `10.0.26200`; Bun `1.3.14`; Node `v24.18.0`;
   Git `2.54.0.windows.1`; branch `TS_backend_refactor`
@@ -7848,8 +7850,16 @@ accepted task/gate record and does not satisfy PKG-011 or any dependency.
 - Maker: root
 - Maker run/context ID: `cut-012-maker-root-20260808-151` /
   `cut-012-maker-root-context-20260808-151`
-- Reviewed source-state hash: `52daf8d82a580f532628f327ec332d9731f469ef`
-- Clean-clone source hash: `8f16e400d0250af060249ec609c1a7c480956d33`
+- Checker: root independent run/context
+- Checker run/context ID:
+  `cut-012-commit-checker-root-20260808-152` /
+  `cut-012-commit-checker-root-context-20260808-152`
+- Checker parent run ID: `cut-012-maker-root-20260808-151`
+- Checker participated in implementation: `false`
+- Checker participated in staging: `false`
+- Reviewed source-state hash: `78d74e94be61b5a358daee158cf79977dce6b500`
+- Upstream identity: `origin/TS_backend_refactor` resolved to the accepted
+  commit before verification.
 - Commands/procedure:
   - `bun install --frozen-lockfile` -> exit `0`; Electron runtime installed
     explicitly into the fresh dependency graph
@@ -7862,7 +7872,7 @@ accepted task/gate record and does not satisfy PKG-011 or any dependency.
   - focused plan-check TypeScript and two clean-link regressions -> exit `0`
   - live plan-check -> exit `0`; 133 tasks, 72 links, 129 accepted evidence
     records, zero errors
-- Candidate assertions:
+- Accepted assertions:
   - Windows checkout bytes remain LF-stable for generated contracts and exact
     SQLite migration checksums;
   - all dependency caches were new empty directories for the clean proof;
@@ -7875,7 +7885,10 @@ accepted task/gate record and does not satisfy PKG-011 or any dependency.
   `.omx/artifacts/typescript-bun/CUT-012/cut-012-maker-root-20260808-151/result.json`
   (`sha256:00ff20da6802af2ba2a55ba75dfd06167e65db3562593b31f057994dffab92fe`,
   2482 bytes)
-- Checker required: distinct exact-commit clean checkout; Maker has not marked
-  this task `DONE`.
+- Checker artifact:
+  `.omx/artifacts/typescript-bun/CUT-012/cut-012-commit-checker-root-20260808-152/result.json`
+  (`sha256:c9531a34c6237c7f68c28e5bb840e172cdb3a8320c82c6ee2998bda8cb9f1cb9`,
+  4189 bytes)
 - Limitations: Windows x64 only; unsigned, unpublished, undeployed; macOS
   unproven.
+- Next task: `CUT-013`.
